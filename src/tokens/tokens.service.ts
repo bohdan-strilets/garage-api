@@ -6,7 +6,7 @@ import { Token, TokenDocument } from './schemas/token.schema';
 import { UserDocument } from 'src/users/schemas/user.schema';
 import { PayloadType } from './types/payload.type';
 import { TokensType } from './types/tokens.type';
-import TokenType from './enums/token-type.enum';
+import { TokensTypeEnum } from './enums/token-type.enum';
 
 @Injectable()
 export class TokensService {
@@ -64,14 +64,14 @@ export class TokensService {
     return tokens;
   }
 
-  checkToken(token: string, type: TokenType): PayloadType | null {
+  checkToken(token: string, type: TokensTypeEnum): PayloadType | null {
     let payload: PayloadType;
 
-    if (type === TokenType.ACCESS) {
+    if (type === TokensTypeEnum.ACCESS) {
       payload = this.jwtService.verify(token, {
         secret: process.env.ACCESS_TOKEN_KEY,
       });
-    } else if (type === TokenType.REFRESH) {
+    } else if (type === TokensTypeEnum.REFRESH) {
       payload = this.jwtService.verify(token, {
         secret: process.env.REFRESH_TOKEN_KEY,
       });
