@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { PayloadType } from 'src/tokens/types/payload.type';
 import { TokensService } from 'src/tokens/tokens.service';
-import TokenType from 'src/tokens/enums/token-type.enum';
+import { TokensTypeEnum } from 'src/tokens/enums/token-type.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const tokenFromDb = await this.tokensService.findTokenFromDb(payload._id);
     const isValidatedToken = this.tokensService.checkToken(
       tokenFromDb.accessToken,
-      TokenType.ACCESS,
+      TokensTypeEnum.ACCESS,
     );
 
     if (tokenFromDb && isValidatedToken) {
