@@ -10,6 +10,7 @@ import { JwtStrategy } from './strategys/jwt.strategy';
 import { jwtConfig } from 'src/common/configs/jwt.config';
 import { SendgridModule } from 'src/sendgrid/sendgrid.module';
 import { CookieModule } from 'src/cookie/cookie.module';
+import { ErrorsModule } from 'src/errors/errors.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CookieModule } from 'src/cookie/cookie.module';
     PassportModule,
     SendgridModule,
     CookieModule,
+    ErrorsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

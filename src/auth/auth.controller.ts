@@ -18,6 +18,7 @@ import { CookieService } from 'src/cookie/cookie.service';
 import { CookieNamesEnum } from 'src/common/enums/cookie-names.enum';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { PathsEnum } from './enums/paths.enum';
 
 @Controller('auth/v1')
 export class AuthController {
@@ -26,7 +27,7 @@ export class AuthController {
     private readonly cookieService: CookieService,
   ) {}
 
-  @Post('registration')
+  @Post(PathsEnum.REGISTRATION)
   async registration(
     @Body() registrationDto: RegistrationDto,
     @Res({ passthrough: true }) res: Response,
@@ -41,7 +42,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post(PathsEnum.LOGIN)
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -56,7 +57,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('logout')
+  @Get(PathsEnum.LOGOUT)
   async logout(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
