@@ -9,6 +9,8 @@ import { Token, TokenSchema } from 'src/tokens/schemas/token.schema';
 import { TokensModule } from 'src/tokens/tokens.module';
 import { JwtStrategy } from './strategys/jwt.strategy';
 import { jwtConfig } from 'src/common/configs/jwt.config';
+import { SendgridModule } from 'src/sendgrid/sendgrid.module';
+import { CookieModule } from 'src/cookie/cookie.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { jwtConfig } from 'src/common/configs/jwt.config';
     TokensModule,
     JwtModule.register(jwtConfig),
     PassportModule,
+    SendgridModule,
+    CookieModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

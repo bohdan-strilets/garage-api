@@ -2,11 +2,14 @@ import { Injectable } from '@nestjs/common';
 import * as sendgrid from '@sendgrid/mail';
 import * as handlebars from 'handlebars';
 import * as fs from 'fs';
+import { join } from 'path';
 import { EmailType } from './types/email.type';
 import { HbsVariable } from './types/hbs-variable.type';
 
 @Injectable()
 export class SendgridService {
+  private readonly rootPath = join(__dirname, '..', '..', 'src', 'sendgrid', 'templates');
+
   constructor() {
     sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
   }
@@ -27,8 +30,8 @@ export class SendgridService {
     }
   }
 
-  async sendConfirmationEmail(email: string, activationToken: string): Promise<boolean> {
-    const templatePath = './templates/activation-email.hbs';
+  async sendConfirmationEmail(email: string, activationToken: string): Promise<void> {
+    const templatePath = join(this.rootPath, 'activation-email.hbs');
     const variables = { API_URL: process.env.API_URL, activationToken };
     const htmlContent = this.renderTemplate(templatePath, variables);
 
@@ -38,11 +41,11 @@ export class SendgridService {
       html: htmlContent,
     };
 
-    return await this.sendEmail(mail);
+    await this.sendEmail(mail);
   }
 
-  async sendPasswordResetEmail(email: string): Promise<boolean> {
-    const templatePath = './templates/reset-password.hbs';
+  async sendPasswordResetEmail(email: string): Promise<void> {
+    const templatePath = join(this.rootPath, 'reset-password.hbs');
     const htmlContent = this.renderTemplate(templatePath);
 
     const mail = {
@@ -51,6 +54,6 @@ export class SendgridService {
       html: htmlContent,
     };
 
-    return await this.sendEmail(mail);
+    await this.sendEmail(mail);
   }
 }

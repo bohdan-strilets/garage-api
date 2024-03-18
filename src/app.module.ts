@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { SendgridModule } from './sendgrid/sendgrid.module';
+import { CookieModule } from './cookie/cookie.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SendgridModule } from './sendgrid/sendgrid.module';
     AuthModule,
     CloudinaryModule,
     SendgridModule,
+    CookieModule,
   ],
 })
 export class AppModule {}
