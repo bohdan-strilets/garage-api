@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { v4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { Token, TokenDocument } from 'src/tokens/schemas/token.schema';
 import { TokensService } from 'src/tokens/tokens.service';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { RegistrationDto } from './dto/registration.dto';
@@ -15,12 +14,12 @@ import { AuthDataType } from './types/auth-data.type';
 import { AVATAR_URL } from 'src/common/vars/vars';
 import { ErrorMessages } from 'src/common/enums/error-messages.enum';
 import { LoginDto } from './dto/login.dto';
+import { TokensTypeEnum } from 'src/tokens/enums/token-type.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private UserModel: Model<UserDocument>,
-    @InjectModel(Token.name) private TokenModel: Model<TokenDocument>,
     private readonly tokensService: TokensService,
     private readonly sendgridService: SendgridService,
   ) {}
@@ -135,6 +134,40 @@ export class AuthService {
         user: user,
         tokens,
       },
+    };
+  }
+
+  async logout(refreshToken: string): Promise<ResponseType | undefined> {
+    if (!refreshToken) {
+      throw new HttpException(
+        {
+          status: ResponseTypeEnum.ERROR,
+          code: HttpStatus.UNAUTHORIZED,
+          message: ErrorMessages.USER_IS_NOT_UNAUTHORIZED,
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const userData = this.tokensService.checkToken(refreshToken, TokensTypeEnum.REFRESH);
+    const tokenFromDb = await this.tokensService.findTokenFromDb(userData._id);
+
+    if (!userData || !tokenFromDb) {
+      throw new HttpException(
+        {
+          status: ResponseTypeEnum.ERROR,
+          code: HttpStatus.NOT_FOUND,
+          message: ErrorMessages.USER_NOT_FOUND,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await this.tokensService.deleteTokensByDb(userData._id);
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
     };
   }
 }

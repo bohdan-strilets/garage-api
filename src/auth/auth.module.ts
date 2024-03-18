@@ -5,7 +5,6 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { User, UserSchema } from 'src/users/schemas/user.schema';
-import { Token, TokenSchema } from 'src/tokens/schemas/token.schema';
 import { TokensModule } from 'src/tokens/tokens.module';
 import { JwtStrategy } from './strategys/jwt.strategy';
 import { jwtConfig } from 'src/common/configs/jwt.config';
@@ -14,10 +13,7 @@ import { CookieModule } from 'src/cookie/cookie.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: Token.name, schema: TokenSchema },
-    ]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     TokensModule,
     JwtModule.register(jwtConfig),
     PassportModule,
