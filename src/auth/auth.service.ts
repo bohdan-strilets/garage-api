@@ -14,6 +14,7 @@ import { SendgridService } from 'src/sendgrid/sendgrid.service';
 import { AuthDataType } from './types/auth-data.type';
 import { AVATAR_URL } from 'src/common/vars/vars';
 import { ErrorMessages } from 'src/common/enums/error-messages.enum';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -70,6 +71,68 @@ export class AuthService {
       code: HttpStatus.CREATED,
       data: {
         user: newUser,
+        tokens,
+      },
+    };
+  }
+
+  async login(loginDto: LoginDto): Promise<ResponseType<AuthDataType> | undefined> {
+    if (!loginDto) {
+      throw new HttpException(
+        {
+          status: ResponseTypeEnum.ERROR,
+          code: HttpStatus.BAD_REQUEST,
+          message: ErrorMessages.CHECK_ENTERED_DATA_CORRECT,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user = await this.UserModel.findOne({ email: loginDto.email });
+
+    if (!user) {
+      throw new HttpException(
+        {
+          status: ResponseTypeEnum.ERROR,
+          code: HttpStatus.BAD_REQUEST,
+          message: ErrorMessages.EMAIL_IS_WRONG,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const checkPassword = bcrypt.compareSync(loginDto.password, user.password);
+
+    if (!checkPassword) {
+      throw new HttpException(
+        {
+          status: ResponseTypeEnum.ERROR,
+          code: HttpStatus.BAD_REQUEST,
+          message: ErrorMessages.PASSWORD_IS_WRONG,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (!user.isActivated) {
+      throw new HttpException(
+        {
+          status: ResponseTypeEnum.ERROR,
+          code: HttpStatus.BAD_REQUEST,
+          message: ErrorMessages.EMAIL_IS_NOT_ACTIVATED,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const payload = this.tokensService.createPayload(user);
+    const tokens = await this.tokensService.createTokens(payload);
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
+      data: {
+        user: user,
         tokens,
       },
     };

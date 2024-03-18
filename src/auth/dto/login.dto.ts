@@ -1,13 +1,7 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-  MaxLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, MaxLength } from 'class-validator';
 import { ValidationEnum } from 'src/common/enums/validation.enum';
 
-export class LoginnDto {
+export class LoginDto {
   @IsString()
   @IsEmail()
   @IsNotEmpty()
