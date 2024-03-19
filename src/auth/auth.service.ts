@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { v4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 import { TokensService } from 'src/tokens/tokens.service';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { RegistrationDto } from './dto/registration.dto';
@@ -127,5 +128,52 @@ export class AuthService {
       status: ResponseTypeEnum.SUCCESS,
       code: HttpStatus.OK,
     };
+  }
+
+  async googleAuth(googleToken: string): Promise<ResponseType<AuthDataType> | undefined> {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
+
+    const ticket = await client.verifyIdToken({
+      idToken: googleToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const googlePayload = ticket.getPayload();
+    const email = googlePayload.email;
+    const userFromDB = await this.UserModel.findOne({ email });
+
+    if (userFromDB) {
+      const payload = this.tokensService.createPayload(userFromDB);
+      const tokens = await this.tokensService.createTokens(payload);
+
+      return {
+        status: ResponseTypeEnum.SUCCESS,
+        code: HttpStatus.OK,
+        data: {
+          user: userFromDB,
+          tokens,
+        },
+      };
+    } else {
+      const newUser = {
+        firstName: googlePayload.given_name,
+        lastName: googlePayload.family_name,
+        email,
+        avatarUrl: googlePayload.picture,
+        isActivated: googlePayload.email_verified,
+      };
+      const createdUser = await this.UserModel.create({ ...newUser });
+      const payload = this.tokensService.createPayload(createdUser);
+      const tokens = await this.tokensService.createTokens(payload);
+
+      return {
+        status: ResponseTypeEnum.SUCCESS,
+        code: HttpStatus.CREATED,
+        data: {
+          user: createdUser,
+          tokens,
+        },
+      };
+    }
   }
 }

@@ -67,4 +67,18 @@ export class AuthController {
     this.cookieService.deleteCokie(res, CookieNamesEnum.REFRESH_TOKEN);
     return data;
   }
+
+  @Post(PathsEnum.GOOGLE_AUTH)
+  async googleAuth(
+    @Body('googleToken') googleToken: string,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ResponseType<AuthDataType> | undefined> {
+    const data = await this.authService.googleAuth(googleToken);
+    this.cookieService.createCookie(
+      res,
+      CookieNamesEnum.REFRESH_TOKEN,
+      data.data.tokens.refreshToken,
+    );
+    return data;
+  }
 }
