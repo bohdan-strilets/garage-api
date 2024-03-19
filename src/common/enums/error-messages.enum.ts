@@ -6,4 +6,5 @@ export enum ErrorMessages {
   EMAIL_IS_NOT_ACTIVATED = 'Email is not activated.',
   USER_IS_NOT_UNAUTHORIZED = 'User is not unauthorized.',
   USER_NOT_FOUND = 'User not found.',
+  ACTIVATION_TOKEN_IS_WRONG = 'Activation token is wrong.',
 }
