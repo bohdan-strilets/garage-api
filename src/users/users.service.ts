@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { v4 } from 'uuid';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { SendgridService } from 'src/sendgrid/sendgrid.service';
@@ -11,6 +11,7 @@ import { ErrorsService } from 'src/errors/errors.service';
 import { ErrorMessages } from 'src/common/enums/error-messages.enum';
 import { ResponseTypeEnum } from 'src/common/enums/response-type.enum';
 import { EmailDto } from './dto/email.dto';
+import { ChangeProfileDto } from './dto/change-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -54,6 +55,53 @@ export class UsersService {
     return {
       status: ResponseTypeEnum.SUCCESS,
       code: HttpStatus.OK,
+    };
+  }
+
+  async getCurrentUser(userId: Types.ObjectId): Promise<ResponseType<UserDocument> | undefined> {
+    if (!userId) {
+      this.errorService.showHttpException(
+        HttpStatus.UNAUTHORIZED,
+        ErrorMessages.USER_IS_NOT_UNAUTHORIZED,
+      );
+    }
+
+    const user = await this.UserModel.findById(userId);
+
+    if (!user) {
+      this.errorService.showHttpException(HttpStatus.NOT_FOUND, ErrorMessages.USER_NOT_FOUND);
+    }
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
+      data: user,
+    };
+  }
+
+  async changeProfile(
+    userId: Types.ObjectId,
+    changeProfileDto: ChangeProfileDto,
+  ): Promise<ResponseType<UserDocument> | undefined> {
+    if (!userId) {
+      this.errorService.showHttpException(
+        HttpStatus.UNAUTHORIZED,
+        ErrorMessages.USER_IS_NOT_UNAUTHORIZED,
+      );
+    }
+
+    const updatedUser = await this.UserModel.findByIdAndUpdate(userId, changeProfileDto, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      this.errorService.showHttpException(HttpStatus.NOT_FOUND, ErrorMessages.USER_NOT_FOUND);
+    }
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
+      data: updatedUser,
     };
   }
 }
