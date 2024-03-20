@@ -4,4 +4,5 @@ export enum PathsEnum {
   CURRENT_USER = 'current-user',
   CHANGE_PROFILE = 'change-profile',
   CHANGE_EMAIL = 'change-email',
+  REQUEST_RESET_PASSWORD = 'request-reset-password',
 }

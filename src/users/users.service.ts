@@ -123,4 +123,19 @@ export class UsersService {
       code: HttpStatus.OK,
     };
   }
+
+  async requestResetPassword(emailDto: EmailDto): Promise<ResponseType | undefined> {
+    const user = await this.UserModel.findOne({ email: emailDto.email });
+
+    if (!user) {
+      this.errorService.showHttpException(HttpStatus.NOT_FOUND, ErrorMessages.USER_NOT_FOUND);
+    }
+
+    await this.sendgridService.sendPasswordResetEmail(user.email);
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
+    };
+  }
 }

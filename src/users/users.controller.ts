@@ -71,4 +71,11 @@ export class UsersController {
     const data = await this.usersService.changeEmail(_id, emailDto);
     return data;
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post(PathsEnum.REQUEST_RESET_PASSWORD)
+  async requestResetPassword(@Body() emailDto: EmailDto): Promise<ResponseType | undefined> {
+    const data = await this.usersService.requestResetPassword(emailDto);
+    return data;
+  }
 }
