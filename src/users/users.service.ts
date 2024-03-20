@@ -104,4 +104,23 @@ export class UsersService {
       data: updatedUser,
     };
   }
+
+  async changeEmail(userId: Types.ObjectId, emailDto: EmailDto): Promise<ResponseType | undefined> {
+    if (!userId) {
+      this.errorService.showHttpException(
+        HttpStatus.UNAUTHORIZED,
+        ErrorMessages.USER_IS_NOT_UNAUTHORIZED,
+      );
+    }
+
+    const activationToken = v4();
+    await this.sendgridService.sendConfirmationEmail(emailDto.email, activationToken);
+    const dto = { email: emailDto.email, activationToken, isActivated: false };
+    await this.UserModel.findByIdAndUpdate(userId, dto, { new: true });
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
+    };
+  }
 }

@@ -60,4 +60,15 @@ export class UsersController {
     const data = await this.usersService.changeProfile(_id, changeProfileDto);
     return data;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(PathsEnum.CHANGE_EMAIL)
+  async changeEmail(
+    @Body() emailDto: EmailDto,
+    @Req() req: AuthRequestType<PayloadType>,
+  ): Promise<ResponseType | undefined> {
+    const { _id } = req.user;
+    const data = await this.usersService.changeEmail(_id, emailDto);
+    return data;
+  }
 }

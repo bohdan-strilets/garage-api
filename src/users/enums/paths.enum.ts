@@ -3,4 +3,5 @@ export enum PathsEnum {
   REPEAT_ACTIVATION_EMAIL = 'repeat-activation-email',
   CURRENT_USER = 'current-user',
   CHANGE_PROFILE = 'change-profile',
+  CHANGE_EMAIL = 'change-email',
 }
