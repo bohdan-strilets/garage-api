@@ -20,6 +20,7 @@ import { PayloadType } from 'src/tokens/types/payload.type';
 import { UserDocument } from './schemas/user.schema';
 import { AuthRequestType } from 'src/common/types/auth-request.type';
 import { ChangeProfileDto } from './dto/change-profile.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('users/v1')
 export class UsersController {
@@ -34,9 +35,11 @@ export class UsersController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post(PathsEnum.REPEAT_ACTIVATION_EMAIL)
-  async repeatActivationEmail(@Body() emailDto: EmailDto): Promise<ResponseType | undefined> {
-    const data = await this.usersService.repeatActivationEmail(emailDto);
+  @Post(PathsEnum.REQUEST_REPEAT_ACTIVATION_EMAIL)
+  async requestRepeatActivationEmail(
+    @Body() emailDto: EmailDto,
+  ): Promise<ResponseType | undefined> {
+    const data = await this.usersService.requestRepeatActivationEmail(emailDto);
     return data;
   }
 
@@ -76,6 +79,15 @@ export class UsersController {
   @Post(PathsEnum.REQUEST_RESET_PASSWORD)
   async requestResetPassword(@Body() emailDto: EmailDto): Promise<ResponseType | undefined> {
     const data = await this.usersService.requestResetPassword(emailDto);
+    return data;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post(PathsEnum.RESET_PASSWORD)
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<ResponseType | undefined> {
+    const data = await this.usersService.resetPassword(resetPasswordDto);
     return data;
   }
 }
