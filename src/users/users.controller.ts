@@ -27,6 +27,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { imageValidator } from './pipes/image-validator.pipe';
 import { DEFAULT_FOLDER_FOR_FILES } from 'src/common/vars/vars';
 import { FileNamesEnum } from 'src/common/types/file-names.type';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('users/v1')
 export class UsersController {
@@ -108,6 +109,17 @@ export class UsersController {
   ): Promise<ResponseType<UserDocument> | undefined> {
     const { _id } = req.user;
     const data = await this.usersService.uploadAvatar(file, _id);
+    return data;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(PathsEnum.CHANGE_PASSWORD)
+  async chnangePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req: AuthRequestType<PayloadType>,
+  ): Promise<ResponseType | undefined> {
+    const { _id } = req.user;
+    const data = await this.usersService.chnangePassword(changePasswordDto, _id);
     return data;
   }
 }

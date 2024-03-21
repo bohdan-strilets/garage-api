@@ -18,6 +18,7 @@ import { AMOUNT_SALT } from 'src/common/vars/vars';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { FileType } from 'src/cloudinary/enums/file-type.emum';
 import { CloudinaryPathsEnum } from 'src/common/enums/cloudinary-paths.enum';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -194,6 +195,35 @@ export class UsersService {
       status: ResponseTypeEnum.SUCCESS,
       code: HttpStatus.OK,
       data: updatedUser,
+    };
+  }
+
+  async chnangePassword(
+    changePasswordDto: ChangePasswordDto,
+    userId: Types.ObjectId,
+  ): Promise<ResponseType | undefined> {
+    const user = await this.UserModel.findById(userId);
+
+    if (changePasswordDto.password) {
+      const checkPassword = bcrypt.compareSync(changePasswordDto.password, user.password);
+
+      if (!user || !checkPassword) {
+        this.errorService.showHttpException(
+          HttpStatus.UNAUTHORIZED,
+          ErrorMessages.USER_IS_NOT_UNAUTHORIZED,
+        );
+      }
+    }
+
+    const password = bcrypt.hashSync(
+      changePasswordDto.newPassword,
+      bcrypt.genSaltSync(AMOUNT_SALT),
+    );
+    await this.UserModel.findByIdAndUpdate(userId, { password });
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
     };
   }
 }
