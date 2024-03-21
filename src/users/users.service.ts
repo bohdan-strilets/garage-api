@@ -226,4 +226,32 @@ export class UsersService {
       code: HttpStatus.OK,
     };
   }
+
+  async deleteProfile(userId: Types.ObjectId): Promise<ResponseType | undefined> {
+    if (!userId) {
+      this.errorService.showHttpException(
+        HttpStatus.UNAUTHORIZED,
+        ErrorMessages.USER_IS_NOT_UNAUTHORIZED,
+      );
+    }
+
+    const user = await this.UserModel.findById(userId);
+    const isGoogleAvatar = this.cloudinaryService.isGoogleAvatarUrl(user.avatarUrl);
+    await this.UserModel.findByIdAndDelete(userId);
+    await this.tokenService.deleteTokensByDb(userId);
+
+    const avatarPublicId = this.cloudinaryService.getPublicId(user.avatarUrl);
+
+    if (!isGoogleAvatar) {
+      if (!avatarPublicId.split('/').includes('default')) {
+        await this.cloudinaryService.deleteFile(user.avatarUrl, FileType.IMAGE);
+        await this.cloudinaryService.deleteFolder(`${CloudinaryPathsEnum.USER_AVATAR}${userId}`);
+      }
+    }
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
+    };
+  }
 }

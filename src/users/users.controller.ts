@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -8,10 +9,12 @@ import {
   Patch,
   Post,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { UsersService } from './users.service';
 import { ResponseType } from 'src/common/types/response.type';
 import { PathsEnum } from './enums/paths.enum';
@@ -28,10 +31,15 @@ import { imageValidator } from './pipes/image-validator.pipe';
 import { DEFAULT_FOLDER_FOR_FILES } from 'src/common/vars/vars';
 import { FileNamesEnum } from 'src/common/types/file-names.type';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { CookieService } from 'src/cookie/cookie.service';
+import { CookieNamesEnum } from 'src/common/enums/cookie-names.enum';
 
 @Controller('users/v1')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly cookieService: CookieService,
+  ) {}
 
   @Get(`${PathsEnum.ACTIVATION_EMAIL}/:${ParamsEnum.ACTIVATION_TOKEN}`)
   async activationEmail(
@@ -120,6 +128,18 @@ export class UsersController {
   ): Promise<ResponseType | undefined> {
     const { _id } = req.user;
     const data = await this.usersService.chnangePassword(changePasswordDto, _id);
+    return data;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(PathsEnum.DELETE_PROFILE)
+  async deleteProfile(
+    @Req() req: AuthRequestType<PayloadType>,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ResponseType | undefined> {
+    const { _id } = req.user;
+    const data = await this.usersService.deleteProfile(_id);
+    this.cookieService.deleteCokie(res, CookieNamesEnum.REFRESH_TOKEN);
     return data;
   }
 }
