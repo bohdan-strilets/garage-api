@@ -17,10 +17,7 @@ export class CloudinaryService {
     path: string,
   ): Promise<string | null> {
     const uploadOptions = { folder: path, resource_type: type };
-    const result = await this.cloudinary.uploader.upload(
-      file.path,
-      uploadOptions,
-    );
+    const result = await this.cloudinary.uploader.upload(file.path, uploadOptions);
     if (result) return result.secure_url;
     return null;
   }
@@ -37,10 +34,7 @@ export class CloudinaryService {
   async deleteFile(path: string, type: FileType): Promise<void> {
     const deleteOptions = { resource_type: type, invalidate: true };
     const publicId = this.getPublicId(path);
-    const result = await this.cloudinary.uploader.destroy(
-      publicId,
-      deleteOptions,
-    );
+    const result = await this.cloudinary.uploader.destroy(publicId, deleteOptions);
     if (result.result !== 'ok') {
       throw new Error(`Failed to delete file: ${path}`);
     }
@@ -48,5 +42,10 @@ export class CloudinaryService {
 
   async deleteFolder(folderPath: string): Promise<void> {
     await this.cloudinary.api.delete_folder(folderPath);
+  }
+
+  isGoogleAvatarUrl(url: string): boolean {
+    const googleAvatarPathRegex = /\/a\/[A-Za-z0-9_-]+=s\d{2,}-c/;
+    return googleAvatarPathRegex.test(url);
   }
 }

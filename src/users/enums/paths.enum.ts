@@ -6,4 +6,5 @@ export enum PathsEnum {
   CHANGE_EMAIL = 'change-email',
   REQUEST_RESET_PASSWORD = 'request-reset-password',
   RESET_PASSWORD = 'reset-password',
+  UPLOAD_AVATAR = 'upload-avatar',
 }

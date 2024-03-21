@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { v4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { SendgridService } from 'src/sendgrid/sendgrid.service';
 import { TokensService } from 'src/tokens/tokens.service';
@@ -15,6 +16,8 @@ import { EmailDto } from './dto/email.dto';
 import { ChangeProfileDto } from './dto/change-profile.dto';
 import { AMOUNT_SALT } from 'src/common/vars/vars';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { FileType } from 'src/cloudinary/enums/file-type.emum';
+import { CloudinaryPathsEnum } from 'src/common/enums/cloudinary-paths.enum';
 
 @Injectable()
 export class UsersService {
@@ -155,6 +158,42 @@ export class UsersService {
     return {
       status: ResponseTypeEnum.SUCCESS,
       code: HttpStatus.OK,
+    };
+  }
+
+  async uploadAvatar(
+    file: Express.Multer.File,
+    userId: Types.ObjectId,
+  ): Promise<ResponseType<UserDocument> | undefined> {
+    const user = await this.UserModel.findById(userId);
+
+    if (!user) {
+      this.errorService.showHttpException(HttpStatus.NOT_FOUND, ErrorMessages.USER_NOT_FOUND);
+    }
+
+    const publicId = this.cloudinaryService.getPublicId(user.avatarUrl);
+    const isGoogleAvatar = this.cloudinaryService.isGoogleAvatarUrl(user.avatarUrl);
+
+    if (!isGoogleAvatar) {
+      if (!publicId.split('/').includes('default')) {
+        await this.cloudinaryService.deleteFile(user.avatarUrl, FileType.IMAGE);
+      }
+    }
+
+    const avatarPath = `${CloudinaryPathsEnum.USER_AVATAR}${userId}`;
+    const resultPath = await this.cloudinaryService.uploadFile(file, FileType.IMAGE, avatarPath);
+    fs.unlinkSync(file.path);
+
+    const updatedUser = await this.UserModel.findByIdAndUpdate(
+      userId,
+      { avatarUrl: resultPath },
+      { new: true },
+    );
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
+      data: updatedUser,
     };
   }
 }

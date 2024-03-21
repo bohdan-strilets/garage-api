@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ResponseType } from 'src/common/types/response.type';
@@ -21,6 +23,10 @@ import { UserDocument } from './schemas/user.schema';
 import { AuthRequestType } from 'src/common/types/auth-request.type';
 import { ChangeProfileDto } from './dto/change-profile.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageValidator } from './pipes/image-validator.pipe';
+import { DEFAULT_FOLDER_FOR_FILES } from 'src/common/vars/vars';
+import { FileNamesEnum } from 'src/common/types/file-names.type';
 
 @Controller('users/v1')
 export class UsersController {
@@ -88,6 +94,20 @@ export class UsersController {
     @Body() resetPasswordDto: ResetPasswordDto,
   ): Promise<ResponseType | undefined> {
     const data = await this.usersService.resetPassword(resetPasswordDto);
+    return data;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Post(PathsEnum.UPLOAD_AVATAR)
+  @UseInterceptors(FileInterceptor(FileNamesEnum.AVATAR, { dest: DEFAULT_FOLDER_FOR_FILES }))
+  async uploadAvatar(
+    @UploadedFile(imageValidator)
+    file: Express.Multer.File,
+    @Req() req: AuthRequestType<PayloadType>,
+  ): Promise<ResponseType<UserDocument> | undefined> {
+    const { _id } = req.user;
+    const data = await this.usersService.uploadAvatar(file, _id);
     return data;
   }
 }
