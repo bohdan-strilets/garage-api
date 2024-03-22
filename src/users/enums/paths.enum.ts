@@ -9,4 +9,5 @@ export enum PathsEnum {
   UPLOAD_AVATAR = 'upload-avatar',
   CHANGE_PASSWORD = 'change-password',
   DELETE_PROFILE = 'delete-profile',
+  REFRESH_USER = 'refresh-user',
 }

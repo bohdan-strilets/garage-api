@@ -33,6 +33,7 @@ import { FileNamesEnum } from 'src/common/types/file-names.type';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CookieService } from 'src/cookie/cookie.service';
 import { CookieNamesEnum } from 'src/common/enums/cookie-names.enum';
+import { AuthResponseType } from 'src/auth/types/auth-response.type';
 
 @Controller('users/v1')
 export class UsersController {
@@ -140,6 +141,21 @@ export class UsersController {
     const { _id } = req.user;
     const data = await this.usersService.deleteProfile(_id);
     this.cookieService.deleteCokie(res, CookieNamesEnum.REFRESH_TOKEN);
+    return data;
+  }
+
+  @Get(PathsEnum.REFRESH_USER)
+  async refreshUser(
+    @Req() req: AuthRequestType<PayloadType>,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ResponseType<AuthResponseType> | undefined> {
+    const refreshToken = this.cookieService.getCokie(req, CookieNamesEnum.REFRESH_TOKEN);
+    const data = await this.usersService.refreshUser(refreshToken);
+    this.cookieService.createCookie(
+      res,
+      CookieNamesEnum.REFRESH_TOKEN,
+      data.data.tokens.refreshToken,
+    );
     return data;
   }
 }

@@ -11,7 +11,7 @@ import { ResponseType } from 'src/common/types/response.type';
 import { ResponseTypeEnum } from 'src/common/enums/response-type.enum';
 import { AMOUNT_SALT } from 'src/common/vars/vars';
 import { SendgridService } from 'src/sendgrid/sendgrid.service';
-import { AuthDataType } from './types/auth-data.type';
+import { AuthResponseType } from './types/auth-response.type';
 import { AVATAR_URL } from 'src/common/vars/vars';
 import { ErrorMessages } from 'src/common/enums/error-messages.enum';
 import { LoginDto } from './dto/login.dto';
@@ -29,7 +29,7 @@ export class AuthService {
 
   async registration(
     registrationDto: RegistrationDto,
-  ): Promise<ResponseType<AuthDataType> | undefined> {
+  ): Promise<ResponseType<AuthResponseType> | undefined> {
     if (!registrationDto) {
       this.errorService.showHttpException(
         HttpStatus.BAD_REQUEST,
@@ -67,7 +67,7 @@ export class AuthService {
     };
   }
 
-  async login(loginDto: LoginDto): Promise<ResponseType<AuthDataType> | undefined> {
+  async login(loginDto: LoginDto): Promise<ResponseType<AuthResponseType> | undefined> {
     if (!loginDto) {
       this.errorService.showHttpException(
         HttpStatus.BAD_REQUEST,
@@ -130,7 +130,7 @@ export class AuthService {
     };
   }
 
-  async googleAuth(googleToken: string): Promise<ResponseType<AuthDataType> | undefined> {
+  async googleAuth(googleToken: string): Promise<ResponseType<AuthResponseType> | undefined> {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
 
     const ticket = await client.verifyIdToken({

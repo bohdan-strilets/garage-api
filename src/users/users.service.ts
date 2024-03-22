@@ -19,6 +19,8 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { FileType } from 'src/cloudinary/enums/file-type.emum';
 import { CloudinaryPathsEnum } from 'src/common/enums/cloudinary-paths.enum';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { TokensTypeEnum } from 'src/tokens/enums/token-type.enum';
+import { AuthResponseType } from 'src/auth/types/auth-response.type';
 
 @Injectable()
 export class UsersService {
@@ -252,6 +254,37 @@ export class UsersService {
     return {
       status: ResponseTypeEnum.SUCCESS,
       code: HttpStatus.OK,
+    };
+  }
+
+  async refreshUser(refreshToken: string): Promise<ResponseType<AuthResponseType> | undefined> {
+    if (!refreshToken) {
+      this.errorService.showHttpException(
+        HttpStatus.UNAUTHORIZED,
+        ErrorMessages.USER_IS_NOT_UNAUTHORIZED,
+      );
+    }
+
+    const userData = this.tokenService.checkToken(refreshToken, TokensTypeEnum.REFRESH);
+    const tokenFromDb = await this.tokenService.findTokenFromDb(userData._id);
+
+    if (!userData || !tokenFromDb) {
+      this.errorService.showHttpException(
+        HttpStatus.UNAUTHORIZED,
+        ErrorMessages.USER_IS_NOT_UNAUTHORIZED,
+      );
+    }
+
+    const user = await this.UserModel.findById(userData._id);
+    const payload = this.tokenService.createPayload(user);
+    const tokens = await this.tokenService.createTokens(payload);
+
+    return {
+      status: ResponseTypeEnum.SUCCESS,
+      code: HttpStatus.OK,
+      data: {
+        tokens,
+      },
     };
   }
 }

@@ -12,7 +12,7 @@ import {
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { RegistrationDto } from './dto/registration.dto';
-import { AuthDataType } from './types/auth-data.type';
+import { AuthResponseType } from './types/auth-response.type';
 import { ResponseType } from 'src/common/types/response.type';
 import { CookieService } from 'src/cookie/cookie.service';
 import { CookieNamesEnum } from 'src/common/enums/cookie-names.enum';
@@ -31,7 +31,7 @@ export class AuthController {
   async registration(
     @Body() registrationDto: RegistrationDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<ResponseType<AuthDataType> | undefined> {
+  ): Promise<ResponseType<AuthResponseType> | undefined> {
     const data = await this.authService.registration(registrationDto);
     this.cookieService.createCookie(
       res,
@@ -46,7 +46,7 @@ export class AuthController {
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<ResponseType<AuthDataType> | undefined> {
+  ): Promise<ResponseType<AuthResponseType> | undefined> {
     const data = await this.authService.login(loginDto);
     this.cookieService.createCookie(
       res,
@@ -72,7 +72,7 @@ export class AuthController {
   async googleAuth(
     @Body('googleToken') googleToken: string,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<ResponseType<AuthDataType> | undefined> {
+  ): Promise<ResponseType<AuthResponseType> | undefined> {
     const data = await this.authService.googleAuth(googleToken);
     this.cookieService.createCookie(
       res,
