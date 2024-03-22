@@ -19,8 +19,9 @@ import { CookieNamesEnum } from 'src/common/enums/cookie-names.enum';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { PathsEnum } from './enums/paths.enum';
+import { EndpointsEnum } from 'src/common/enums/endpoints.enum';
 
-@Controller('auth/v1')
+@Controller(EndpointsEnum.AUTH_V1)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,

@@ -34,8 +34,9 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { CookieService } from 'src/cookie/cookie.service';
 import { CookieNamesEnum } from 'src/common/enums/cookie-names.enum';
 import { AuthResponseType } from 'src/auth/types/auth-response.type';
+import { EndpointsEnum } from 'src/common/enums/endpoints.enum';
 
-@Controller('users/v1')
+@Controller(EndpointsEnum.USERS_V1)
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
