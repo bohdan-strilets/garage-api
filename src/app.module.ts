@@ -8,6 +8,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { SendgridModule } from './sendgrid/sendgrid.module';
 import { CookieModule } from './cookie/cookie.module';
 import { ErrorsModule } from './errors/errors.module';
+import { CarsModule } from './cars/cars.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ErrorsModule } from './errors/errors.module';
     SendgridModule,
     CookieModule,
     ErrorsModule,
+    CarsModule,
   ],
 })
 export class AppModule {}

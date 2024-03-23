@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { GenderEnum } from '../enums/gender.enum';
+import { Car } from 'src/cars/schemas/car.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -32,6 +33,9 @@ export class User {
 
   @Prop({ default: false })
   isActivated: boolean;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Car' })
+  cars: Car[];
 
   @Prop()
   createdAt: Date;
