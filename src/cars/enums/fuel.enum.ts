@@ -4,4 +4,5 @@ export enum FuelEnum {
   DIESEL = 'diesel',
   ELECTRIC = 'electric',
   HYBRID = 'hybrid',
+  OTHER = 'other',
 }

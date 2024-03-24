@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { MileageType } from '../types/mileage.type';
-import { EngineType } from '../types/engine.type';
 import { TransmissionEnum } from '../enums/transmission.enum';
 import { DriveUnitEnum } from '../enums/drive-unit.enum';
-import { BodyType } from '../types/body.type';
-import { HistoryType } from '../types/history.type';
-import { PhotoType } from '../types/photo.type';
+import { Mileage, MileageDocument } from './mileage.schema';
+import { Engine, EngineDocument } from './engine.schema';
+import { BodyType, BodyTypeDocument } from './body-type.schema';
+import { HistoryDocument, History } from './history.schema';
+import { Photo, PhotoDocument } from './photo.schema';
 
 export type CarDocument = HydratedDocument<Car>;
 
@@ -30,11 +30,11 @@ export class Car {
   @Prop({ required: true })
   productionYear: number;
 
-  @Prop()
-  mileage?: MileageType;
+  @Prop({ type: Mileage, default: {} })
+  mileage?: MileageDocument;
 
-  @Prop()
-  engine?: EngineType;
+  @Prop({ type: Engine, default: {} })
+  engine?: EngineDocument;
 
   @Prop()
   vin?: string;
@@ -42,20 +42,20 @@ export class Car {
   @Prop()
   registrationNumber?: string;
 
-  @Prop()
+  @Prop({ default: TransmissionEnum.MANUAL, enum: TransmissionEnum })
   transmission?: TransmissionEnum;
 
-  @Prop()
+  @Prop({ default: DriveUnitEnum.FRONT, enum: DriveUnitEnum })
   driveUnit?: DriveUnitEnum;
 
-  @Prop()
-  body?: BodyType;
+  @Prop({ type: BodyType, default: {} })
+  body?: BodyTypeDocument;
 
-  @Prop()
-  history?: HistoryType;
+  @Prop({ type: History, default: {} })
+  history?: HistoryDocument;
 
-  @Prop()
-  photo?: PhotoType;
+  @Prop({ type: Photo, default: {} })
+  photo?: PhotoDocument;
 
   @Prop()
   createdAt: Date;

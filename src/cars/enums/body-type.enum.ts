@@ -7,4 +7,5 @@ export enum BodyTypeEnum {
   SEDAN = 'sedan',
   MINIVAN = 'minivan',
   SUV = 'suv',
+  OTHER = 'other',
 }
