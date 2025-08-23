@@ -66,6 +66,7 @@ module.exports = {
         ],
         'newlines-between': 'always',
         alphabetize: { order: 'asc', caseInsensitive: true },
+        pathGroups: [{ pattern: '@/**', group: 'internal', position: 'after' }],
         pathGroupsExcludedImportTypes: ['builtin'],
       },
     ],
