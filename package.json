@@ -1,10 +1,11 @@
 {
   "name": "garage-api",
   "version": "0.0.1",
-  "description": "Garage API",
+  "description": "Web application for vehicle analytics: fuel, maintenance, documents, and multi-car management.",
+  "main": "dist/main.js",
   "author": "bohdan.strilets@gmail.com",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "dev": "nest start --watch",
     "start": "nest start",

@@ -84,3 +84,7 @@ npm run type-check
 ## 👨‍💻 Author
 
 **Bohdan Strilets**
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
