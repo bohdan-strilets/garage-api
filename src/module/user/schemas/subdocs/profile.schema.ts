@@ -4,25 +4,26 @@ import { Gender } from '../../enums/gender.enum';
 
 @Schema({ _id: false, versionKey: false })
 export class UserProfile {
-  @Prop({ required: true, trim: true })
+  @Prop({ type: String, required: true, trim: true })
   firstName: string;
 
-  @Prop({ required: true, trim: true })
+  @Prop({ type: String, required: true, trim: true })
   lastName: string;
 
-  @Prop({ trim: true, default: null })
+  @Prop({ type: String, trim: true, default: null })
   nickName?: string | null;
 
-  @Prop({ default: null })
+  @Prop({ type: String, default: null })
   avatarUrl?: string | null;
 
-  @Prop({ default: null })
+  @Prop({ type: String, default: null })
   coverUrl?: string | null;
 
-  @Prop({ default: null })
+  @Prop({ type: Date, default: null })
   birthDate?: Date | null;
 
-  @Prop({ enum: Gender, default: Gender.OTHER })
+  @Prop({ type: String, enum: Gender, default: Gender.OTHER })
   gender: Gender;
 }
+
 export const UserProfileSchema = SchemaFactory.createForClass(UserProfile);

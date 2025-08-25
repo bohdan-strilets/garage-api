@@ -11,19 +11,19 @@ import { UiLanguage } from '../../enums/ui-language.enum';
 
 @Schema({ _id: false, versionKey: false })
 export class UserSettings {
-  @Prop({ enum: UiLanguage, default: UiLanguage.POL })
+  @Prop({ type: String, enum: UiLanguage, default: UiLanguage.POL })
   uiLanguage: UiLanguage;
 
-  @Prop({ default: DEFAULT_LOCALE })
+  @Prop({ type: String, default: DEFAULT_LOCALE })
   locale: string;
 
-  @Prop({ default: DEFAULT_TIMEZONE })
+  @Prop({ type: String, default: DEFAULT_TIMEZONE })
   timezone: string;
 
-  @Prop({ enum: CurrencyCode, default: DEFAULT_CURRENCY })
+  @Prop({ type: String, enum: CurrencyCode, default: DEFAULT_CURRENCY })
   currency: CurrencyCode;
 
-  @Prop({ default: DEFAULT_DATE_FORMAT })
+  @Prop({ type: String, default: DEFAULT_DATE_FORMAT })
   dateFormat: string;
 }
 export const UserSettingsSchema = SchemaFactory.createForClass(UserSettings);
