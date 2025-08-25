@@ -1,4 +1,5 @@
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
@@ -9,6 +10,11 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+
+  const config = app.get(ConfigService);
+  const port = config.get<number>('PORT');
+  const cookieSecret = config.get<string>('COOKIE_SECRET');
+  const clientUrl = config.get<string>('CLIENT_URL');
 
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
@@ -21,16 +27,16 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: [clientUrl],
     credentials: true,
   });
 
   app.use(helmet());
-  app.use(cookieParser('dev-secret'));
+  app.use(cookieParser(cookieSecret));
   app.use(compression());
 
-  await app.listen(3000);
+  await app.listen(port);
 
-  logger.debug(`Application listening on port ${3000}`);
+  logger.debug(`Application listening on port ${port}`);
 }
 bootstrap();
