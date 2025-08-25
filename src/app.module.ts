@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { envValidation } from './config/env.validation';
 import mongoConfig from './config/mongo.config';
+import { AuthModule } from './module/auth/auth.module';
 import { UserModule } from './module/user/user.module';
 
 @Module({
@@ -28,6 +29,7 @@ import { UserModule } from './module/user/user.module';
     }),
 
     UserModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
