@@ -4,6 +4,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { envValidation } from './configs/env.validation';
+import { AuthModule } from './modules/auth/auth.module';
+import { PasswordModule } from './modules/password/password.module';
+import { TokenModule } from './modules/token/token.module';
+import { UserModule } from './modules/user/user.module';
 import { HealthModule } from './system/health/health.module';
 
 @Module({
@@ -27,6 +31,10 @@ import { HealthModule } from './system/health/health.module';
     }),
 
     HealthModule,
+    UserModule,
+    AuthModule,
+    PasswordModule,
+    TokenModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
