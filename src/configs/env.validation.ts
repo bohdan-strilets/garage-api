@@ -11,4 +11,6 @@ export const envValidation = Joi.object({
 
   BODY_LIMIT_JSON: Joi.string().required(),
   BODY_LIMIT_URLENCODED: Joi.string().required(),
+
+  MONGO_URI: Joi.string().required(),
 });
