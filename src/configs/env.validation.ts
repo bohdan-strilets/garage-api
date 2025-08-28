@@ -25,6 +25,11 @@ export const envValidation = Joi.object({
   COOKIE_SAMESITE: Joi.string().valid('strict', 'lax', 'none').required(),
 
   PASSWORD_MIN_LENGTH: Joi.number().integer().min(8).required(),
+  PASSWORD_MAX_LENGTH: Joi.number()
+    .integer()
+    .min(Joi.ref('PASSWORD_MIN_LENGTH'))
+    .max(64)
+    .required(),
   ARGON_MEMORY: Joi.number().integer().min(8).required(),
   ARGON_ITERATIONS: Joi.number().integer().min(1).required(),
   ARGON_PARALLELISM: Joi.number().integer().min(1).required(),
