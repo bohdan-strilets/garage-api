@@ -21,7 +21,7 @@ export class PasswordService {
   }
 
   async hash(plain: string): Promise<string> {
-    this.logger.debug('Hashing password');
+    this.logger.debug('Hashing successful');
 
     return await argon2.hash(plain, {
       type: argon2.argon2id,
@@ -33,10 +33,10 @@ export class PasswordService {
 
   async verify(hash: string, plain: string): Promise<boolean> {
     try {
-      this.logger.debug('Verifying password');
+      this.logger.debug('Verifying successful');
       return await argon2.verify(hash, plain);
     } catch (error) {
-      this.logger.debug('Password verification failed', error.message);
+      this.logger.debug('Hash verification failed', error.message);
       return false;
     }
   }

@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
-import { TokenController } from './token.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Session, SessionSchema } from './schemas/session.schema';
+
+import { JwtModule } from '@nestjs/jwt';
+import { CookieService } from './cookie.servcie';
 import { TokenService } from './token.service';
 
 @Module({
-  controllers: [TokenController],
-  providers: [TokenService],
+  imports: [
+    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    JwtModule.register({}),
+  ],
+  providers: [TokenService, CookieService],
+  exports: [TokenService, CookieService],
 })
 export class TokenModule {}

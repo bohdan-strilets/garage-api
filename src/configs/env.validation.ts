@@ -14,10 +14,12 @@ export const envValidation = Joi.object({
 
   MONGO_URI: Joi.string().required(),
 
-  JWT_ACCESS_SECRET: Joi.string().required(),
-  JWT_ACCESS_TTL: Joi.string().required(),
-  JWT_REFRESH_SECRET: Joi.string().required(),
-  JWT_REFRESH_TTL: Joi.string().required(),
+  JWT_ACCESS_SECRET: Joi.string().min(32).required(),
+  JWT_ACCESS_TTL: Joi.number().required(),
+  JWT_REFRESH_SECRET: Joi.string().min(32).required(),
+  JWT_REFRESH_TTL: Joi.number().required(),
+  JWT_ISSUER: Joi.string().required(),
+  JWT_AUDIENCE: Joi.string().required(),
 
   REFRESH_COOKIE_NAME: Joi.string().required(),
   COOKIE_DOMAIN: Joi.string().required(),
