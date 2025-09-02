@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { Role } from '../enums/role.enum';
 import { Address } from './subschemas/address.subschema';
 import { Agreement } from './subschemas/agreements.subschema';
 import { Contact } from './subschemas/contact.subschema';
@@ -19,6 +20,9 @@ export class User {
 
   @Prop({ type: String, required: true })
   passwordHash: string;
+
+  @Prop({ type: [String], enum: Role, default: [Role.USER] })
+  roles?: Role[];
 
   @Prop({ type: Profile, default: {} })
   profile: Profile;

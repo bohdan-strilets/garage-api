@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { normalizeEmail } from '../helpers/normalize-email.helper';
+import { PUBLIC_PROJECTION, SECRET_PROJECTION } from './constants/projections';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -15,30 +16,58 @@ export class UserRepository {
     return await this.userModel.create({ ...dto, email: normalizedEmail });
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(
+    email: string,
+    withPassword: boolean = false,
+  ): Promise<User | null> {
     const normalizedEmail = normalizeEmail(email);
-    const filter = { email: normalizedEmail, deletedAt: null };
+    const filter = { email: normalizedEmail, 'agreement.deletedAt': null };
 
-    return await this.userModel.findOne(filter).exec();
+    if (withPassword) {
+      return await this.userModel
+        .findOne(filter)
+        .select(SECRET_PROJECTION)
+        .lean();
+    }
+
+    return await this.userModel
+      .findOne(filter)
+      .select(PUBLIC_PROJECTION)
+      .lean();
   }
 
-  async findById(id: string): Promise<User | null> {
-    return await this.userModel.findById(id).exec();
+  async findById(
+    id: string,
+    withPassword: boolean = false,
+  ): Promise<User | null> {
+    const filter = { _id: id, 'agreement.deletedAt': null };
+
+    if (withPassword) {
+      return await this.userModel
+        .findOne(filter)
+        .select(SECRET_PROJECTION)
+        .lean();
+    }
+
+    return await this.userModel
+      .findOne(filter)
+      .select(PUBLIC_PROJECTION)
+      .lean();
   }
 
   async existsByEmail(email: string): Promise<boolean> {
     const normalizedEmail = normalizeEmail(email);
-    const filter = { email: normalizedEmail, deletedAt: null };
+    const filter = { email: normalizedEmail, 'agreement.deletedAt': null };
 
-    return (await this.userModel.countDocuments(filter).exec()) > 0;
+    return (await this.userModel.countDocuments(filter).lean()) > 0;
   }
 
-  async touchLastLogin(userId: string): Promise<number> {
-    const filter = { _id: userId, deletedAt: null };
-    const payload = { $set: { 'security.loginFailedCount0': 1 } };
+  async touchLastLogin(userId: string): Promise<boolean> {
+    const filter = { _id: userId, 'agreement.deletedAt': null };
+    const payload = { $set: { 'security.lastLoginAt': new Date() } };
     const options = {
       new: true,
-      projection: { 'security.loginFailedCount': 1 },
+      projection: { 'security.lastLoginAt': 1 },
     };
 
     const result = await this.userModel
@@ -47,15 +76,15 @@ export class UserRepository {
 
     if (!result) {
       this.logger.debug(`Failed to update last login for user ${userId}`);
-      return 0;
+      return false;
     }
 
     this.logger.debug(`Updated last login for user ${userId}`);
-    return result?.security.loginFailedCount;
+    return true;
   }
 
   async incLoginFailedCount(userId: string): Promise<boolean> {
-    const filter = { _id: userId, deletedAt: null };
+    const filter = { _id: userId, 'agreement.deletedAt': null };
     const payload = { $inc: { 'security.loginFailedCount': 1 } };
 
     const result = await this.userModel.updateOne(filter, payload).exec();
@@ -65,7 +94,7 @@ export class UserRepository {
       return true;
     }
 
-    this.logger.warn(
+    this.logger.debug(
       `Failed to increment login failed count for user ${userId}`,
     );
 
@@ -73,7 +102,7 @@ export class UserRepository {
   }
 
   async resetLoginFailedCount(userId: string): Promise<boolean> {
-    const filter = { _id: userId, deletedAt: null };
+    const filter = { _id: userId, 'agreement.deletedAt': null };
     const payload = { $set: { 'security.loginFailedCount': 0 } };
 
     const result = await this.userModel.updateOne(filter, payload).exec();
@@ -88,7 +117,7 @@ export class UserRepository {
   }
 
   async setLockedUntil(userId: string, until: Date | null): Promise<boolean> {
-    const filter = { _id: userId, deletedAt: null };
+    const filter = { _id: userId, 'agreement.deletedAt': null };
     const payload = { $set: { 'security.lockedUntil': until } };
 
     const result = await this.userModel.updateOne(filter, payload).exec();
@@ -103,8 +132,8 @@ export class UserRepository {
   }
 
   async softDeleteById(id: string): Promise<boolean> {
-    const filter = { _id: id, deletedAt: null };
-    const payload = { $set: { deletedAt: new Date() } };
+    const filter = { _id: id, 'agreement.deletedAt': null };
+    const payload = { $set: { 'agreement.deletedAt': new Date() } };
 
     const result = await this.userModel.updateOne(filter, payload).exec();
 

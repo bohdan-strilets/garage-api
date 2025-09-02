@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { Role } from '../../enums/role.enum';
 
 @Schema({ timestamps: false, versionKey: false, _id: false })
 export class Security {
@@ -15,9 +14,6 @@ export class Security {
 
   @Prop({ type: Date, default: null })
   lockedUntil?: Date | null;
-
-  @Prop({ type: [String], enum: Role, default: [Role.USER] })
-  roles?: Role[];
 }
 
 export type SecurityDocument = HydratedDocument<Security>;
