@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { normalizeEmail } from '../helpers/normalize-email.helper';
 import { PUBLIC_PROJECTION, SECRET_PROJECTION } from './constants/projections';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -11,7 +12,7 @@ export class UserRepository {
 
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(dto: Partial<User>): Promise<User> {
+  async create(dto: CreateUserDto): Promise<User> {
     const normalizedEmail = normalizeEmail(dto.email);
     return await this.userModel.create({ ...dto, email: normalizedEmail });
   }
