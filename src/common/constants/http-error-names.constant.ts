@@ -7,6 +7,7 @@ export const HTTP_ERROR_NAMES = {
   413: 'Payload Too Large',
   415: 'Unsupported Media Type',
   422: 'Unprocessable Entity',
+  423: 'Locked',
   429: 'Too Many Requests',
   500: 'Internal Server Error',
   502: 'Bad Gateway',

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { normalizeEmail } from '../helpers/normalize-email.helper';
 import { PUBLIC_PROJECTION, SECRET_PROJECTION } from './constants/projections';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -38,10 +38,10 @@ export class UserRepository {
   }
 
   async findById(
-    id: string,
+    _id: Types.ObjectId,
     withPassword: boolean = false,
   ): Promise<User | null> {
-    const filter = { _id: id, 'agreement.deletedAt': null };
+    const filter = { _id, 'agreement.deletedAt': null };
 
     if (withPassword) {
       return await this.userModel
@@ -63,7 +63,7 @@ export class UserRepository {
     return (await this.userModel.countDocuments(filter).lean()) > 0;
   }
 
-  async touchLastLogin(userId: string): Promise<boolean> {
+  async touchLastLogin(userId: Types.ObjectId): Promise<boolean> {
     const filter = { _id: userId, 'agreement.deletedAt': null };
     const payload = { $set: { 'security.lastLoginAt': new Date() } };
     const options = {
@@ -84,25 +84,32 @@ export class UserRepository {
     return true;
   }
 
-  async incLoginFailedCount(userId: string): Promise<boolean> {
+  async incLoginFailedCount(userId: Types.ObjectId): Promise<number> {
     const filter = { _id: userId, 'agreement.deletedAt': null };
     const payload = { $inc: { 'security.loginFailedCount': 1 } };
+    const options = {
+      new: true,
+      projection: { 'security.loginFailedCount': 1 },
+    };
 
-    const result = await this.userModel.updateOne(filter, payload).exec();
+    const result = await this.userModel
+      .findOneAndUpdate(filter, payload, options)
+      .exec();
 
-    if (result.modifiedCount > 0) {
-      this.logger.debug(`Incremented login failed count for user ${userId}`);
-      return true;
+    if (!result) {
+      this.logger.warn(
+        `Failed to increment login failed count for user ${userId}`,
+      );
+
+      return 0;
     }
 
-    this.logger.debug(
-      `Failed to increment login failed count for user ${userId}`,
-    );
-
-    return false;
+    const count = result?.security?.loginFailedCount ?? 0;
+    this.logger.debug(`Incremented login failed count ${count}`);
+    return count;
   }
 
-  async resetLoginFailedCount(userId: string): Promise<boolean> {
+  async resetLoginFailedCount(userId: Types.ObjectId): Promise<boolean> {
     const filter = { _id: userId, 'agreement.deletedAt': null };
     const payload = { $set: { 'security.loginFailedCount': 0 } };
 
@@ -117,7 +124,10 @@ export class UserRepository {
     return false;
   }
 
-  async setLockedUntil(userId: string, until: Date | null): Promise<boolean> {
+  async setLockedUntil(
+    userId: Types.ObjectId,
+    until: Date | null,
+  ): Promise<boolean> {
     const filter = { _id: userId, 'agreement.deletedAt': null };
     const payload = { $set: { 'security.lockedUntil': until } };
 
@@ -132,18 +142,18 @@ export class UserRepository {
     return false;
   }
 
-  async softDeleteById(id: string): Promise<boolean> {
-    const filter = { _id: id, 'agreement.deletedAt': null };
+  async softDeleteById(_id: Types.ObjectId): Promise<boolean> {
+    const filter = { _id, 'agreement.deletedAt': null };
     const payload = { $set: { 'agreement.deletedAt': new Date() } };
 
     const result = await this.userModel.updateOne(filter, payload).exec();
 
     if (result.modifiedCount > 0) {
-      this.logger.debug(`Soft deleted user ${id}`);
+      this.logger.debug(`Soft deleted user ${_id}`);
       return true;
     }
 
-    this.logger.debug(`Failed to soft delete user ${id}`);
+    this.logger.debug(`Failed to soft delete user ${_id}`);
     return false;
   }
 }

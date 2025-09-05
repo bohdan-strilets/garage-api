@@ -10,8 +10,8 @@ import { CreateSessionDto } from './dto/create-session.dto';
 import { Session, SessionDocument } from './schemas/session.schema';
 
 @Injectable()
-export class TokenRepository {
-  private readonly logger = new Logger(TokenRepository.name);
+export class SessionRepository {
+  private readonly logger = new Logger(SessionRepository.name);
 
   constructor(
     @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,

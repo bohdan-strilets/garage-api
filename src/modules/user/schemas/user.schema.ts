@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { Role } from '../enums/role.enum';
 import { Address } from './subschemas/address.subschema';
 import { Agreement } from './subschemas/agreements.subschema';
@@ -9,6 +9,8 @@ import { Security } from './subschemas/security.subschema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class User {
+  _id: Types.ObjectId;
+
   @Prop({ type: String, required: true, maxLength: 120 })
   firstName: string;
 

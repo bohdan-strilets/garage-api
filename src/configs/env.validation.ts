@@ -35,4 +35,7 @@ export const envValidation = Joi.object({
   ARGON_MEMORY: Joi.number().integer().min(8).required(),
   ARGON_ITERATIONS: Joi.number().integer().min(1).required(),
   ARGON_PARALLELISM: Joi.number().integer().min(1).required(),
+
+  AUTH_MAX_LOGIN_FAILS: Joi.number().integer().min(1).required(),
+  AUTH_LOCK_MINUTES: Joi.number().integer().min(1).required(),
 });

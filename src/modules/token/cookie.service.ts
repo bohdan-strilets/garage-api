@@ -20,7 +20,7 @@ export class CookieService {
     this.refreshTokenExpiry = this.configService.get('JWT_REFRESH_TTL');
   }
 
-  setRefreshCookie(res: Response, token: string): void {
+  setRefresh(res: Response, token: string): void {
     res.cookie(this.refreshCookieName, token, {
       httpOnly: true,
       secure: this.cookieSecure,
@@ -32,7 +32,7 @@ export class CookieService {
     this.logger.log('Refresh token set in cookie');
   }
 
-  clearRefreshCookie(res: Response): void {
+  clearRefresh(res: Response): void {
     res.clearCookie(this.refreshCookieName, {
       httpOnly: true,
       secure: this.cookieSecure,
@@ -43,7 +43,7 @@ export class CookieService {
     this.logger.log('Refresh token cleared from cookie');
   }
 
-  parseRefreshFromRequest(req: Request): string | null {
+  getRefresh(req: Request): string | null {
     return req.cookies?.[this.refreshCookieName] ?? null;
   }
 }
