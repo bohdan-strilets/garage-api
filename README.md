@@ -55,11 +55,11 @@ src/
 npm install
 
 # Run in dev mode
-npm run start:dev
+npm run dev
 
 # Build and run in prod
 npm run build
-npm run start:prod
+npm run start
 ```
 
 ### Environment Variables (`.env`)
