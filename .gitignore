@@ -54,3 +54,33 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Yarn
+.yarn/*
+.pnp.*
+.yarnrc.yml
+
+# TypeScript
+*.tsbuildinfo
+
+# React build
+/frontend/.next
+/frontend/out
+
+# Jest cache
+/.jest-cache
+/.jest
+
+# Cypress / Playwright
+/cypress/videos/
+/cypress/screenshots/
+/playwright-report/
+/test-results/
+
+# Docker
+*.tar
+*.local
+docker-compose.override.yml
+
+# pm2 / process managers
+.pm2
