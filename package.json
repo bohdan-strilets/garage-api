@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "start": "nest start",
+    "start": "node -r tsconfig-paths/register dist/main.js",
     "dev": "nest start --watch",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

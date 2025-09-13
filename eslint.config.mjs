@@ -67,7 +67,15 @@ export default [
     },
     env: { browser: true, es2021: true },
     plugins: { react, 'react-hooks': reactHooks },
-    settings: { react: { version: 'detect' } },
+    settings: {
+      react: { version: 'detect' },
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './tsconfig.json',
+        },
+      },
+    },
     rules: {
       'react/react-in-jsx-scope': 'off',
     },

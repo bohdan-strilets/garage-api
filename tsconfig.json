@@ -10,7 +10,8 @@
     "declaration": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./src",
+    "paths": { "@/*": ["*"] },
     "incremental": true,
     "resolveJsonModule": true,
 
