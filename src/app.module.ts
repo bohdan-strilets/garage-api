@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { envValidation } from './configs/env.validation';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { envValidation } from './configs/env.validation';
         uri: config.get<string>('MONGO_URI'),
       }),
     }),
+    UserModule,
   ],
 })
 export class AppModule {}
