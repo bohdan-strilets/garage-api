@@ -8,4 +8,7 @@ export const envValidation = Joi.object({
   CORS_ORIGIN: Joi.string().required(),
   COOKIE_SECRET: Joi.string().min(32).required(),
   BODY_LIMIT: Joi.string().required(),
+
+  // Database
+  MONGO_URI: Joi.string().uri().required(),
 });
