@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { envValidation } from './configs/env.validation';
+import { SessionsModule } from './modules/sessions/sessions.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { UserModule } from './modules/user/user.module';
       }),
     }),
     UserModule,
+    SessionsModule,
   ],
 })
 export class AppModule {}
