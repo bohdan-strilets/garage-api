@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { envValidation } from './configs/env.validation';
+import { AuthModule } from './modules/auth/auth.module';
 import { HashModule } from './modules/hash/hash.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { UserModule } from './modules/user/user.module';
@@ -20,6 +21,7 @@ import { UserModule } from './modules/user/user.module';
     UserModule,
     SessionsModule,
     HashModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
