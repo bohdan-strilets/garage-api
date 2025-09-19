@@ -13,17 +13,23 @@ export class Session {
   @Prop({ type: String, required: true, index: true })
   refreshTokenHash: string;
 
+  @Prop({ type: Date, required: true })
+  expiresAt: Date;
+
   @Prop({ type: String, default: null })
   userAgent?: string | null;
 
   @Prop({ type: String, default: null })
   ip?: string | null;
 
-  @Prop({ type: Date, default: null })
-  expiresAt?: Date | null;
-
   @Prop({ type: Boolean, default: true })
-  isActive: boolean;
+  isActive?: boolean;
+
+  @Prop({ type: Date, default: null })
+  lastUsedAt?: Date | null;
+
+  @Prop({ type: Date, default: null })
+  revokedAt?: Date | null;
 
   updatedAt: Date;
 

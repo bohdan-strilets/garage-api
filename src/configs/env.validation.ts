@@ -11,4 +11,10 @@ export const envValidation = Joi.object({
 
   // Database
   MONGO_URI: Joi.string().uri().required(),
+
+  //  JWT
+  JWT_ACCESS_SECRET: Joi.string().min(32).required(),
+  JWT_REFRESH_SECRET: Joi.string().min(32).required(),
+  JWT_ACCESS_TTL: Joi.number().min(1).required(),
+  JWT_REFRESH_TTL: Joi.number().min(1).required(),
 });
