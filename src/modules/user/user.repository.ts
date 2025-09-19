@@ -13,19 +13,34 @@ import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
-  async findById(userId: string, isPrivate: boolean = false): Promise<UserDocument | null> {
+  async findById(
+    userId: string,
+    isPrivate: boolean = false,
+  ): Promise<UserDocument | null> {
     const userObjectId = toObjectId(userId);
-    const projection = isPrivate ? USER_PRIVATE_PROJECTION : USER_PUBLIC_PROJECTION;
+    const projection = isPrivate
+      ? USER_PRIVATE_PROJECTION
+      : USER_PUBLIC_PROJECTION;
 
     return this.userModel.findById(userObjectId).projection(projection).exec();
   }
 
-  async findByEmail(email: string, isPrivate: boolean = false): Promise<UserDocument | null> {
+  async findByEmail(
+    email: string,
+    isPrivate: boolean = false,
+  ): Promise<UserDocument | null> {
     const normalizedEmail = normalizeEmail(email);
-    const projection = isPrivate ? USER_PRIVATE_PROJECTION : USER_PUBLIC_PROJECTION;
+    const projection = isPrivate
+      ? USER_PRIVATE_PROJECTION
+      : USER_PUBLIC_PROJECTION;
 
-    return this.userModel.findOne({ email: normalizedEmail }).projection(projection).exec();
+    return this.userModel
+      .findOne({ email: normalizedEmail })
+      .projection(projection)
+      .exec();
   }
 }

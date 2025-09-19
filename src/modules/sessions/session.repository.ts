@@ -9,7 +9,9 @@ import { Session, SessionDocument } from './schemas/session.schema';
 
 @Injectable()
 export class SessionRepository {
-  constructor(@InjectModel(Session.name) private readonly sessionModel: Model<Session>) {}
+  constructor(
+    @InjectModel(Session.name) private readonly sessionModel: Model<Session>,
+  ) {}
 
   async create(dto: CreateSessionDto): Promise<SessionDocument> {
     const payload = { ...dto, userId: toObjectId(dto.userId) };
@@ -23,7 +25,9 @@ export class SessionRepository {
     return session ? session : null;
   }
 
-  async findOneByHash(refreshTokenHash: string): Promise<SessionDocument | null> {
+  async findOneByHash(
+    refreshTokenHash: string,
+  ): Promise<SessionDocument | null> {
     const filter = { refreshTokenHash };
 
     const session = await this.sessionModel.findOne(filter).exec();
@@ -33,7 +37,10 @@ export class SessionRepository {
   async findActiveByUser(userId: string): Promise<SessionDocument[]> {
     const filter = { userId: toObjectId(userId), isActive: true };
 
-    const sessions = await this.sessionModel.find(filter).sort({ createdAt: -1 }).exec();
+    const sessions = await this.sessionModel
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .exec();
     return sessions;
   }
 
@@ -50,7 +57,9 @@ export class SessionRepository {
     const update = { $set: { isActive: false, revokedAt: new Date() } };
     const options = { new: true };
 
-    const session = await this.sessionModel.findOneAndUpdate(filter, update, options).exec();
+    const session = await this.sessionModel
+      .findOneAndUpdate(filter, update, options)
+      .exec();
 
     return session ? true : false;
   }
@@ -65,7 +74,9 @@ export class SessionRepository {
 
   async deleteById(id: string): Promise<boolean> {
     const sessionId = toObjectId(id);
-    const session = await this.sessionModel.deleteOne({ _id: sessionId }).exec();
+    const session = await this.sessionModel
+      .deleteOne({ _id: sessionId })
+      .exec();
 
     return session.deletedCount > 0;
   }

@@ -9,7 +9,13 @@ import tseslint from 'typescript-eslint';
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/coverage/**', '**/*.d.ts'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/coverage/**',
+      '**/*.d.ts',
+    ],
   },
 
   js.configs.recommended,
@@ -33,7 +39,14 @@ export default [
       'import/order': [
         'warn',
         {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+          ],
           'newlines-between': 'always',
         },
       ],
@@ -91,7 +104,9 @@ export default [
             'object',
             'type',
           ],
-          pathGroups: [{ pattern: '@/**', group: 'internal', position: 'before' }],
+          pathGroups: [
+            { pattern: '@/**', group: 'internal', position: 'before' },
+          ],
           pathGroupsExcludedImportTypes: ['builtin'],
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },

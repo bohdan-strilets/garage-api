@@ -8,7 +8,10 @@ import { SessionRepository } from './session.repository';
 import { SessionsService } from './sessions.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]), HashModule],
+  imports: [
+    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    HashModule,
+  ],
   providers: [SessionsService, SessionRepository],
   exports: [SessionsService],
 })

@@ -75,7 +75,9 @@ export class SessionsService {
 
     await this.sessionRepository.markUsed(session.id, now);
 
-    this.logger.debug(`Verified session ${session.id} for user ${session.userId}`);
+    this.logger.debug(
+      `Verified session ${session.id} for user ${session.userId}`,
+    );
 
     return session;
   }
@@ -96,7 +98,9 @@ export class SessionsService {
       throw new NotFoundException('Session not found');
     }
 
-    this.logger.debug(`Rotated session ${oldSessionId} for user ${oldSession.userId}`);
+    this.logger.debug(
+      `Rotated session ${oldSessionId} for user ${oldSession.userId}`,
+    );
 
     return this.startSession({
       userId: oldSession.userId,

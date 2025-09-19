@@ -21,7 +21,10 @@ export class HashService {
   }
 
   hashToken(token: string): string {
-    return crypto.createHmac('sha256', this.tokenSecret).update(token).digest('hex');
+    return crypto
+      .createHmac('sha256', this.tokenSecret)
+      .update(token)
+      .digest('hex');
   }
 
   verifyToken(hash: string, token: string): boolean {
