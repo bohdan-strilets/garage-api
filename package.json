@@ -15,7 +15,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "build": "nest build",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -52,21 +52,12 @@
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.1"
   },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix"
     ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "*.{json,md,yml,yaml,css,scss,html}": [
+      "prettier --write"
+    ]
   }
 }
