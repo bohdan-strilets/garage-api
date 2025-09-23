@@ -1,85 +1,131 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" />
+  <img src="https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black" />
+  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
+  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Garage API
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+**Backend for Garage APP** — an application for vehicle tracking, expenses, and reminders.  
+Target market: **Poland**  
+UI languages: **pl-PL**, **uk-UA**, **en-US**  
+Repository: [garage-api](https://github.com/bohdan-strilets/garage-api)
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Tech Stack
 
-## Project setup
+- NestJS (TypeScript)
+- MongoDB
+- JWT (access + refresh)
+- i18n (pl, ua, en)
+- Docker (future deployment)
+- ESLint + Prettier
+- Swagger (OpenAPI)
+- GitHub Actions (CI)
+
+---
+
+## 📦 Project Structure
+
+- `src/` — NestJS source code
+- `modules/` — domain modules (auth, users, vehicles, events, documents, places…)
+- `docs/` — documentation (`api-guidelines.md`, `i18n.md`, `env.md`, glossary)
+- `dist/` — compiled JS (ignored in git)
+
+---
+
+## 🔑 Core Modules
+
+- **Auth & Users** — registration, login, refresh tokens, profile, localization.
+- **Vehicles** — garage, vehicle data.
+- **Events** — unified log (fuel-ups, service, expenses, fines, parking, EV charging).
+- **Media** — attachments (receipts, photos).
+- **Documents** — OC/AC/NNW, Zielona Karta, badanie techniczne (deadlines & reminders).
+- **Maintenance** — service rules & reminders (3–2–1 inspection logic).
+- **Places** — “phonebook” of services, inspection stations, fuel stations, etc.
+- **Notifications** — reminder queue.
+- **Analytics & Export** — expenses, top places, fuel consumption, CSV export.
+
+---
+
+## ⚙️ Getting Started
+
+### Requirements
+
+- Node.js >= 20
+- npm or yarn
+- MongoDB (local or Docker)
+
+### Installation
 
 ```bash
-$ yarn install
+git clone https://github.com/bohdan-strilets/garage-api
+cd garage-api
+npm install
 ```
 
-## Compile and run the project
+### Environment Variables
 
-```bash
-# development
-$ yarn run start
+Create a `.env` file in the root.  
+Minimum:
 
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+```
+MONGO_URI=mongodb://localhost:27017/garage
+JWT_SECRET=your_secret
+PORT=3000
 ```
 
-## Run tests
+Details: [`/docs/env.md`](./docs/env.md).
 
-```bash
-# unit tests
-$ yarn run test
+### Scripts
 
-# e2e tests
-$ yarn run test:e2e
+- `npm run start:dev` — start in development mode
+- `npm run build` — build the project
+- `npm run start:prod` — run compiled code
+- `npm run lint` — run linter
+- `npm run format` — format code
 
-# test coverage
-$ yarn run test:cov
-```
+---
 
-## Resources
+## 📖 Documentation
 
-Check out a few resources that may come in handy when working with NestJS:
+- **API checklists & web form scenarios:** [garage-api-web-checklists.md](../garage-api-web-checklists.md)
+- **Project plan:** [garage-app-project-plan.md](../garage-app-project-plan.md)
+- Swagger/OpenAPI is generated automatically at runtime (`/api/docs`).
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## ✅ Definition of Done (DoD)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Clean build (`npm run build`) without errors.
+- All endpoints validate input data.
+- Unified error format (`{message, details}`).
+- `/health` and `/ready` endpoints working.
+- Environment variables documented.
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 📌 Roadmap
 
-## License
+See [Project Plan](../garage-app-project-plan.md), key milestones:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1. Setup environment and CI
+2. API foundation (Auth/Users, errors, health)
+3. Cars, Events, Media
+4. Documents & Reminders
+5. Places & Analytics
+6. CSV export & MVP release
+
+---
+
+## 📜 License
+
+This project is licensed under the [MIT License](./LICENSE).  
+© 2025 Bohdan Strilets
