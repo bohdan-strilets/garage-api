@@ -1,10 +1,22 @@
 {
   "name": "garage-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Backend API for Garage APP — vehicle tracking, expenses, reminders.",
+  "author": "Bohdan Strilets <bohdan.strilets@gmail.com>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bohdan-strilets/garage-api.git"
+  },
+  "keywords": [
+    "nestjs",
+    "api",
+    "garage",
+    "cars",
+    "mongodb",
+    "backend"
+  ],
   "scripts": {
     "build": "nest build",
     "postbuild": "tsc-alias -p tsconfig.json",
