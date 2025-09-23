@@ -1,16 +1,20 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "module": "Node16",
+    "module": "commonjs",
 
     "rootDir": "src",
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["src/*"]
+      "@app/*": ["src/*"],
+      "@config/*": ["src/config/*"],
+      "@common/*": ["src/common/*"],
+      "@modules/*": ["src/modules/*"],
+      "@lib/*": ["src/lib/*"]
     },
 
-    "moduleResolution": "node16",
+    "moduleResolution": "node",
     "types": ["node"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -22,17 +26,19 @@
     "sourceMap": true,
     "sourceRoot": "src",
 
-    "declaration": true,
+    "declaration": false,
     "removeComments": true,
-    "incremental": true,
     "skipLibCheck": true,
 
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
     "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
+    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
   },
   "include": ["src/**/*.ts"]
 }
