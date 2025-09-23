@@ -17,6 +17,10 @@
     "mongodb",
     "backend"
   ],
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=20.17.0"
+  },
   "scripts": {
     "build": "nest build",
     "postbuild": "tsc-alias -p tsconfig.json",
