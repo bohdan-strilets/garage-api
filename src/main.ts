@@ -1,17 +1,19 @@
 import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 
 import compression from 'compression';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
+import { AppExceptionFilter } from './common/errors';
 
 const logger = new Logger('Bootstrap');
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  const httpAdapterHost = new HttpAdapterHost();
 
   const nodeEnv = configService.get<string>('NODE_ENV');
   const port = configService.get<number>('PORT');
@@ -41,6 +43,8 @@ async function bootstrap(): Promise<void> {
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.enableShutdownHooks();
+
+  app.useGlobalFilters(new AppExceptionFilter(httpAdapterHost));
 
   await app.listen(port, host);
   const url = await app.getUrl();

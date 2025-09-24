@@ -42,6 +42,7 @@
     "class-validator": "^0.14.2",
     "compression": "^1.8.1",
     "helmet": "^8.1.0",
+    "mongodb": "^6.20.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },
