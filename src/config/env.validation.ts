@@ -40,8 +40,10 @@ export const envValidationSchema = joi.object({
   }),
 
   // Rate Limiting
-  RATE_LIMIT_TTL: joi.number().integer().min(1).default(60),
-  RATE_LIMIT_MAX: joi.number().integer().min(1).default(100),
+  RATE_PUBLIC_LIMIT: joi.number().integer().min(1).default(100),
+  RATE_PUBLIC_TTL: joi.number().integer().min(1).default(60),
+  RATE_AUTH_LIMIT: joi.number().integer().min(1).default(10),
+  RATE_AUTH_TTL: joi.number().integer().min(1).default(300),
 
   // Uploads
   UPLOAD_MAX_IMAGE_MB: joi.number().integer().min(1).default(10),
