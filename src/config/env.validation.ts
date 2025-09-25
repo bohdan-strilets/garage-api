@@ -48,4 +48,11 @@ export const envValidationSchema = joi.object({
   // Uploads
   UPLOAD_MAX_IMAGE_MB: joi.number().integer().min(1).default(10),
   UPLOAD_MAX_PDF_MB: joi.number().integer().min(1).default(20),
+
+  //  Hashing
+  HASH_TIME: joi.number().integer().min(1).default(3),
+  HASH_MEMORY: joi.number().integer().min(1).default(65536),
+  HASH_PARALLELISM: joi.number().integer().min(1).default(1),
+  HASH_HASHLEN: joi.number().integer().min(1).default(32),
+  HASH_PEPPER: joi.string().min(32).required(),
 });
