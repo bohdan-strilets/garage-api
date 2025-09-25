@@ -6,6 +6,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 
 import { RateLimitModule } from './common/rate-limit';
 import { envValidationSchema } from './config/env.validation';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { envValidationSchema } from './config/env.validation';
     }),
 
     RateLimitModule,
+    UserModule,
   ],
   providers: [
     {
