@@ -17,7 +17,7 @@ export const envValidationSchema = joi.object({
   API_PREFIX: joi.string().default('v1'),
 
   // Database
-  MONGODB_URI: joi
+  DATABASE_URL: joi
     .string()
     .uri({ scheme: ['mongodb', 'mongodb+srv'] })
     .required(),
