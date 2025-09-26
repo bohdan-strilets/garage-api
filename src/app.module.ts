@@ -4,11 +4,12 @@ import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
-import { HashModule } from './common/hash/hash.module';
-import { PasswordModule } from './common/password/password.module';
+import { HashModule } from './common/hash';
+import { PasswordModule } from './common/password';
 import { RateLimitModule } from './common/rate-limit';
 import { envValidationSchema } from './config/env.validation';
-import { UserModule } from './user/user.module';
+import { SessionsModule } from './modules/sessions';
+import { UserModule } from './modules/user';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     HashModule,
     PasswordModule,
+    SessionsModule,
   ],
   providers: [
     {

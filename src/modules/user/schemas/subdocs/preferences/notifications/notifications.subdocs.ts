@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { HydratedDocument } from 'mongoose';
 
-import { Locale } from '@app/user/enums/locale.enum';
+import { Locale } from '@app/modules/user/enums/locale.enum';
 
 import { Channels, ChannelsSchema } from './channels.subdocs';
 import { Reminders, RemindersSchema } from './reminders.subdocs';

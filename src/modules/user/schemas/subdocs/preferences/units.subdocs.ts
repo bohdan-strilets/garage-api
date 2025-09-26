@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { HydratedDocument } from 'mongoose';
 
-import { ConsumptionUnit } from '@app/user/enums/consumption-unit.enum';
-import { Distance } from '@app/user/enums/distance.enum';
-import { Volume } from '@app/user/enums/volume.enum';
+import { ConsumptionUnit } from '@app/modules/user/enums/consumption-unit.enum';
+import { Distance } from '@app/modules/user/enums/distance.enum';
+import { Volume } from '@app/modules/user/enums/volume.enum';
 
 @Schema({ _id: false, timestamps: false, versionKey: false })
 export class Units {

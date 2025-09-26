@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { HashModule } from '../hash/hash.module';
+import { HashModule } from '../hash';
 
 import { PasswordService } from './password.service';
 

@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { HydratedDocument } from 'mongoose';
 
-import { Currency } from '@app/user/enums/currency.enum';
-import { Locale } from '@app/user/enums/locale.enum';
-import { Theme } from '@app/user/enums/theme.enum';
+import { Currency } from '@app/modules/user/enums/currency.enum';
+import { Locale } from '@app/modules/user/enums/locale.enum';
+import { Theme } from '@app/modules/user/enums/theme.enum';
 
 import { Notifications, NotificationsSchema } from './notifications/notifications.subdocs';
 import { Units, UnitsSchema } from './units.subdocs';

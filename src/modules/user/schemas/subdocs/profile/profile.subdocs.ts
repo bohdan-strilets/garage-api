@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { HydratedDocument } from 'mongoose';
 
-import { Gender } from '@app/user/enums/gender.enum';
+import { Gender } from '@app/modules/user/enums/gender.enum';
 
 import { Address, AddressSchema } from './address.subdocs';
 

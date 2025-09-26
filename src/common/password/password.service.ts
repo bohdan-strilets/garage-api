@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { HashService } from '../hash/hash.service';
+import { HashService } from '../hash';
 import { normalizedString } from '../utils/normalized-string.util';
 
 import { rulesRgx, weakPasswordsSet } from './password.policy';
