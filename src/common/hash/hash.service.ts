@@ -1,9 +1,11 @@
+import { randomBytes } from 'crypto';
+
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import * as argon2 from 'argon2';
 
-import { VerifyResult } from './tyeps/verify-result.type';
+import { VerifyResult } from './types/verify-result.type';
 
 @Injectable()
 export class HashService {
@@ -46,5 +48,9 @@ export class HashService {
     const needsRehash = this.needsRehash(hash);
 
     return { verified, needsRehash };
+  }
+
+  generateToken(size = 32): string {
+    return randomBytes(size).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
 }

@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
 import { HashModule } from './common/hash/hash.module';
+import { PasswordModule } from './common/password/password.module';
 import { RateLimitModule } from './common/rate-limit';
 import { envValidationSchema } from './config/env.validation';
 import { UserModule } from './user/user.module';
@@ -26,6 +27,7 @@ import { UserModule } from './user/user.module';
     RateLimitModule,
     UserModule,
     HashModule,
+    PasswordModule,
   ],
   providers: [
     {

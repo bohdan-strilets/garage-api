@@ -55,4 +55,9 @@ export const envValidationSchema = joi.object({
   HASH_PARALLELISM: joi.number().integer().min(1).default(1),
   HASH_HASHLEN: joi.number().integer().min(1).default(32),
   HASH_PEPPER: joi.string().min(32).required(),
+
+  // Password
+  PASSWORD_MIN_LENGTH: joi.number().integer().min(8).default(8),
+  PASSWORD_MAX_LENGTH: joi.number().integer().min(joi.ref('PASSWORD_MIN_LENGTH')).max(128).default(128),
+  PASSWORD_RESET_TTL_MIN: joi.number().integer().min(1).default(60),
 });
