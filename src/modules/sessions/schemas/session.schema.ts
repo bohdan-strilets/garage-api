@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { HydratedDocument, Types } from 'mongoose';
 
-import { SessionStatus } from '../enums/session-status.type';
+import { SessionStatus } from '../enums/session-status.enum';
 
 import { Agent, AgentSchema } from './subdocs/agent.subdocs';
 
@@ -31,8 +31,8 @@ export class Session {
   @Prop({ type: Date, required: true })
   expiresAt: Date;
 
-  @Prop({ type: Date, default: null })
-  lastUsedAt?: Date | null;
+  @Prop({ type: Date, default: new Date() })
+  lastUsedAt?: Date;
 
   @Prop({ type: Date, default: null })
   revokedAt?: Date | null;
