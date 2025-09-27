@@ -31,6 +31,7 @@ export const envValidationSchema = joi.object({
   JWT_AUDIENCE: joi.string().required(),
   SESSION_MAX_ACTIVE: joi.number().integer().min(1).default(5),
   REFRESH_ROTATION_STRICT: joi.boolean().default(true),
+  JWT_CLOCK_TOLERANCE_SEC: joi.number().integer().min(0).default(5),
 
   // CORS
   ALLOWED_ORIGINS: joi.when('NODE_ENV', {
