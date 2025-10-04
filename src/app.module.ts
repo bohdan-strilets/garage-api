@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { validationEnv } from './configs/env/validation-env.config';
 import { MongooseConfigService } from './configs/mongoose/mongoose.config';
 import { CryptoModule } from './module/crypto/crypto.module';
+import { PasswordModule } from './module/password/password.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CryptoModule } from './module/crypto/crypto.module';
       useClass: MongooseConfigService,
     }),
     CryptoModule,
+    PasswordModule,
   ],
 })
 export class AppModule {}
