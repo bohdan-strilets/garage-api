@@ -48,7 +48,11 @@ export class CryptoService {
     return await argon.verify(hash, token);
   }
 
-  needsRehash(hash: string): boolean {
-    return argon.needsRehash(hash);
+  needsPasswordRehash(hash: string): boolean {
+    return argon.needsRehash(hash, this.passwordOptions);
+  }
+
+  needsTokenRehash(hash: string): boolean {
+    return argon.needsRehash(hash, this.tokenOptions);
   }
 }
