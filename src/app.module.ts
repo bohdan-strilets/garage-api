@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { validationEnv } from './configs/env/validation-env.config';
 import { MongooseConfigService } from './configs/mongoose/mongoose.config';
+import { CryptoModule } from './module/crypto/crypto.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { MongooseConfigService } from './configs/mongoose/mongoose.config';
     MongooseModule.forRootAsync({
       useClass: MongooseConfigService,
     }),
+    CryptoModule,
   ],
 })
 export class AppModule {}
