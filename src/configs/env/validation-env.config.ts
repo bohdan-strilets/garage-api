@@ -9,4 +9,6 @@ export const validationEnv = Joi.object({
     .default(NodeEnv.DEVELOPMENT),
   PORT: Joi.number().integer().min(1).default(3000),
   CORS_ORIGIN: Joi.string().default('*'),
+
+  MONGO_URI: Joi.string().required(),
 });

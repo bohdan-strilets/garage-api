@@ -21,9 +21,9 @@ async function bootstrap() {
 
   const url = await app.getUrl();
 
-  logger.log(`🚀 Application is running on: ${url}/api/v1`);
-  logger.log(`🌱 Environment: ${nodeEnv}`);
-  logger.log(`📅 Started at: ${new Date().toLocaleString()}`);
+  logger.debug(`🚀 Application is running on: ${url}/api/v1`);
+  logger.debug(`🌱 Environment: ${nodeEnv}`);
+  logger.debug(`📅 Started at: ${new Date().toLocaleString()}`);
 }
 
 bootstrap();
