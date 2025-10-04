@@ -1,8 +1,29 @@
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { NodeEnv } from './configs/env/node-env.enum';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+
+  const configService = app.get(ConfigService);
+  const logger = new Logger(bootstrap.name);
+
+  const port = configService.get<number>('PORT', 3000);
+  const corsOrigin = configService.get<string>('CORS_ORIGIN', '*');
+  const nodeEnv = configService.get<string>('NODE_ENV', NodeEnv.DEVELOPMENT);
+
+  app.setGlobalPrefix('api/v1');
+  app.enableCors({ origin: corsOrigin });
+
+  await app.listen(port);
+
+  const url = await app.getUrl();
+
+  logger.log(`🚀 Application is running on: ${url}/api/v1`);
+  logger.log(`🌱 Environment: ${nodeEnv}`);
+  logger.log(`📅 Started at: ${new Date().toLocaleString()}`);
 }
+
 bootstrap();
