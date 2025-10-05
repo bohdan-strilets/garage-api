@@ -6,6 +6,7 @@ import { validationEnv } from './configs/env/validation-env.config';
 import { MongooseConfigService } from './configs/mongoose/mongoose.config';
 import { CryptoModule } from './module/crypto';
 import { PasswordModule } from './module/password';
+import { SessionsModule } from './module/sessions';
 import { UserModule } from './module/user';
 
 @Module({
@@ -20,6 +21,7 @@ import { UserModule } from './module/user';
     CryptoModule,
     PasswordModule,
     UserModule,
+    SessionsModule,
   ],
 })
 export class AppModule {}
