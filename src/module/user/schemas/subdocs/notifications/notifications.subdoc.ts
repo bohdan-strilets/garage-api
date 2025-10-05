@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
 import { HydratedDocument } from 'mongoose';
+
 import { Channels, ChannelsSchema } from './channels.subdoc';
 import { Digests, DigestsSchema } from './digests.subdoc';
 

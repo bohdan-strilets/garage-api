@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+
 import { NodeEnv } from './enum/node-env.enum';
 
 const env = Object.values(NodeEnv);

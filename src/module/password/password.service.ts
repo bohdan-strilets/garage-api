@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { lowerCase, number, symbol, upperCase } from './password.rules';
 import { VerifyStrength } from './types/verify-strength.type';
 

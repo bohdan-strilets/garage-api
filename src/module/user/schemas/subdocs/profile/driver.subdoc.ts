@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
 import { HydratedDocument } from 'mongoose';
 import { DrivingLicense } from 'src/module/user/enums/driving-license.enum';
 

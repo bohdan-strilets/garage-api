@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
 import { HydratedDocument } from 'mongoose';
 import { Currency } from 'src/module/user/enums/currency.enum';
 import { Locale } from 'src/module/user/enums/locale.enum';
 import { Theme } from 'src/module/user/enums/theme.enum';
+
 import { Units, UnitsSchema } from './units.subdoc';
 
 @Schema({ _id: false, versionKey: false })

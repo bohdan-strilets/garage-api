@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
 import { HydratedDocument, Types } from 'mongoose';
+
 import { Gender } from '../../../enums/gender.enum';
 import { Address, AddressSchema } from './address.subdoc';
 import { Driver, DriverSchema } from './driver.subdoc';
