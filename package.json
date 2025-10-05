@@ -7,14 +7,13 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write .",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
-    "prepare": "husky install",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "precommit:run": "lint-staged"
   },
   "dependencies": {
@@ -74,7 +73,7 @@
     "testEnvironment": "node"
   },
   "lint-staged": {
-    "**/*.{ts}": [
+    "**/*.ts": [
       "eslint --fix",
       "prettier --write"
     ],
