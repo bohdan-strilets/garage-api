@@ -1,9 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  MongooseModuleOptions,
-  MongooseOptionsFactory,
-} from '@nestjs/mongoose';
+import { MongooseModuleOptions, MongooseOptionsFactory } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 
 @Injectable()

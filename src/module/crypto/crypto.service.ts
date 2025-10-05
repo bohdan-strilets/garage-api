@@ -8,15 +8,9 @@ export class CryptoService {
   private tokenOptions: argon.Options = {};
 
   constructor(private readonly configService: ConfigService) {
-    const memoryCost = Number(
-      this.configService.get<number>('HASH_MEMORY_COST', 65536),
-    );
-    const timeCost = Number(
-      this.configService.get<number>('HASH_TIME_COST', 3),
-    );
-    const parallelism = Number(
-      this.configService.get<number>('HASH_PARALLELISM', 2),
-    );
+    const memoryCost = Number(this.configService.get<number>('HASH_MEMORY_COST', 65536));
+    const timeCost = Number(this.configService.get<number>('HASH_TIME_COST', 3));
+    const parallelism = Number(this.configService.get<number>('HASH_PARALLELISM', 2));
 
     this.passwordOptions = {
       type: argon.argon2id,

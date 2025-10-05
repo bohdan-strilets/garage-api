@@ -1,2 +1,8 @@
 #!/usr/bin/env sh
-yarn precommit:run
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🚦 Running pre-commit checks..."
+
+npx lint-staged || exit 1
+
+echo "✅ All checks passed!"

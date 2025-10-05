@@ -4,14 +4,8 @@ import { HydratedDocument, Types } from 'mongoose';
 import { Role } from '../enums/role.enum';
 import { Status } from '../enums/status.enum';
 import { Consents, ConsentsSchema } from './subdocs/consents/consents.subdoc';
-import {
-  Notifications,
-  NotificationsSchema,
-} from './subdocs/notifications/notifications.subdoc';
-import {
-  Preferences,
-  PreferencesSchema,
-} from './subdocs/preferences/preferences.subdoc';
+import { Notifications, NotificationsSchema } from './subdocs/notifications/notifications.subdoc';
+import { Preferences, PreferencesSchema } from './subdocs/preferences/preferences.subdoc';
 import { Profile, ProfileSchema } from './subdocs/profile/profile.subdoc';
 import { Security, SecuritySchema } from './subdocs/security/security.subdoc';
 

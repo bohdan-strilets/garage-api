@@ -1,10 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-import {
-  EmailVerification,
-  EmailVerificationSchema,
-} from './email-verification.subdoc';
+import { EmailVerification, EmailVerificationSchema } from './email-verification.subdoc';
 import { Login, LoginSchema } from './login.subdoc';
 import { Password, PasswordSchema } from './password.subdoc';
 

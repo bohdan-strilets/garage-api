@@ -27,9 +27,7 @@ export class PasswordService {
     }
 
     if (!(number.test(password) || symbol.test(password))) {
-      errors.push(
-        'Password must include at least one number or one special character',
-      );
+      errors.push('Password must include at least one number or one special character');
     } else {
       score += 1;
     }

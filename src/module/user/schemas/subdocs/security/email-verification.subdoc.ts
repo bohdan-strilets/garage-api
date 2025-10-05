@@ -14,5 +14,4 @@ export class EmailVerification {
 }
 
 export type EmailVerificationDocument = HydratedDocument<EmailVerification>;
-export const EmailVerificationSchema =
-  SchemaFactory.createForClass(EmailVerification);
+export const EmailVerificationSchema = SchemaFactory.createForClass(EmailVerification);
