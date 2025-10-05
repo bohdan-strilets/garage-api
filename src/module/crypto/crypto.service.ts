@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as argon from 'argon2';
@@ -48,5 +50,9 @@ export class CryptoService {
 
   needsTokenRehash(hash: string): boolean {
     return argon.needsRehash(hash, this.tokenOptions);
+  }
+
+  generateToken(length = 32): string {
+    return randomBytes(length).toString('hex');
   }
 }
