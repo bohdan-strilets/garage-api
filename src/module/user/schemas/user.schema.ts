@@ -13,7 +13,7 @@ import { Security, SecuritySchema } from './subdocs/security/security.subdoc';
 export class User {
   _id: Types.ObjectId;
 
-  @Prop({ required: true, lowercase: true, trim: true, unique: true })
+  @Prop({ required: true, lowercase: true, trim: true })
   email: string;
 
   @Prop({ enum: Role, default: Role.USER })
@@ -48,6 +48,6 @@ export class User {
 export type UserDocument = HydratedDocument<User>;
 export const UserSchema = SchemaFactory.createForClass(User);
 
-UserSchema.index({ email: 1 });
+UserSchema.index({ email: 1 }, { unique: true });
 UserSchema.index({ role: 1 });
 UserSchema.index({ status: 1 });

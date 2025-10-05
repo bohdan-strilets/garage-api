@@ -15,7 +15,8 @@
     "start:prod": "node dist/main",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
-    "prepare": "husky install"
+    "postinstall": "husky",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
