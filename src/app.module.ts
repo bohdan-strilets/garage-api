@@ -7,6 +7,7 @@ import { MongooseConfigService } from './configs/mongoose/mongoose.config';
 import { CryptoModule } from './module/crypto';
 import { PasswordModule } from './module/password';
 import { SessionsModule } from './module/sessions';
+import { TokenModule } from './module/token';
 import { UserModule } from './module/user';
 
 @Module({
@@ -22,6 +23,7 @@ import { UserModule } from './module/user';
     PasswordModule,
     UserModule,
     SessionsModule,
+    TokenModule,
   ],
 })
 export class AppModule {}
