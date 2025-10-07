@@ -21,7 +21,7 @@ export class Session {
   refreshExpiresAt: Date;
 
   @Prop({ type: String, index: true })
-  familyId?: string;
+  familyId: string;
 
   @Prop({ type: String })
   replacedBy?: string;

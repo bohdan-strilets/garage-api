@@ -4,7 +4,7 @@ import { HydratedDocument } from 'mongoose';
 @Schema({ _id: false, versionKey: false })
 export class Device {
   @Prop({ type: String, default: null })
-  deviseId?: string | null;
+  deviceId?: string | null;
 
   @Prop({ type: String, default: null })
   ip?: string | null;
