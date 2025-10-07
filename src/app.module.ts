@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { validationEnv } from './configs/env/validation-env.config';
 import { MongooseConfigService } from './configs/mongoose/mongoose.config';
+import { AuthModule } from './module/auth';
 import { CryptoModule } from './module/crypto';
 import { PasswordModule } from './module/password';
 import { SessionsModule } from './module/sessions';
@@ -24,6 +25,7 @@ import { UserModule } from './module/user';
     UserModule,
     SessionsModule,
     TokenModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
