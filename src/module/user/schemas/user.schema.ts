@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
-import { Role } from '../enums/role.enum';
-import { Status } from '../enums/status.enum';
+import { UserRole } from '../enums/user-role.enum';
+import { UserStatus } from '../enums/user-status.enum';
 import { Consents, ConsentsSchema } from './subdocs/consents/consents.subdoc';
 import { Notifications, NotificationsSchema } from './subdocs/notifications/notifications.subdoc';
 import { Preferences, PreferencesSchema } from './subdocs/preferences/preferences.subdoc';
@@ -16,11 +16,11 @@ export class User {
   @Prop({ required: true, lowercase: true, trim: true })
   email: string;
 
-  @Prop({ enum: Role, default: Role.USER })
-  role?: Role;
+  @Prop({ enum: UserRole, default: UserRole.USER })
+  role?: UserRole;
 
-  @Prop({ enum: Status, default: Status.ACTIVE })
-  status?: Status;
+  @Prop({ enum: UserStatus, default: UserStatus.ACTIVE })
+  status?: UserStatus;
 
   @Prop({ type: ProfileSchema, default: {} })
   profile: Profile;

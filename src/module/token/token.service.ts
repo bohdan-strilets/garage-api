@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { Role } from '../user/enums/role.enum';
+import { UserRole } from '../user/enums/user-role.enum';
 import { TokensType } from './enums/tokens-type.enum';
 import { Payload } from './types/payload.type';
 import { TokenPair } from './types/token-pair.type';
@@ -30,12 +30,12 @@ export class TokenService {
     this.jwtTolerance = parseInt(this.configService.get<string>('JWT_TOLERANCE'));
   }
 
-  async issuePair(userId: string, sessionId: string, role: Role): Promise<TokenPair> {
+  async issuePair(userId: string, sessionId: string, userRole: UserRole): Promise<TokenPair> {
     const accessPayload: Payload = {
       sub: userId,
       sid: sessionId,
       type: TokensType.ACCESS,
-      role,
+      userRole,
     };
     const refreshPayload: Payload = {
       sub: userId,
