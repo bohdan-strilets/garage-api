@@ -14,7 +14,7 @@ export class MongooseConfigService implements MongooseOptionsFactory {
     return {
       uri,
       onConnectionCreate: (connection: Connection) => {
-        connection.on('connected', () => this.logger.debug('🔁 connected'));
+        connection.on('connected', () => this.logger.debug('🔁 Connected'));
         connection.on('open', () => this.logger.debug('✅ MongoDB connected'));
 
         return connection;
