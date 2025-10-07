@@ -17,7 +17,7 @@ import { Session, SessionDocument } from './schemas/session.schema';
 import { Device } from './types/device.type';
 
 @Injectable()
-export class SessionRepository {
+export class SessionsRepository {
   constructor(@InjectModel(Session.name) private sessionModel: Model<SessionDocument>) {}
 
   private getNow = () => new Date();

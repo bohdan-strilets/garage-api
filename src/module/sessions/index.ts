@@ -1,4 +1,4 @@
-export * from './session.repository';
 export * from './sessions.controller';
 export * from './sessions.module';
+export * from './sessions.repository';
 export * from './sessions.service';
