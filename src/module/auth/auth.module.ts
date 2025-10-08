@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 
 import { CryptoModule } from '../crypto';
 import { SessionsModule } from '../sessions';
@@ -14,7 +13,7 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
-  imports: [JwtModule.register({}), UserModule, SessionsModule, CryptoModule],
+  imports: [UserModule, SessionsModule, CryptoModule],
   controllers: [AuthController],
   providers: [
     AuthService,

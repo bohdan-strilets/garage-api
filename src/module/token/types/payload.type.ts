@@ -5,6 +5,6 @@ import { TokensType } from '../enums/tokens-type.enum';
 export type Payload = {
   sub: string;
   sid: string;
-  userRole?: UserRole;
+  role?: UserRole;
   type?: TokensType;
 };

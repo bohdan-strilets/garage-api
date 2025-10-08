@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { JwtConfigModule } from '@configs/jwt/jwt.config';
+
 import { validationEnv } from './configs/env/validation-env.config';
 import { MongooseConfigService } from './configs/mongoose/mongoose.config';
 import { AuthModule } from './module/auth';
@@ -23,6 +25,7 @@ import { UserModule } from './module/user';
     MongooseModule.forRootAsync({
       useClass: MongooseConfigService,
     }),
+    JwtConfigModule,
     CryptoModule,
     PasswordModule,
     UserModule,
