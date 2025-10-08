@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
+import { getNow } from '@common/now-provider/get-now';
 import { ListParams, PaginatedResult } from '@common/pagination';
 
 import { CreateSessionDto } from './dto/create-session.dto';
@@ -23,7 +24,7 @@ export class SessionsService {
     nextRefreshTokenHash: string,
     nextRefreshExpiresAt: Date,
   ): Promise<SessionDocument> {
-    if (nextRefreshExpiresAt <= new Date()) {
+    if (nextRefreshExpiresAt <= getNow()) {
       this.logger.debug('Invalid refresh token expiration');
       throw new Error('Invalid refresh token expiration');
     }

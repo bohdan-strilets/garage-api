@@ -24,5 +24,6 @@
       "@common/*": ["src/common/*"],
       "@configs/*": ["src/configs/*"]
     }
-  }
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }

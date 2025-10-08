@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
+import { getNow } from '@common/now-provider/get-now';
 import {
   buildPaginationMeta,
   getSkip,
@@ -20,7 +21,7 @@ import { Device } from './types/device.type';
 export class SessionsRepository {
   constructor(@InjectModel(Session.name) private sessionModel: Model<SessionDocument>) {}
 
-  private getNow = () => new Date();
+  private getNow = () => getNow();
 
   private generateFamilyId = () => uuidv4();
 

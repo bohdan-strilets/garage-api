@@ -20,7 +20,7 @@ export class Session {
   @Prop({ type: Date, required: true })
   refreshExpiresAt: Date;
 
-  @Prop({ type: String, index: true })
+  @Prop({ type: String })
   familyId: string;
 
   @Prop({ type: String })

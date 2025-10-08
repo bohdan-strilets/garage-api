@@ -1,5 +1,5 @@
 export type Device = {
-  deviseId?: string | null;
+  deviceId?: string | null;
   ip?: string | null;
   userAgent?: string | null;
   os?: string | null;
