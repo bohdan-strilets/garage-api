@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
@@ -17,6 +17,15 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
   app.enableCors({ origin: corsOrigin });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      stopAtFirstError: true,
+    }),
+  );
 
   await app.listen(port);
 

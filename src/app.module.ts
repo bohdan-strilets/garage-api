@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { GlobalExceptionFilter } from '@configs/errors';
 import { JwtConfigModule } from '@configs/jwt/jwt.config';
 
 import { validationEnv } from './configs/env/validation-env.config';
@@ -41,6 +42,10 @@ import { UserModule } from './module/user';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
     },
   ],
 })
