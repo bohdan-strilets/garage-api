@@ -5,7 +5,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint/eslint-plugin', 'simple-import-sort'],
+  plugins: ['@typescript-eslint/eslint-plugin', 'simple-import-sort', 'unused-imports'],
   extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
   root: true,
   env: {
@@ -18,6 +18,13 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
+    ],
+
     'simple-import-sort/exports': 'error',
     'simple-import-sort/imports': [
       'error',
@@ -28,9 +35,11 @@ module.exports = {
             '^(assert|buffer|child_process|crypto|events|fs|http|https|os|path|stream|url|util|zlib)$',
           ],
           ['^@nestjs', '^@?\\w'],
-          ['^@app/', '^@modules/', '^@common/', '^@configs/'],
-          ['^\\.\\./', '^\\./'],
-          ['^.+\\.s?css$'],
+          ['^@modules/'],
+          ['^@configs/'],
+          ['^@common/'],
+          ['^@app/'],
+          [('^\\.\\./', '^\\./')],
         ],
       },
     ],

@@ -1,21 +1,8 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
   },
-
-  "eslint.validate": ["typescript", "javascript"],
-  "eslint.workingDirectories": [{ "mode": "auto" }],
-
-  "typescript.format.enable": false,
-  "javascript.format.enable": false,
-
-  "prettier.semi": true,
-  "prettier.useTabs": false,
-  "prettier.singleQuote": true,
-  "prettier.trailingComma": "all",
-  "prettier.printWidth": 100
+  "editor.formatOnSave": true,
+  "eslint.validate": ["typescript", "javascript"]
 }
