@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+
+import { getNow } from '@common/now-provider/get-now';
+import { daysToMilliseconds } from '@common/now-provider/time-transformer';
 
 import { UserProjections } from './enums/user-projections.enum';
 import { userIdOnlyProjection } from './projections/user-id-only.projection';
@@ -8,10 +12,18 @@ import { userPublicProjection } from './projections/user-public.projection';
 import { userSafeProjection } from './projections/user-safe.projection';
 import { userSecurityProjection } from './projections/user-security.projections';
 import { User, UserDocument } from './schemas/user.schema';
+import { CreateUserInput } from './types/create-user-input.type';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  private readonly lifetimeDays: number;
+
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly configService: ConfigService,
+  ) {
+    this.lifetimeDays = Number(this.configService.get<number>('PASSWORD_EXPIRATION_DAYS'));
+  }
 
   private normalizeEmail(email: string): string {
     return email.trim().toLowerCase();
@@ -81,5 +93,28 @@ export class UserRepository {
 
     const exists = await this.userModel.exists(filter).exec();
     return exists !== null;
+  }
+
+  async create(input: CreateUserInput): Promise<User> {
+    const normalizedEmail = this.normalizeEmail(input.email);
+    const now = getNow();
+    const passwordLifetimeDays = daysToMilliseconds(this.lifetimeDays);
+
+    const payload = {
+      email: normalizedEmail,
+      profile: {
+        firstName: input.firstName,
+        lastName: input.lastName,
+      },
+      security: {
+        password: {
+          hashedPassword: input.hashedPassword,
+          passwordUpdatedAt: now,
+          passwordExpiresAt: new Date(now.getTime() + passwordLifetimeDays),
+        },
+      },
+    };
+
+    return await this.userModel.create(payload);
   }
 }

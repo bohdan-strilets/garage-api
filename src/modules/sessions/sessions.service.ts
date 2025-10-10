@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
 import { getNow } from '@common/now-provider/get-now';
 import { ListParams, PaginatedResult } from '@common/pagination';
 
-import { CreateSessionDto } from './dto/create-session.dto';
 import { SessionDocument } from './schemas/session.schema';
 import { SessionsRepository } from './sessions.repository';
+import { CreateSessionInput } from './types/create-session.input.type';
 import { Device } from './types/device.type';
 
 @Injectable()
@@ -14,9 +15,13 @@ export class SessionsService {
 
   constructor(private readonly sessionsRepository: SessionsRepository) {}
 
-  async createInitial(dto: CreateSessionDto): Promise<SessionDocument> {
+  generateSid(): string {
+    return uuidv4();
+  }
+
+  async createInitial(input: CreateSessionInput): Promise<SessionDocument> {
     this.logger.debug('Creating initial session');
-    return await this.sessionsRepository.createSession(dto);
+    return await this.sessionsRepository.createSession(input);
   }
 
   async rotateBySession(
@@ -67,7 +72,7 @@ export class SessionsService {
   }
 
   async handleReplayBySession(sessionId: string): Promise<void> {
-    const session = await this.sessionsRepository.findById(sessionId);
+    const session = await this.sessionsRepository.findBySid(sessionId);
 
     if (!session) {
       this.logger.debug('Session not found for replay handling');
@@ -81,8 +86,8 @@ export class SessionsService {
     return await this.sessionsRepository.findActiveByRefreshHash(refreshHash);
   }
 
-  async getById(sessionId: string): Promise<SessionDocument | null> {
-    return await this.sessionsRepository.findById(sessionId);
+  async getBySid(sessionId: string): Promise<SessionDocument | null> {
+    return await this.sessionsRepository.findBySid(sessionId);
   }
 
   async markActivity(sessionId: string, device: Device): Promise<void> {

@@ -7,7 +7,7 @@ const env = Object.values(NodeEnv);
 const sameSite = Object.values(CookieSameSite);
 
 export const validationEnv = Joi.object({
-  // Base
+  // ENV
   NODE_ENV: Joi.string()
     .valid(...env)
     .default(NodeEnv.DEVELOPMENT),
@@ -24,14 +24,20 @@ export const validationEnv = Joi.object({
   HASH_TIME_COST: Joi.number().integer().min(1).default(3),
   HASH_PARALLELISM: Joi.number().integer().min(1).default(2),
 
+  //  Password
+  PASSWORD_EXPIRATION_DAYS: Joi.number().integer().min(1).default(180),
+  PASSWORD_RESET_TOKEN_EXPIRATION_HOURS: Joi.number().integer().min(1).default(1),
+  PASSWORD_LENGTH_MIN: Joi.number().integer().min(1).default(8),
+  PASSWORD_LENGTH_MAX: Joi.number().integer().min(Joi.ref('PASSWORD_LENGTH_MIN')).default(64),
+
   // JWT
   JWT_ISSUER: Joi.string().required(),
   JWT_AUDIENCE: Joi.string().required(),
   JWT_TOLERANCE: Joi.number().integer().min(0).default(10),
   JWT_ACCESS_SECRET: Joi.string().required(),
-  JWT_ACCESS_EXPIRES: Joi.string().default('60m'),
+  JWT_ACCESS_EXPIRES_HOURS: Joi.string().default('1h'),
   JWT_REFRESH_SECRET: Joi.string().required(),
-  JWT_REFRESH_EXPIRES: Joi.string().default('30d'),
+  JWT_REFRESH_EXPIRES_DAYS: Joi.string().default('30d'),
 
   //  COOKIE
   COOKIE_PATH: Joi.string().default('/'),

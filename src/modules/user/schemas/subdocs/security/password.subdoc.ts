@@ -4,13 +4,13 @@ import { HydratedDocument } from 'mongoose';
 @Schema({ _id: false, versionKey: false })
 export class Password {
   @Prop({ type: String, required: true })
-  hash: string;
+  hashedPassword: string;
 
   @Prop({ type: Date, required: true })
-  updatedAt: Date;
+  passwordUpdatedAt: Date;
 
   @Prop({ type: Date, required: true })
-  expiresAt: Date;
+  passwordExpiresAt: Date;
 
   @Prop({ type: String, default: null })
   resetTokenHash?: string | null;

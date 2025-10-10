@@ -2,13 +2,17 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { UserProjections } from './enums/user-projections.enum';
 import { User } from './schemas/user.schema';
+import { CreateUserInput } from './types/create-user-input.type';
+import { PublicUser } from './types/public-user.type';
+import { SafeUser } from './types/safe-user.type';
+import { SecurityUser } from './types/security.type';
 import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async getByIdSafe(userId: string): Promise<User> {
+  async getByIdSafe(userId: string): Promise<SafeUser> {
     const user = await this.userRepository.findById(userId, UserProjections.SAFE);
 
     if (!user) {
@@ -18,7 +22,7 @@ export class UserService {
     return user;
   }
 
-  async getPublicProfile(userId: string): Promise<User> {
+  async getPublicProfile(userId: string): Promise<PublicUser> {
     const user = await this.userRepository.findById(userId, UserProjections.PUBLIC);
 
     if (!user) {
@@ -28,7 +32,7 @@ export class UserService {
     return user;
   }
 
-  async getByEmailSafe(email: string): Promise<User> {
+  async getByEmailSafe(email: string): Promise<SafeUser> {
     const user = await this.userRepository.findByEmail(email, UserProjections.SAFE);
 
     if (!user) {
@@ -38,7 +42,7 @@ export class UserService {
     return user;
   }
 
-  async getByEmailForAuth(email: string): Promise<User> {
+  async getByEmailForAuth(email: string): Promise<SecurityUser> {
     const user = await this.userRepository.findByEmail(email, UserProjections.SECURITY);
 
     if (!user) {
@@ -61,5 +65,9 @@ export class UserService {
     }
 
     return true;
+  }
+
+  async createForAuth(input: CreateUserInput): Promise<User> {
+    return await this.userRepository.create(input);
   }
 }

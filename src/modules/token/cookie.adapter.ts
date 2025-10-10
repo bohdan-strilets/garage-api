@@ -12,17 +12,17 @@ export class CookieAdapter {
 
   constructor(private readonly configService: ConfigService) {
     this.cookieOptions = {
-      path: this.configService.get<string>('COOKIE_PATH'),
-      domain: this.configService.get<string>('COOKIE_DOMAIN'),
-      secure: this.configService.get<boolean>('COOKIE_SECURE'),
-      sameSite: this.configService.get<CookieSameSite>('COOKIE_SAME_SITE'),
-      httpOnly: this.configService.get<boolean>('COOKIE_HTTPONLY'),
-      maxAge: this.configService.get<number>('JWT_REFRESH_EXPIRES'),
+      path: this.configService.getOrThrow<string>('COOKIE_PATH'),
+      domain: this.configService.getOrThrow<string>('COOKIE_DOMAIN'),
+      secure: this.configService.getOrThrow<boolean>('COOKIE_SECURE'),
+      sameSite: this.configService.getOrThrow<CookieSameSite>('COOKIE_SAME_SITE'),
+      httpOnly: this.configService.getOrThrow<boolean>('COOKIE_HTTPONLY'),
     };
   }
 
-  setRefreshCookie(res: Response, token: string): void {
-    res.cookie(REFRESH_COOKIE_NAME, token, this.cookieOptions);
+  setRefreshCookie(res: Response, token: string, expires: Date): void {
+    const maxAge = expires.getTime() - Date.now();
+    res.cookie(REFRESH_COOKIE_NAME, token, { ...this.cookieOptions, maxAge });
   }
 
   clearRefreshCookie(res: Response): void {

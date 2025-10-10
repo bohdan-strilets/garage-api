@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 
+import { PasswordModule } from '@modules/password';
+
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
@@ -10,11 +12,11 @@ import { LocalStrategy } from './strategies/local.strategy';
 
 import { CryptoModule } from '../crypto';
 import { SessionsModule } from '../sessions';
-import { CookieAdapter } from '../token';
+import { CookieAdapter, TokenModule } from '../token';
 import { UserModule } from '../user';
 
 @Module({
-  imports: [UserModule, SessionsModule, CryptoModule],
+  imports: [UserModule, SessionsModule, CryptoModule, PasswordModule, TokenModule],
   controllers: [AuthController],
   providers: [
     AuthService,

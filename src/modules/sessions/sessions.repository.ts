@@ -12,9 +12,9 @@ import {
 } from '@common/pagination';
 import { ListParams, PaginatedResult } from '@common/pagination';
 
-import { CreateSessionDto } from './dto/create-session.dto';
 import { SessionStatus } from './enums/session-status.enum';
 import { Session, SessionDocument } from './schemas/session.schema';
+import { CreateSessionInput } from './types/create-session.input.type';
 import { Device } from './types/device.type';
 
 @Injectable()
@@ -27,20 +27,22 @@ export class SessionsRepository {
 
   private objectIdToString = (id: Types.ObjectId) => id.toString();
 
-  async createSession(dto: CreateSessionDto): Promise<SessionDocument> {
+  async createSession(input: CreateSessionInput): Promise<SessionDocument> {
     const payload = {
-      user: dto.userId,
-      refreshTokenHash: dto.refreshTokenHash,
-      refreshExpiresAt: dto.refreshExpiresAt,
-      device: dto.device,
-      familyId: dto.familyId ?? this.generateFamilyId(),
+      sid: input.sid,
+      user: input.userId,
+      refreshTokenHash: input.refreshTokenHash,
+      refreshExpiresAt: input.refreshExpiresAt,
+      device: input.device,
+      familyId: input.familyId ?? this.generateFamilyId(),
     };
 
     return await this.sessionModel.create(payload);
   }
 
-  async findById(sessionId: string): Promise<SessionDocument | null> {
-    return await this.sessionModel.findById(sessionId).exec();
+  async findBySid(sessionId: string): Promise<SessionDocument | null> {
+    const filter = { sid: sessionId };
+    return await this.sessionModel.findOne(filter).exec();
   }
 
   async findActiveByRefreshHash(refreshTokenHash: string): Promise<SessionDocument | null> {
@@ -70,7 +72,7 @@ export class SessionsRepository {
     nextRefreshExpiresAt: Date,
   ): Promise<SessionDocument | null> {
     const now = this.getNow();
-    const session = await this.findById(sessionId);
+    const session = await this.findBySid(sessionId);
 
     if (
       !session ||

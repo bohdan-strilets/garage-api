@@ -4,10 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as argon from 'argon2';
 
+import { getNow } from '@common/now-provider/get-now';
+
 @Injectable()
 export class CryptoService {
   private passwordOptions: argon.Options = {};
   private tokenOptions: argon.Options = {};
+
+  private now = getNow();
 
   constructor(private readonly configService: ConfigService) {
     const memoryCost = Number(this.configService.get<number>('HASH_MEMORY_COST', 65536));
@@ -33,7 +37,11 @@ export class CryptoService {
   }
 
   async verifyPassword(hash: string, password: string): Promise<boolean> {
-    return await argon.verify(hash, password);
+    try {
+      return await argon.verify(hash, password);
+    } catch {
+      return false;
+    }
   }
 
   async hashToken(token: string): Promise<string> {
@@ -41,7 +49,11 @@ export class CryptoService {
   }
 
   async verifyToken(hash: string, token: string): Promise<boolean> {
-    return await argon.verify(hash, token);
+    try {
+      return await argon.verify(hash, token);
+    } catch {
+      return false;
+    }
   }
 
   needsPasswordRehash(hash: string): boolean {
@@ -52,7 +64,7 @@ export class CryptoService {
     return argon.needsRehash(hash, this.tokenOptions);
   }
 
-  generateToken(length = 32): string {
-    return randomBytes(length).toString('hex');
+  generateResetToken(): string {
+    return randomBytes(32).toString('hex');
   }
 }

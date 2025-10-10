@@ -4,11 +4,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { Strategy } from 'passport-jwt';
 
-import { CryptoService } from '@modules/crypto';
 import { SessionsService } from '@modules/sessions';
 import { SessionStatus } from '@modules/sessions/enums/session-status.enum';
 import { CookieAdapter } from '@modules/token';
 import { TokensType } from '@modules/token/enums/tokens-type.enum';
+import { TokenService } from '@modules/token/token.service';
 import { Payload } from '@modules/token/types/payload.type';
 
 import { getNow } from '@common/now-provider/get-now';
@@ -20,8 +20,8 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
   constructor(
     private readonly cookieAdapter: CookieAdapter,
     private readonly sessionsService: SessionsService,
-    private readonly cryptoService: CryptoService,
     private readonly configService: ConfigService,
+    private readonly tokenService: TokenService,
   ) {
     super({
       jwtFromRequest: (req: Request) => cookieAdapter.getRefreshCookie(req),
@@ -44,16 +44,16 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
       throw new UnauthorizedException('Unauthorized');
     }
 
-    const session = await this.sessionsService.getById(payload.sid);
+    const session = await this.sessionsService.getBySid(payload.sid);
     const now = getNow();
 
     if (!session || session.refreshExpiresAt < now || session.status !== SessionStatus.ACTIVE) {
       throw new UnauthorizedException('Unauthorized');
     }
 
-    const isTokenValid = await this.cryptoService.verifyToken(
-      session.refreshTokenHash,
+    const isTokenValid = await this.tokenService.verifyHashedRefreshToken(
       refreshToken,
+      session.refreshTokenHash,
     );
 
     if (!isTokenValid) {

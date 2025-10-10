@@ -9,6 +9,9 @@ import { SessionStatus } from '../enums/session-status.enum';
 export class Session {
   _id: Types.ObjectId;
 
+  @Prop({ type: String, required: true })
+  sid: string;
+
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   user: Types.ObjectId;
 
@@ -49,3 +52,4 @@ SessionSchema.index({ refreshTokenHash: 1 }, { unique: true });
 SessionSchema.index({ refreshExpiresAt: 1 }, { expireAfterSeconds: 0 });
 SessionSchema.index({ user: 1, lastSeenAt: -1 });
 SessionSchema.index({ familyId: 1 });
+SessionSchema.index({ sid: 1 }, { unique: true });

@@ -1,6 +1,7 @@
-import { Device } from '../types/device.type';
+import { Device } from './device.type';
 
-export type CreateSessionDto = {
+export type CreateSessionInput = {
+  sid: string;
   userId: string;
   refreshTokenHash: string;
   refreshExpiresAt: Date;
