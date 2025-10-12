@@ -40,8 +40,8 @@ export const validationEnv = Joi.object({
   JWT_REFRESH_EXPIRES_DAYS: Joi.string().default('30d'),
 
   //  COOKIE
-  COOKIE_PATH: Joi.string().default('/'),
-  COOKIE_DOMAIN: Joi.string().default('localhost'),
+  // COOKIE_PATH: Joi.string().default('/'),
+  // COOKIE_DOMAIN: Joi.string().default('localhost'),
   COOKIE_SECURE: Joi.boolean().default(false),
   COOKIE_SAME_SITE: Joi.string()
     .valid(...sameSite)

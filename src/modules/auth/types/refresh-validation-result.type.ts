@@ -1,7 +1,8 @@
 import { SessionDocument } from '@modules/sessions/schemas/session.schema';
-import { Payload } from '@modules/token/types/payload.type';
+
+import { AuthUser } from './auth-user.type';
 
 export type RefreshValidationResult = {
-  payload: Payload;
+  user: AuthUser;
   session: SessionDocument;
 };

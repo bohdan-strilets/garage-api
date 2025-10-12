@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 
 import { PasswordModule } from '@modules/password';
 
@@ -16,7 +17,14 @@ import { CookieAdapter, TokenModule } from '../token';
 import { UserModule } from '../user';
 
 @Module({
-  imports: [UserModule, SessionsModule, CryptoModule, PasswordModule, TokenModule],
+  imports: [
+    UserModule,
+    SessionsModule,
+    CryptoModule,
+    PasswordModule,
+    TokenModule,
+    PassportModule.register({}),
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,

@@ -30,6 +30,6 @@ export class CookieAdapter {
   }
 
   getRefreshCookie(req: Request): string | null {
-    return req.cookies[REFRESH_COOKIE_NAME] || null;
+    return req.cookies?.[REFRESH_COOKIE_NAME] || null;
   }
 }

@@ -13,6 +13,7 @@ import { Payload } from '@modules/token/types/payload.type';
 
 import { getNow } from '@common/now-provider/get-now';
 
+import { AuthUser } from '../types/auth-user.type';
 import { RefreshValidationResult } from '../types/refresh-validation-result.type';
 
 @Injectable()
@@ -25,9 +26,9 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
   ) {
     super({
       jwtFromRequest: (req: Request) => cookieAdapter.getRefreshCookie(req),
-      secretOrKey: configService.get<string>('JWT_REFRESH_SECRET'),
-      issuer: configService.get<string>('JWT_ISSUER'),
-      audience: configService.get<string>('JWT_AUDIENCE'),
+      secretOrKey: configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+      issuer: configService.getOrThrow<string>('JWT_ISSUER'),
+      audience: configService.getOrThrow<string>('JWT_AUDIENCE'),
       ignoreExpiration: false,
       passReqToCallback: true,
     });
@@ -47,13 +48,13 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
     const session = await this.sessionsService.getBySid(payload.sid);
     const now = getNow();
 
-    if (!session || session.refreshExpiresAt < now || session.status !== SessionStatus.ACTIVE) {
+    if (!session || session.refreshExpiresAt <= now || session.status !== SessionStatus.ACTIVE) {
       throw new UnauthorizedException('Unauthorized');
     }
 
     const isTokenValid = await this.tokenService.verifyHashedRefreshToken(
-      refreshToken,
       session.refreshTokenHash,
+      refreshToken,
     );
 
     if (!isTokenValid) {
@@ -61,6 +62,12 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
       throw new UnauthorizedException('Unauthorized');
     }
 
-    return { payload, session };
+    const authUser: AuthUser = {
+      sub: payload.sub,
+      sid: payload.sid,
+      role: payload.role,
+    };
+
+    return { user: authUser, session };
   }
 }

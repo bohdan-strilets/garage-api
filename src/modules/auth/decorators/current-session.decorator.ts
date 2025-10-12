@@ -1,12 +1,16 @@
 import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 
-export const CurrentSession = createParamDecorator((_data: unknown, ctx: ExecutionContext) => {
-  const req = ctx.switchToHttp().getRequest();
-  const session = req.session;
+import { SessionDocument } from '@modules/sessions/schemas/session.schema';
 
-  if (!session) {
-    throw new UnauthorizedException('Session not found or inactive');
-  }
+export const CurrentSession = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): SessionDocument => {
+    const req = ctx.switchToHttp().getRequest();
+    const session = req.session;
 
-  return session;
-});
+    if (!session) {
+      throw new UnauthorizedException('Session not found or inactive');
+    }
+
+    return session;
+  },
+);

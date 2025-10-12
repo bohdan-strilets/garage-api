@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 
 import { getNow } from '@common/now-provider/get-now';
 import { ListParams, PaginatedResult } from '@common/pagination';
@@ -16,7 +15,7 @@ export class SessionsService {
   constructor(private readonly sessionsRepository: SessionsRepository) {}
 
   generateSid(): string {
-    return uuidv4();
+    return this.sessionsRepository.generateSid();
   }
 
   async createInitial(input: CreateSessionInput): Promise<SessionDocument> {
@@ -25,17 +24,19 @@ export class SessionsService {
   }
 
   async rotateBySession(
-    sessionId: string,
+    sid: string,
     nextRefreshTokenHash: string,
     nextRefreshExpiresAt: Date,
   ): Promise<SessionDocument> {
-    if (nextRefreshExpiresAt <= getNow()) {
+    const now = getNow();
+
+    if (nextRefreshExpiresAt <= now) {
       this.logger.debug('Invalid refresh token expiration');
       throw new Error('Invalid refresh token expiration');
     }
 
     const newSession = await this.sessionsRepository.rotate(
-      sessionId,
+      sid,
       nextRefreshTokenHash,
       nextRefreshExpiresAt,
     );
@@ -49,8 +50,8 @@ export class SessionsService {
     return newSession;
   }
 
-  async revokeById(sessionId: string): Promise<SessionDocument> {
-    const revokedSession = await this.sessionsRepository.revoke(sessionId);
+  async revokeById(sid: string): Promise<SessionDocument> {
+    const revokedSession = await this.sessionsRepository.revoke(sid);
 
     if (!revokedSession) {
       this.logger.warn('Failed to revoke session');
@@ -71,8 +72,8 @@ export class SessionsService {
     return await this.sessionsRepository.revokeFamily(familyId);
   }
 
-  async handleReplayBySession(sessionId: string): Promise<void> {
-    const session = await this.sessionsRepository.findBySid(sessionId);
+  async handleReplayBySession(sid: string): Promise<void> {
+    const session = await this.sessionsRepository.findBySid(sid);
 
     if (!session) {
       this.logger.debug('Session not found for replay handling');
@@ -86,14 +87,14 @@ export class SessionsService {
     return await this.sessionsRepository.findActiveByRefreshHash(refreshHash);
   }
 
-  async getBySid(sessionId: string): Promise<SessionDocument | null> {
-    return await this.sessionsRepository.findBySid(sessionId);
+  async getBySid(sid: string): Promise<SessionDocument | null> {
+    return await this.sessionsRepository.findBySid(sid);
   }
 
-  async markActivity(sessionId: string, device: Device): Promise<void> {
+  async markActivity(sid: string, device: Device): Promise<void> {
     try {
       this.logger.debug('Marking session activity');
-      this.sessionsRepository.markLastSeen(sessionId, device);
+      this.sessionsRepository.markLastSeen(sid, device);
     } catch (error) {
       this.logger.error('Failed to mark session activity', error);
     }

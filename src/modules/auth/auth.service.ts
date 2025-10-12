@@ -4,6 +4,7 @@ import { Response } from 'express';
 
 import { PasswordService } from '@modules/password';
 import { SessionsService } from '@modules/sessions';
+import { SessionDocument } from '@modules/sessions/schemas/session.schema';
 import { CreateSessionInput } from '@modules/sessions/types/create-session.input.type';
 import { Device } from '@modules/sessions/types/device.type';
 import { CookieAdapter } from '@modules/token';
@@ -14,6 +15,7 @@ import { SafeUser } from '@modules/user/types/safe-user.type';
 
 import { RegisterDto } from './dto/register.dto';
 import { AuthResponse } from './types/auth-response.type';
+import { AuthUser } from './types/auth-user.type';
 
 @Injectable()
 export class AuthService {
@@ -87,6 +89,29 @@ export class AuthService {
     };
 
     await this.sessionsService.createInitial(sessionInput);
+
+    this.cookieAdapter.setRefreshCookie(res, tokens.refreshToken, tokens.refreshExpiresAt);
+
+    const safeUser = await this.userService.getByIdSafe(userId);
+
+    return {
+      accessToken: tokens.accessToken,
+      accessExpiresAt: tokens.accessExpiresAt,
+      user: safeUser,
+    };
+  }
+
+  async refresh(res: Response, session: SessionDocument, user: AuthUser): Promise<AuthResponse> {
+    const { role: userRole, sid, sub: userId } = user;
+
+    const tokens = await this.tokenService.issuePair(userId, userRole, sid);
+    const refreshTokenHash = await this.tokenService.hashRefreshToken(tokens.refreshToken);
+
+    await this.sessionsService.rotateBySession(
+      session.sid,
+      refreshTokenHash,
+      tokens.refreshExpiresAt,
+    );
 
     this.cookieAdapter.setRefreshCookie(res, tokens.refreshToken, tokens.refreshExpiresAt);
 

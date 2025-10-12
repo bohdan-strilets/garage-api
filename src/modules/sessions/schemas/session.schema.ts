@@ -13,7 +13,7 @@ export class Session {
   sid: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  user: Types.ObjectId;
+  userId: Types.ObjectId;
 
   @Prop({ enum: SessionStatus, required: true, default: SessionStatus.ACTIVE })
   status: SessionStatus;

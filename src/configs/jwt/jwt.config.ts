@@ -14,7 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
           audience: configService.getOrThrow<string>('JWT_AUDIENCE'),
         },
         verifyOptions: {
-          algorithm: ['HS256'],
+          algorithms: ['HS256'],
           issuer: configService.getOrThrow<string>('JWT_ISSUER'),
           audience: configService.getOrThrow<string>('JWT_AUDIENCE'),
           clockTolerance: parseInt(configService.get<string>('JWT_TOLERANCE')) || 0,

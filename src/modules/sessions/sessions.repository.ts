@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getNow } from '@common/now-provider/get-now';
@@ -23,14 +23,18 @@ export class SessionsRepository {
 
   private getNow = () => getNow();
 
-  private generateFamilyId = () => uuidv4();
+  private generateFamilyId(): string {
+    return uuidv4();
+  }
 
-  private objectIdToString = (id: Types.ObjectId) => id.toString();
+  generateSid(): string {
+    return uuidv4();
+  }
 
   async createSession(input: CreateSessionInput): Promise<SessionDocument> {
-    const payload = {
+    const payload: CreateSessionInput = {
       sid: input.sid,
-      user: input.userId,
+      userId: input.userId,
       refreshTokenHash: input.refreshTokenHash,
       refreshExpiresAt: input.refreshExpiresAt,
       device: input.device,
@@ -40,8 +44,8 @@ export class SessionsRepository {
     return await this.sessionModel.create(payload);
   }
 
-  async findBySid(sessionId: string): Promise<SessionDocument | null> {
-    const filter = { sid: sessionId };
+  async findBySid(sid: string): Promise<SessionDocument | null> {
+    const filter = { sid };
     return await this.sessionModel.findOne(filter).exec();
   }
 
@@ -57,9 +61,9 @@ export class SessionsRepository {
     return await this.sessionModel.findOne(filter).exec();
   }
 
-  async replacedBy(sessionId: string, replacedBy: string): Promise<SessionDocument | null> {
+  async replacedBy(sid: string, replacedBy: string): Promise<SessionDocument | null> {
     const now = this.getNow();
-    const filter = { _id: sessionId, status: SessionStatus.ACTIVE, revokedAt: null };
+    const filter = { sid, status: SessionStatus.ACTIVE, revokedAt: null };
     const payload = { replacedBy, status: SessionStatus.REVOKED, revokedAt: now };
     const options = { new: true };
 
@@ -67,12 +71,12 @@ export class SessionsRepository {
   }
 
   async rotate(
-    sessionId: string,
+    sid: string,
     nextRefreshTokenHash: string,
     nextRefreshExpiresAt: Date,
   ): Promise<SessionDocument | null> {
     const now = this.getNow();
-    const session = await this.findBySid(sessionId);
+    const session = await this.findBySid(sid);
 
     if (
       !session ||
@@ -83,31 +87,31 @@ export class SessionsRepository {
       return null;
     }
 
-    const payload = {
-      user: session?.user,
-      familyId: session?.familyId,
+    const payload: CreateSessionInput = {
+      sid: this.generateSid(),
+      userId: session.userId.toString(),
+      familyId: session.familyId,
       refreshTokenHash: nextRefreshTokenHash,
       refreshExpiresAt: nextRefreshExpiresAt,
-      device: session?.device,
-      lastSeenAt: now,
+      device: session.device,
     };
 
-    const newSession = await this.sessionModel.create(payload);
+    const newSession = await this.createSession(payload);
+    await this.markLastSeen(newSession.sid, session.device);
 
-    const newSessionId = this.objectIdToString(newSession._id);
-    const replaced = await this.replacedBy(sessionId, newSessionId);
+    const replaced = await this.replacedBy(sid, newSession.sid);
 
     if (!replaced) {
-      await this.sessionModel.findByIdAndDelete(newSessionId).exec();
+      await this.sessionModel.findOneAndDelete({ sid: newSession.sid }).exec();
       return null;
     }
 
     return newSession;
   }
 
-  async revoke(sessionId: string): Promise<SessionDocument | null> {
+  async revoke(sid: string): Promise<SessionDocument | null> {
     const now = this.getNow();
-    const filter = { _id: sessionId };
+    const filter = { sid };
     const payload = { status: SessionStatus.REVOKED, revokedAt: now };
     const options = { new: true };
 
@@ -138,9 +142,9 @@ export class SessionsRepository {
     return (await this.sessionModel.updateMany(filter, payload)).modifiedCount;
   }
 
-  async markLastSeen(sessionId: string, device: Device): Promise<SessionDocument | null> {
+  async markLastSeen(sid: string, device: Device): Promise<SessionDocument | null> {
     const now = this.getNow();
-    const filter = { _id: sessionId };
+    const filter = { sid };
     const payload = {
       $set: {
         lastSeenAt: now,
