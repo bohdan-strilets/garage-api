@@ -133,7 +133,7 @@ export class SessionsRepository {
   async revokeAllForUser(userId: string): Promise<number> {
     const now = this.getNow();
     const filter = {
-      user: userId,
+      userId,
       revokedAt: null,
       status: { $ne: SessionStatus.REVOKED },
     };
@@ -172,7 +172,7 @@ export class SessionsRepository {
     const sortBy = getSortBy(sort, order);
 
     const filter = {
-      user: userId,
+      userId,
       status: { $in: [SessionStatus.ACTIVE, SessionStatus.REVOKED] },
       refreshExpiresAt: { $gt: now },
     };

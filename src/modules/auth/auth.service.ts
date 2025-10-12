@@ -16,6 +16,7 @@ import { SafeUser } from '@modules/user/types/safe-user.type';
 import { RegisterDto } from './dto/register.dto';
 import { AuthResponse } from './types/auth-response.type';
 import { AuthUser } from './types/auth-user.type';
+import { LogoutResponse } from './types/logout-response.type';
 
 @Injectable()
 export class AuthService {
@@ -122,5 +123,23 @@ export class AuthService {
       accessExpiresAt: tokens.accessExpiresAt,
       user: safeUser,
     };
+  }
+
+  async logout(res: Response, user: AuthUser): Promise<LogoutResponse> {
+    const { sid } = user;
+    await this.sessionsService.revokeBySid(sid);
+
+    this.cookieAdapter.clearRefreshCookie(res);
+    return { ok: true };
+  }
+
+  async logoutAll(res: Response, userId: string): Promise<LogoutResponse> {
+    await this.sessionsService.revokeAllForUser(userId);
+    this.cookieAdapter.clearRefreshCookie(res);
+    return { ok: true };
+  }
+
+  async me(userId: string): Promise<SafeUser> {
+    return await this.userService.getByIdSafe(userId);
   }
 }

@@ -50,7 +50,7 @@ export class SessionsService {
     return newSession;
   }
 
-  async revokeById(sid: string): Promise<SessionDocument> {
+  async revokeBySid(sid: string): Promise<SessionDocument> {
     const revokedSession = await this.sessionsRepository.revoke(sid);
 
     if (!revokedSession) {
