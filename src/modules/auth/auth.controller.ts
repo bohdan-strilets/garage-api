@@ -6,13 +6,13 @@ import { Device } from '@modules/sessions/types/device.type';
 import { SafeUser } from '@modules/user/types/safe-user.type';
 
 import { AuthService } from './auth.service';
+import { Auth } from './decorators/auth.decorator';
 import { CurrentDevice } from './decorators/current-device.decorator';
 import { CurrentSession } from './decorators/current-session.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { CurrentUserId } from './decorators/current-user-id.decorator';
 import { Public } from './decorators/public.decorator';
 import { RegisterDto } from './dto/register.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthResponse } from './types/auth-response.type';
@@ -59,7 +59,7 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @Auth()
   async logout(
     @Res({ passthrough: true }) res: Response,
     @CurrentUser() user: AuthUser,
@@ -69,7 +69,7 @@ export class AuthController {
 
   @Post('logout-all')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @Auth()
   async logoutAll(
     @Res({ passthrough: true }) res: Response,
     @CurrentUserId() userId: string,
@@ -78,7 +78,7 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @Auth()
   async me(@CurrentUserId() userId: string): Promise<SafeUser> {
     return await this.authService.me(userId);
   }
