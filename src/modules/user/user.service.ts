@@ -52,6 +52,16 @@ export class UserService {
     return user;
   }
 
+  async getByIdForAuth(userId: string): Promise<SecurityUser> {
+    const user = await this.userRepository.findById(userId, UserProjections.SECURITY);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
   async isEmailAvailable(email: string): Promise<boolean> {
     const exists = await this.userRepository.existsByEmail(email);
     return !exists;
