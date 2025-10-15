@@ -126,8 +126,8 @@ export class AuthService {
   }
 
   async logout(res: Response, user: AuthUser): Promise<LogoutResponse> {
-    const { sid } = user;
-    await this.sessionsService.revokeBySid(sid);
+    const { sid, sub: userId } = user;
+    await this.sessionsService.revokeBySid(sid, userId);
 
     this.cookieAdapter.clearRefreshCookie(res);
     return { ok: true };

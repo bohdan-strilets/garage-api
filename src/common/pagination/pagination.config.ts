@@ -1,7 +1,7 @@
 import { ListParams, Pagination, SortOrder } from './pagination.type';
 
 export const normalizePaginationParams = (
-  params: ListParams,
+  params: ListParams = {},
   defaults = { page: 1, limit: 20, sort: 'createdAt', order: SortOrder.DESC },
   maxLimit = 100,
 ): Pagination => {

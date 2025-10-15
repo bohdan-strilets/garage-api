@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { getNow } from '@common/now-provider/get-now';
 import { ListParams, PaginatedResult } from '@common/pagination';
@@ -13,6 +13,8 @@ export class SessionsService {
   private readonly logger = new Logger(SessionsService.name);
 
   constructor(private readonly sessionsRepository: SessionsRepository) {}
+
+  // ================= Internal methods for session management =================
 
   generateSid(): string {
     return this.sessionsRepository.generateSid();
@@ -50,8 +52,8 @@ export class SessionsService {
     return newSession;
   }
 
-  async revokeBySid(sid: string): Promise<SessionDocument> {
-    const revokedSession = await this.sessionsRepository.revoke(sid);
+  async revokeBySid(sid: string, userId: string): Promise<SessionDocument> {
+    const revokedSession = await this.sessionsRepository.revoke(sid, userId);
 
     if (!revokedSession) {
       this.logger.warn('Failed to revoke session');
@@ -94,9 +96,9 @@ export class SessionsService {
   async markActivity(sid: string, device: Device): Promise<void> {
     try {
       this.logger.debug('Marking session activity');
-      this.sessionsRepository.markLastSeen(sid, device);
-    } catch (error) {
-      this.logger.error('Failed to mark session activity', error);
+      await this.sessionsRepository.markLastSeen(sid, device);
+    } catch {
+      this.logger.error('Failed to mark session activity');
     }
   }
 
@@ -105,5 +107,38 @@ export class SessionsService {
     meta: ListParams,
   ): Promise<PaginatedResult<SessionDocument>> {
     return await this.sessionsRepository.listUserSessions(userId, meta);
+  }
+
+  // ============ Public methods for user-facing session management ============
+
+  async findMySessions(
+    userId: string,
+    listParams: ListParams,
+  ): Promise<PaginatedResult<SessionDocument>> {
+    return await this.sessionsRepository.listUserSessions(userId, listParams);
+  }
+
+  async getByIdOwned(sid: string, userId: string): Promise<SessionDocument> {
+    const session = await this.sessionsRepository.getBySidOwned(userId, sid);
+
+    if (!session) {
+      throw new NotFoundException('Session not found');
+    }
+
+    return session;
+  }
+
+  async revoke(sid: string, userId: string): Promise<boolean> {
+    const session = await this.sessionsRepository.revoke(sid, userId);
+
+    if (!session) {
+      throw new NotFoundException('Session not found');
+    }
+
+    return !!session;
+  }
+
+  async revokeOthers(currentSid: string, userId: string): Promise<number> {
+    return await this.sessionsRepository.revokeOthers(currentSid, userId);
   }
 }

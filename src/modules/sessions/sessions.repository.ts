@@ -21,7 +21,9 @@ import { Device } from './types/device.type';
 export class SessionsRepository {
   constructor(@InjectModel(Session.name) private sessionModel: Model<SessionDocument>) {}
 
-  private getNow = () => getNow();
+  private getNow(): Date {
+    return getNow();
+  }
 
   private generateFamilyId(): string {
     return uuidv4();
@@ -109,9 +111,9 @@ export class SessionsRepository {
     return newSession;
   }
 
-  async revoke(sid: string): Promise<SessionDocument | null> {
+  async revoke(sid: string, userId: string): Promise<SessionDocument | null> {
     const now = this.getNow();
-    const filter = { sid };
+    const filter = { sid, userId };
     const payload = { status: SessionStatus.REVOKED, revokedAt: now };
     const options = { new: true };
 
@@ -138,8 +140,24 @@ export class SessionsRepository {
       status: { $ne: SessionStatus.REVOKED },
     };
     const payload = { status: SessionStatus.REVOKED, revokedAt: now };
+    const count = (await this.sessionModel.updateMany(filter, payload)).modifiedCount;
 
-    return (await this.sessionModel.updateMany(filter, payload)).modifiedCount;
+    return count;
+  }
+
+  async revokeOthers(currentSid: string, userId: string): Promise<number> {
+    const now = this.getNow();
+    const filter = {
+      sid: { $ne: currentSid },
+      userId,
+      revokedAt: null,
+      status: { $ne: SessionStatus.REVOKED },
+    };
+
+    const payload = { status: SessionStatus.REVOKED, revokedAt: now };
+    const count = (await this.sessionModel.updateMany(filter, payload)).modifiedCount;
+
+    return count;
   }
 
   async markLastSeen(sid: string, device: Device): Promise<SessionDocument | null> {
@@ -171,11 +189,7 @@ export class SessionsRepository {
     const skip = getSkip(page, limit);
     const sortBy = getSortBy(sort, order);
 
-    const filter = {
-      userId,
-      status: { $in: [SessionStatus.ACTIVE, SessionStatus.REVOKED] },
-      refreshExpiresAt: { $gt: now },
-    };
+    const filter = { userId, status: SessionStatus.ACTIVE, refreshExpiresAt: { $gt: now } };
 
     const items = await this.sessionModel.find(filter).sort(sortBy).skip(skip).limit(limit).exec();
     const total = await this.sessionModel.countDocuments(filter).exec();
@@ -191,8 +205,18 @@ export class SessionsRepository {
     userId: string,
     deviceId: string,
   ): Promise<SessionDocument | null> {
-    const filter = { user: userId, device: { deviceId }, status: SessionStatus.ACTIVE };
+    const filter = {
+      userId,
+      'device.deviceId': deviceId,
+      'status': SessionStatus.ACTIVE,
+      'revokedAt': null,
+    };
 
     return await this.sessionModel.findOne(filter).exec();
+  }
+
+  async getBySidOwned(userId: string, sid: string): Promise<SessionDocument | null> {
+    const filter = { userId, sid };
+    return this.sessionModel.findOne(filter).exec();
   }
 }
