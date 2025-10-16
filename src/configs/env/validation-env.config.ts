@@ -47,4 +47,18 @@ export const validationEnv = Joi.object({
     .valid(...sameSite)
     .default(CookieSameSite.LAX),
   COOKIE_HTTPONLY: Joi.boolean().default(true),
+
+  // Mail
+  MAIL_FROM_NAME: Joi.string().default('No Reply'),
+  MAIL_FROM_EMAIL: Joi.string().email().required(),
+  MAIL_SMTP_HOST: Joi.string().required(),
+  MAIL_SMTP_PORT: Joi.number().integer().min(1).required(),
+  MAIL_SMTP_SECURE: Joi.boolean().default(false),
+  MAIL_SMTP_USER: Joi.string().required(),
+  MAIL_SMTP_PASSWORD: Joi.string().required(),
+  LOCALE_DEFAULT: Joi.string().default('pl-PL'),
+
+  // Base URLs
+  API_BASE_URL: Joi.string().uri().required(),
+  CLIENT_BASE_URL: Joi.string().uri().required(),
 });

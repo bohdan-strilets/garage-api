@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Email Verification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #222;
+        background: #fafafa;
+        padding: 20px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #007bff;
+        color: #fff !important;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    {{#if userName}}
+    <p>Hello {{userName}},</p>
+    {{else}}
+    <p>Hello,</p>
+    {{/if}}
+
+    <p>
+      Thank you for registering! Please confirm your email address by clicking the button below:
+    </p>
+
+    <p>
+      <a href="{{verifyUrl}}" class="button">Verify Email</a>
+    </p>
+
+    <p>If the button doesn't work, copy and paste this link into your browser:</p>
+    <p><a href="{{verifyUrl}}">{{verifyUrl}}</a></p>
+
+    <div class="footer">
+      <p>This link will expire in 24 hours.</p>
+    </div>
+  </body>
+</html>

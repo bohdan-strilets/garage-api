@@ -1,0 +1,1 @@
+{{#if userName}}Hello {{userName}}, {{/if}}please confirm your email address

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Підтвердження електронної пошти</title>
+  </head>
+  <body>
+    {{#if userName}}
+    <p>Привіт, {{userName}}!</p>
+    {{else}}
+    <p>Привіт!</p>
+    {{/if}}
+
+    <p>Дякуємо за реєстрацію! Натисни кнопку нижче, щоб підтвердити свою електронну адресу:</p>
+
+    <p><a href="{{verifyUrl}}">Підтвердити пошту</a></p>
+
+    <p>Якщо кнопка не працює, скопіюй це посилання в браузер:</p>
+    <p><a href="{{verifyUrl}}">{{verifyUrl}}</a></p>
+  </body>
+</html>

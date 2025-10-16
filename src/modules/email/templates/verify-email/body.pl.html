@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Potwierdzenie adresu e-mail</title>
+  </head>
+  <body>
+    {{#if userName}}
+    <p>Cześć {{userName}},</p>
+    {{else}}
+    <p>Cześć,</p>
+    {{/if}}
+
+    <p>Dziękujemy za rejestrację! Kliknij poniższy przycisk, aby potwierdzić swój adres e-mail:</p>
+
+    <p><a href="{{verifyUrl}}">Potwierdź adres e-mail</a></p>
+
+    <p>Jeśli przycisk nie działa, skopiuj i wklej ten link do przeglądarki:</p>
+    <p><a href="{{verifyUrl}}">{{verifyUrl}}</a></p>
+  </body>
+</html>
