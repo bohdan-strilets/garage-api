@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 
 import { CryptoService } from '@modules/crypto';
 
-import { getTimestamp } from '@common/now-provider/get-now';
 import { daysToMilliseconds, hoursToMilliseconds } from '@common/now-provider/time-transformer';
 
 import { lowerCase, number, symbol, upperCase } from './password.rules';
@@ -88,23 +87,6 @@ export class PasswordService {
     const expiresAt = new Date(Date.now() + milliseconds);
 
     return { tokenPlain, tokenHash, expiresAt };
-  }
-
-  async verifyResetToken(
-    hash: string,
-    storedHash: string | null | undefined,
-    expiresAt?: Date | null,
-  ): Promise<boolean> {
-    if (!storedHash || !expiresAt) {
-      return false;
-    }
-
-    const now = getTimestamp();
-    if (expiresAt.getTime() < now) {
-      return false;
-    }
-
-    return await this.cryptoService.verifyToken(storedHash, hash);
   }
 
   computePasswordDates(base: Date = new Date()): ComputePasswordDates {

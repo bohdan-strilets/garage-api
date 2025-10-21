@@ -1,17 +1,13 @@
-import { randomBytes } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as argon from 'argon2';
 
-import { getNow } from '@common/now-provider/get-now';
-
 @Injectable()
 export class CryptoService {
   private passwordOptions: argon.Options = {};
   private tokenOptions: argon.Options = {};
-
-  private now = getNow();
 
   constructor(private readonly configService: ConfigService) {
     const memoryCost = Number(this.configService.get<number>('HASH_MEMORY_COST', 65536));
@@ -44,27 +40,15 @@ export class CryptoService {
     }
   }
 
-  async hashToken(token: string): Promise<string> {
-    return await argon.hash(token, this.tokenOptions);
-  }
-
-  async verifyToken(hash: string, token: string): Promise<boolean> {
-    try {
-      return await argon.verify(hash, token);
-    } catch {
-      return false;
-    }
-  }
-
   needsPasswordRehash(hash: string): boolean {
     return argon.needsRehash(hash, this.passwordOptions);
   }
 
-  needsTokenRehash(hash: string): boolean {
-    return argon.needsRehash(hash, this.tokenOptions);
-  }
-
   generateResetToken(): string {
     return randomBytes(32).toString('hex');
+  }
+
+  async hashToken(token: string): Promise<string> {
+    return createHash('sha256').update(token).digest('hex');
   }
 }

@@ -1,8 +1,21 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  Redirect,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
 import { SessionDocument } from '@modules/sessions/schemas/session.schema';
 import { Device } from '@modules/sessions/types/device.type';
+import { UserService } from '@modules/user';
 import { SafeUser } from '@modules/user/types/safe-user.type';
 
 import { AuthService } from './auth.service';
@@ -21,7 +34,11 @@ import { LogoutResponse } from './types/logout-response.type';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Public()
   @Post('register')
@@ -81,5 +98,14 @@ export class AuthController {
   @Auth()
   async me(@CurrentUserId() userId: string): Promise<SafeUser> {
     return await this.authService.me(userId);
+  }
+
+  @Public()
+  @Get('verify')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Redirect('http://localhost:3000/email-verified', HttpStatus.FOUND)
+  async verifyEmail(@Query('token') token: string): Promise<boolean> {
+    await this.userService.verifyEmail(token);
+    return;
   }
 }

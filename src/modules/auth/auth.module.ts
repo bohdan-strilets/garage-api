@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 
+import { EmailModule } from '@modules/email';
 import { PasswordModule } from '@modules/password';
 
 import { AuthController } from './auth.controller';
@@ -23,6 +24,7 @@ import { UserModule } from '../user';
     CryptoModule,
     PasswordModule,
     TokenModule,
+    EmailModule,
     PassportModule.register({}),
   ],
   controllers: [AuthController],

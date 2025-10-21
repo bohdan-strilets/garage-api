@@ -3,4 +3,5 @@ export type CreateUserInput = {
   firstName: string;
   lastName: string;
   hashedPassword: string;
+  verifyEmailToken: string;
 };

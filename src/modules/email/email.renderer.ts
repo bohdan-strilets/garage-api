@@ -1,7 +1,6 @@
-import { promises as fs } from 'node:fs';
+import * as fs from 'node:fs';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import Handlebars from 'handlebars';
 import { htmlToText } from 'html-to-text';
 
@@ -18,10 +17,7 @@ type RenderResult = {
 
 @Injectable()
 export class EmailRenderer {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly templates: EmailTemplates,
-  ) {}
+  constructor(private readonly templates: EmailTemplates) {}
 
   async render(
     templateId: TemplateId,
@@ -37,16 +33,15 @@ export class EmailRenderer {
       throw new BadRequestException(`Invalid payload for template "${templateId}": ${error}`);
     }
 
-    const vm: Record<string, any> = { ...value };
     const { subjectPath, bodyPath } = meta.pathsResolver(effectiveLocale);
 
     const [subjectTpl, bodyTpl] = await Promise.all([
-      fs.readFile(subjectPath, 'utf8'),
-      fs.readFile(bodyPath, 'utf8'),
+      fs.promises.readFile(subjectPath, 'utf8'),
+      fs.promises.readFile(bodyPath, 'utf8'),
     ]);
 
-    const subject = Handlebars.compile(subjectTpl)(vm).trim();
-    const html = Handlebars.compile(bodyTpl)(vm);
+    const subject = Handlebars.compile(subjectTpl)(value).trim();
+    const html = Handlebars.compile(bodyTpl)(value);
 
     const text = htmlToText(html, {
       wordwrap: 100,

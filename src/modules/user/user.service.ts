@@ -80,4 +80,8 @@ export class UserService {
   async createForAuth(input: CreateUserInput): Promise<User> {
     return await this.userRepository.create(input);
   }
+
+  async verifyEmail(rawToken: string): Promise<boolean> {
+    return await this.userRepository.verifyEmail(rawToken);
+  }
 }

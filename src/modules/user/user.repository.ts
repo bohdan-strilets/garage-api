@@ -3,8 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+import { CryptoService } from '@modules/crypto';
+
 import { getNow } from '@common/now-provider/get-now';
-import { daysToMilliseconds } from '@common/now-provider/time-transformer';
+import { daysToMilliseconds, minutesToMilliseconds } from '@common/now-provider/time-transformer';
 
 import { UserProjections } from './enums/user-projections.enum';
 import { userIdOnlyProjection } from './projections/user-id-only.projection';
@@ -21,6 +23,7 @@ export class UserRepository {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly configService: ConfigService,
+    private readonly cryptoService: CryptoService,
   ) {
     this.lifetimeDays = Number(this.configService.get<number>('PASSWORD_EXPIRATION_DAYS'));
   }
@@ -98,7 +101,13 @@ export class UserRepository {
   async create(input: CreateUserInput): Promise<User> {
     const normalizedEmail = this.normalizeEmail(input.email);
     const now = getNow();
+
     const passwordLifetimeDays = daysToMilliseconds(this.lifetimeDays);
+    const passwordExpiresAt = new Date(now.getTime() + passwordLifetimeDays);
+
+    const tokenHash = await this.cryptoService.hashToken(input.verifyEmailToken);
+    const tokenLifetimeMinutes = minutesToMilliseconds(15);
+    const tokenExpiresAt = new Date(now.getTime() + tokenLifetimeMinutes);
 
     const payload = {
       email: normalizedEmail,
@@ -110,11 +119,45 @@ export class UserRepository {
         password: {
           hashedPassword: input.hashedPassword,
           passwordUpdatedAt: now,
-          passwordExpiresAt: new Date(now.getTime() + passwordLifetimeDays),
+          passwordExpiresAt: passwordExpiresAt,
+        },
+        emailVerification: {
+          verificationTokenHash: tokenHash,
+          verificationTokenExpiresAt: tokenExpiresAt,
         },
       },
     };
 
     return await this.userModel.create(payload);
+  }
+
+  async update(userId: string, updateData: Partial<User>): Promise<void> {
+    const filter = { _id: this.normalizeObjectId(userId) };
+    const update = { $set: updateData };
+
+    await this.userModel.updateOne(filter, update).exec();
+  }
+
+  async verifyEmail(rawToken: string): Promise<boolean> {
+    const now = getNow();
+    const hash = await this.cryptoService.hashToken(rawToken);
+
+    const filter = {
+      'security.emailVerification.isVerified': false,
+      'security.emailVerification.verificationTokenHash': hash,
+      'security.emailVerification.verificationTokenExpiresAt': { $gt: now },
+    };
+
+    const update = {
+      $set: {
+        'security.emailVerification.isVerified': true,
+        'security.emailVerification.verificationTokenHash': null,
+        'security.emailVerification.verificationTokenExpiresAt': null,
+      },
+    };
+
+    const result = await this.userModel.updateOne(filter, update).exec();
+
+    return result ? true : false;
   }
 }

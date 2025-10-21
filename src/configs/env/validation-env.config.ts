@@ -56,6 +56,7 @@ export const validationEnv = Joi.object({
   MAIL_SMTP_SECURE: Joi.boolean().default(false),
   MAIL_SMTP_USER: Joi.string().required(),
   MAIL_SMTP_PASSWORD: Joi.string().required(),
+  MAIL_TEMPLATES_DIR: Joi.string().default('src/modules/email/templates'),
   LOCALE_DEFAULT: Joi.string().default('pl-PL'),
 
   // Base URLs

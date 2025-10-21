@@ -52,16 +52,6 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
       throw new UnauthorizedException('Unauthorized');
     }
 
-    const isTokenValid = await this.tokenService.verifyHashedRefreshToken(
-      session.refreshTokenHash,
-      refreshToken,
-    );
-
-    if (!isTokenValid) {
-      await this.sessionsService.handleReplayBySession(payload.sid);
-      throw new UnauthorizedException('Unauthorized');
-    }
-
     const authUser: AuthUser = {
       sub: payload.sub,
       sid: payload.sid,

@@ -2,6 +2,8 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
+import { CryptoService } from '@modules/crypto';
+import { EmailService } from '@modules/email';
 import { PasswordService } from '@modules/password';
 import { SessionsService } from '@modules/sessions';
 import { SessionDocument } from '@modules/sessions/schemas/session.schema';
@@ -20,7 +22,7 @@ import { LogoutResponse } from './types/logout-response.type';
 
 @Injectable()
 export class AuthService {
-  private readonly refreshExpirationDays: number;
+  private readonly apiBaseUrl: string;
 
   constructor(
     private readonly userService: UserService,
@@ -29,14 +31,14 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly configService: ConfigService,
     private readonly cookieAdapter: CookieAdapter,
+    private readonly cryptoService: CryptoService,
+    private readonly emailService: EmailService,
   ) {
-    this.refreshExpirationDays = parseInt(
-      this.configService.get<string>('JWT_REFRESH_EXPIRES_DAYS'),
-    );
+    this.apiBaseUrl = this.configService.get<string>('API_BASE_URL');
   }
 
   async register(dto: RegisterDto, device: Device, res: Response): Promise<AuthResponse> {
-    const { email, password } = dto;
+    const { email, password, firstName } = dto;
     const emailAvailable = await this.userService.isEmailAvailable(email);
 
     if (!emailAvailable) {
@@ -44,7 +46,12 @@ export class AuthService {
     }
 
     const hashedPassword = await this.passwordService.hashAndValidate(password);
-    const userInput: CreateUserInput = { ...dto, hashedPassword };
+    const verifyEmailToken = this.cryptoService.generateResetToken();
+    const userInput: CreateUserInput = {
+      ...dto,
+      hashedPassword,
+      verifyEmailToken,
+    };
 
     const user = await this.userService.createForAuth(userInput);
     const userId = user._id.toString();
@@ -62,6 +69,10 @@ export class AuthService {
     };
 
     await this.sessionsService.createInitial(sessionInput);
+
+    const verifyUrl = `${this.apiBaseUrl}/auth/verify?token=${verifyEmailToken}`;
+
+    await this.emailService.send('verify-email', email, { verifyUrl, userName: firstName });
 
     this.cookieAdapter.setRefreshCookie(res, tokens.refreshToken, tokens.refreshExpiresAt);
 

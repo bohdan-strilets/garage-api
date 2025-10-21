@@ -94,8 +94,4 @@ export class TokenService {
   async hashRefreshToken(token: string): Promise<string> {
     return this.cryptoService.hashToken(token);
   }
-
-  async verifyHashedRefreshToken(hash: string, token: string): Promise<boolean> {
-    return this.cryptoService.verifyToken(hash, token);
-  }
 }
