@@ -84,4 +84,22 @@ export class UserService {
   async verifyEmail(rawToken: string): Promise<boolean> {
     return await this.userRepository.verifyEmail(rawToken);
   }
+
+  async updateResetToken(userId: string, resetToken: string, expiresAt: Date): Promise<void> {
+    return await this.userRepository.updateResetToken(userId, resetToken, expiresAt);
+  }
+
+  async resetPasswordByToken(
+    hashedToken: string,
+    newPassword: string,
+    expiresAt: Date,
+  ): Promise<SecurityUser> {
+    const result = await this.userRepository.resetPasswordByToken(
+      hashedToken,
+      newPassword,
+      expiresAt,
+    );
+
+    return await this.getByIdForAuth(result._id.toString());
+  }
 }

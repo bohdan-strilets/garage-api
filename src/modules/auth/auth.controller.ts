@@ -26,6 +26,8 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { CurrentUserId } from './decorators/current-user-id.decorator';
 import { Public } from './decorators/public.decorator';
 import { RegisterDto } from './dto/register.dto';
+import { RequestPasswordDto } from './dto/request-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthResponse } from './types/auth-response.type';
@@ -106,6 +108,25 @@ export class AuthController {
   @Redirect('http://localhost:3000/email-verified', HttpStatus.FOUND)
   async verifyEmail(@Query('token') token: string): Promise<boolean> {
     await this.userService.verifyEmail(token);
+    return;
+  }
+
+  @Public()
+  @Post('password/request-reset')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async requestPasswordReset(@Body() dto: RequestPasswordDto): Promise<void> {
+    await this.authService.requestPasswordReset(dto.email);
+    return;
+  }
+
+  @Public()
+  @Post('password/reset')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async resetPassword(
+    @Query('token') token: string,
+    @Body() newPassword: ResetPasswordDto,
+  ): Promise<void> {
+    await this.authService.resetPassword(token, newPassword.password);
     return;
   }
 }

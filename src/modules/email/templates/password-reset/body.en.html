@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Password Reset</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #222;
+        background: #fafafa;
+        padding: 20px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #007bff;
+        color: #fff !important;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    {{#if userName}}
+    <p>Hello {{userName}},</p>
+    {{else}}
+    <p>Hello,</p>
+    {{/if}}
+
+    <p>
+      We received a request to reset your password. Click the button below to set a new password.
+    </p>
+
+    <p>
+      <a href="{{resetUrl}}" class="button">Reset Password</a>
+    </p>
+
+    <p>If the button doesn't work, copy and paste this link into your browser:</p>
+    <p><a href="{{resetUrl}}">{{resetUrl}}</a></p>
+
+    <div class="footer">
+      <p>This link will expire in {{expiresIn}}.</p>
+    </div>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
@@ -23,6 +23,8 @@ import { LogoutResponse } from './types/logout-response.type';
 @Injectable()
 export class AuthService {
   private readonly apiBaseUrl: string;
+  private readonly clientUrl: string;
+  private readonly passwordResetTokenExpiry: string;
 
   constructor(
     private readonly userService: UserService,
@@ -35,6 +37,10 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {
     this.apiBaseUrl = this.configService.get<string>('API_BASE_URL');
+    this.passwordResetTokenExpiry = this.configService.get<string>(
+      'PASSWORD_RESET_TOKEN_EXPIRATION_HOURS',
+    );
+    this.clientUrl = this.configService.get<string>('CLIENT_BASE_URL');
   }
 
   async register(dto: RegisterDto, device: Device, res: Response): Promise<AuthResponse> {
@@ -152,5 +158,49 @@ export class AuthService {
 
   async me(userId: string): Promise<SafeUser> {
     return await this.userService.getByIdSafe(userId);
+  }
+
+  async requestPasswordReset(email: string): Promise<void> {
+    const user = await this.userService.getByEmailForAuth(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const { expiresAt, tokenHash } = await this.passwordService.generateResetToken();
+
+    const userId = user._id.toString();
+    const firstName = user.profile.firstName;
+
+    await this.userService.updateResetToken(userId, tokenHash, expiresAt);
+    console.log(tokenHash);
+
+    const resetUrl = `${this.clientUrl}/auth/password/reset?token=${tokenHash}`;
+
+    await this.emailService.send('password-reset', email, {
+      resetUrl,
+      userName: firstName,
+      expiresIn: `${this.passwordResetTokenExpiry} hours`,
+    });
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const hashedPassword = await this.passwordService.hashAndValidate(newPassword);
+
+    const { passwordExpiresAt } = this.passwordService.computePasswordDates();
+
+    const updatedUser = await this.userService.resetPasswordByToken(
+      token,
+      hashedPassword,
+      passwordExpiresAt,
+    );
+
+    const userId = updatedUser._id.toString();
+    await this.sessionsService.revokeAllForUser(userId);
+
+    await this.emailService.send('password-changed', updatedUser.email, {
+      userName: updatedUser.profile.firstName,
+      changedAtISO: updatedUser.updatedAt.toISOString(),
+    });
   }
 }

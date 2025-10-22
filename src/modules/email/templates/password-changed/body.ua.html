@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Пароль змінено</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #222;
+        background: #fafafa;
+        padding: 20px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888;
+      }
+      .muted {
+        color: #666;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    {{#if userName}}
+    <p>Вітаємо, {{userName}}!</p>
+    {{else}}
+    <p>Вітаємо!</p>
+    {{/if}}
+
+    <p>Ваш пароль успішно змінено.</p>
+
+    {{#if changedAtISO}}
+    <p class="muted">Час зміни (ISO): {{changedAtISO}}</p>
+    {{/if}}
+
+    <p>Якщо це зробили не ви, негайно скиньте пароль.</p>
+
+    <div class="footer">
+      <p>З міркувань безпеки не передавайте нікому паролі чи посилання для скидання.</p>
+    </div>
+  </body>
+</html>

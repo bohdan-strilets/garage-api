@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hasło zostało zmienione</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #222;
+        background: #fafafa;
+        padding: 20px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888;
+      }
+      .muted {
+        color: #666;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    {{#if userName}}
+    <p>Cześć {{userName}},</p>
+    {{else}}
+    <p>Cześć,</p>
+    {{/if}}
+
+    <p>Twoje hasło zostało pomyślnie zmienione.</p>
+
+    {{#if changedAtISO}}
+    <p class="muted">Czas zmiany (ISO): {{changedAtISO}}</p>
+    {{/if}}
+
+    <p>Jeśli to nie była Twoja operacja, jak najszybciej zresetuj hasło.</p>
+
+    <div class="footer">
+      <p>Ze względów bezpieczeństwa nie udostępniaj nikomu haseł ani linków do resetu.</p>
+    </div>
+  </body>
+</html>

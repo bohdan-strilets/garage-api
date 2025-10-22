@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Скидання пароля</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #222;
+        background: #fafafa;
+        padding: 20px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #007bff;
+        color: #fff !important;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    {{#if userName}}
+    <p>Вітаємо, {{userName}}!</p>
+    {{else}}
+    <p>Вітаємо!</p>
+    {{/if}}
+
+    <p>
+      Ми отримали запит на скидання вашого пароля. Натисніть кнопку нижче, щоб встановити новий
+      пароль.
+    </p>
+
+    <p>
+      <a href="{{resetUrl}}" class="button">Скинути пароль</a>
+    </p>
+
+    <p>Якщо кнопка не працює, скопіюйте та вставте це посилання у браузер:</p>
+    <p><a href="{{resetUrl}}">{{resetUrl}}</a></p>
+
+    <div class="footer">
+      <p>Це посилання буде дійсним протягом {{expiresIn}}.</p>
+    </div>
+  </body>
+</html>

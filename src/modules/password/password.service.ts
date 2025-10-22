@@ -23,8 +23,8 @@ export class PasswordService {
   ) {
     this.passwordLengthMin = Number(this.configService.get<number>('PASSWORD_LENGTH_MIN'));
     this.passwordLengthMax = Number(this.configService.get<number>('PASSWORD_LENGTH_MAX'));
-    this.resetTokenExpirationHours = Number(
-      this.configService.get<number>('RESET_TOKEN_EXPIRATION_HOURS'),
+    this.resetTokenExpirationHours = this.configService.get<number>(
+      'PASSWORD_RESET_TOKEN_EXPIRATION_HOURS',
     );
     this.lifetimeDays = Number(this.configService.get<number>('PASSWORD_EXPIRATION_DAYS'));
   }
@@ -84,6 +84,7 @@ export class PasswordService {
     const tokenHash = await this.cryptoService.hashToken(tokenPlain);
 
     const milliseconds = hoursToMilliseconds(this.resetTokenExpirationHours);
+
     const expiresAt = new Date(Date.now() + milliseconds);
 
     return { tokenPlain, tokenHash, expiresAt };

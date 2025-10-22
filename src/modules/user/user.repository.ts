@@ -160,4 +160,44 @@ export class UserRepository {
 
     return result ? true : false;
   }
+
+  async updateResetToken(userId: string, hashToken: string, expiresAt: Date): Promise<void> {
+    const filter = { _id: this.normalizeObjectId(userId), deletedAt: null };
+
+    const update = {
+      $set: {
+        'security.password.resetTokenHash': hashToken,
+        'security.password.resetTokenExpiresAt': expiresAt,
+      },
+    };
+
+    await this.userModel.updateOne(filter, update).exec();
+  }
+
+  async resetPasswordByToken(
+    hashedToken: string,
+    newHashedPassword: string,
+    expiresAt: Date,
+  ): Promise<User | null> {
+    const now = getNow();
+
+    const filter = {
+      'security.password.resetTokenHash': hashedToken,
+      'security.password.resetTokenExpiresAt': { $gt: now },
+    };
+
+    const update = {
+      $set: {
+        'security.password.hashedPassword': newHashedPassword,
+        'security.password.passwordUpdatedAt': now,
+        'security.password.passwordExpiresAt': expiresAt,
+        'security.password.resetTokenHash': null,
+        'security.password.resetTokenExpiresAt': null,
+      },
+    };
+
+    const options = { new: true };
+
+    return await this.userModel.findOneAndUpdate(filter, update, options).exec();
+  }
 }

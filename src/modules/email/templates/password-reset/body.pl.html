@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Reset hasła</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #222;
+        background: #fafafa;
+        padding: 20px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #007bff;
+        color: #fff !important;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    {{#if userName}}
+    <p>Cześć {{userName}},</p>
+    {{else}}
+    <p>Cześć,</p>
+    {{/if}}
+
+    <p>
+      Otrzymaliśmy prośbę o zresetowanie Twojego hasła. Kliknij przycisk poniżej, aby ustawić nowe
+      hasło.
+    </p>
+
+    <p>
+      <a href="{{resetUrl}}" class="button">Zresetuj hasło</a>
+    </p>
+
+    <p>Jeśli przycisk nie działa, skopiuj i wklej ten link do przeglądarki:</p>
+    <p><a href="{{resetUrl}}">{{resetUrl}}</a></p>
+
+    <div class="footer">
+      <p>Ten link wygaśnie za {{expiresIn}}.</p>
+    </div>
+  </body>
+</html>
