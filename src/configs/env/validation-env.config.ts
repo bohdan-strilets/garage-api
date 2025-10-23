@@ -62,4 +62,17 @@ export const validationEnv = Joi.object({
   // Base URLs
   API_BASE_URL: Joi.string().uri().required(),
   CLIENT_BASE_URL: Joi.string().uri().required(),
+
+  // Cloudinary
+  CLOUDINARY_CLOUD_NAME: Joi.string().required(),
+  CLOUDINARY_API_KEY: Joi.string().required(),
+  CLOUDINARY_API_SECRET: Joi.string().required(),
+  CLOUDINARY_BASE_FOLDER: Joi.string().default('garage-app'),
+  CLOUDINARY_UPLOAD_PRESET_IMAGES: Joi.string().default('garage_app_images_preset'),
+  CLOUDINARY_UPLOAD_PRESET_VIDEOS: Joi.string().default('garage_app_videos_preset'),
+  MEDIA_MAX_IMAGE_MB: Joi.number().integer().min(1).default(10),
+  MEDIA_MAX_VIDEO_MB: Joi.number().integer().min(1).default(100),
+  MEDIA_ALLOWED_IMAGE_MIME: Joi.string().default('image/jpeg,image/png,image/webp,image/gif'),
+  MEDIA_ALLOWED_VIDEO_MIME: Joi.string().default('video/mp4,video/quicktime'),
+  CLOUDINARY_WEBHOOK_SECRET: Joi.string().default(''),
 });

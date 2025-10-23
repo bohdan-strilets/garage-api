@@ -18,6 +18,7 @@ import { JwtConfigModule } from '@configs/jwt/jwt.config';
 import { validationEnv } from './configs/env/validation-env.config';
 import { MongooseConfigService } from './configs/mongoose/mongoose.config';
 import { EmailModule } from './modules/email';
+import { MediaModule } from './modules/media';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { EmailModule } from './modules/email';
     TokenModule,
     AuthModule,
     EmailModule,
+    MediaModule,
   ],
   providers: [
     {
