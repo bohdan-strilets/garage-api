@@ -1,0 +1,4 @@
+# verify Node/Yarn pinned with Volta (optional guard)
+. "$(dirname -- "$0")/_verify-versions.sh"
+
+yarn lint-staged
