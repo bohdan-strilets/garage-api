@@ -1,85 +1,210 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🚗 Garage API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**Garage API** is a backend service built with **NestJS + TypeScript**, designed to manage vehicle history, including refuels, repairs, and car documents.  
+It will serve as the backend for the upcoming **Garage client app** (React).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> 🧩 Educational / portfolio project — focused on building clean, scalable backend architecture with modern tooling.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🧠 Project Overview
 
-## Project setup
+This API allows you to:
 
-```bash
-$ yarn install
-```
+- 🔑 Register and authenticate users (JWT + cookies)
+- 🚘 Manage personal vehicles and their info
+- 🛠️ Track car repairs, refuels, and related costs
+- 📄 Store and organize car documents (insurance, technical, etc.)
+- ☁️ Persist data on **MongoDB Atlas**
+- 🇬🇧 🇵🇱 🇺🇦 Support for multiple languages (planned, mostly on client side)
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ yarn run start
+## ⚙️ Tech Stack
 
-# watch mode
-$ yarn run start:dev
+| Category               | Technologies                                             |
+| ---------------------- | -------------------------------------------------------- |
+| **Backend Framework**  | [NestJS](https://nestjs.com/) (TypeScript)               |
+| **Database**           | [MongoDB Atlas](https://www.mongodb.com/atlas)           |
+| **Validation & DTOs**  | `class-validator`, `class-transformer` _(planned)_       |
+| **Auth**               | JWT + Cookies + Sessions                                 |
+| **Dev Tools**          | ESLint, Prettier, Husky, Commitlint, lint-staged         |
+| **Tests**              | Jest (unit & e2e)                                        |
+| **Version Management** | [Volta](https://volta.sh/) (Node 20.10.0 + Yarn 1.22.22) |
 
-# production mode
-$ yarn run start:prod
-```
+---
 
-## Run tests
+## 🛠️ Development Setup
+
+### 1️⃣ Clone and install
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+git clone https://github.com/bohdan-strilets/garage-api.git
+cd garage-api
+yarn install
 ```
 
-## Resources
+### 2️⃣ Setup environment
 
-Check out a few resources that may come in handy when working with NestJS:
+Create a `.env` file:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+MONGODB_URI=<your-mongodb-atlas-uri>
+JWT_SECRET=<your-jwt-secret>
+PORT=3000
+```
 
-## Support
+### 3️⃣ Run in dev mode
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+yarn start:dev
+```
 
-## Stay in touch
+Server will start at: **http://localhost:3000**
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 🧹 Tooling & Code Quality
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+The project enforces clean code and consistency through:
+
+| Tool                       | Purpose                                |
+| -------------------------- | -------------------------------------- |
+| **ESLint + Prettier**      | Code linting and formatting            |
+| **simple-import-sort**     | Auto-sorting of imports                |
+| **Husky**                  | Git hooks (pre-commit, pre-push)       |
+| **Commitlint**             | Conventional commit messages           |
+| **lint-staged**            | Runs lint/format only on changed files |
+| **Volta**                  | Node/Yarn version management           |
+| **TypeScript strict mode** | Safer type checking                    |
+| **.editorconfig**          | Consistent editor formatting           |
+
+### 🪝 Husky Hooks
+
+- **pre-commit:** Lint & format staged files
+- **pre-push:** Type check & run tests
+- **commit-msg:** Validate Conventional Commit style
+- **post-merge / post-checkout:** Auto-install dependencies if lockfile changed
+- **\_verify-versions:** Ensures Node/Yarn match Volta config
+
+---
+
+## 🧪 Testing
+
+```bash
+yarn test        # run all tests
+yarn test:watch  # watch mode
+```
+
+> ✅ Jest is configured with `--passWithNoTests`, so early pushes won’t fail until tests are added.
+
+---
+
+## 📂 Project Structure
+
+```
+/src
+ ├── modules
+ │   ├── auth
+ │   ├── user
+ │   ├── car
+ │   ├── refuel
+ │   ├── repair
+ │   └── documents
+ ├── common
+ │   ├── filters
+ │   ├── interceptors
+ │   ├── guards
+ │   └── utils
+ ├── main.ts
+ └── app.module.ts
+```
+
+---
+
+## 💬 Commit Convention
+
+Follows [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>(<scope>): <subject>
+```
+
+Examples:
+
+```
+feat(auth): add refresh token rotation
+fix(refuel): correct liters rounding
+chore(config): setup ESLint and Husky
+```
+
+---
+
+## 🧰 Useful Commands
+
+| Command           | Description                  |
+| ----------------- | ---------------------------- |
+| `yarn start:dev`  | Run NestJS in watch mode     |
+| `yarn build`      | Build the app                |
+| `yarn lint`       | Run ESLint                   |
+| `yarn lint:fix`   | Fix lint issues              |
+| `yarn format:fix` | Format code with Prettier    |
+| `yarn typecheck`  | Run TypeScript type checking |
+| `yarn test`       | Run Jest tests               |
+
+---
+
+## 🧩 Future Plans
+
+- Add full CRUD for all modules (cars, refuels, repairs, documents)
+- Role-based permissions
+- Multi-language API responses (EN, PL, UA)
+- File uploads for documents (via Cloudinary)
+- Swagger API documentation
+- Docker support for easy deployment
+- Connect to Garage Client (React app)
+
+---
+
+## 👨‍💻 Author
+
+**Bohdan Strilets**  
+Full-stack developer (NestJS / React / TypeScript)  
+📫 [GitHub](https://github.com/bohdan-strilets)
+
+---
+
+## 🧾 License
+
+This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
+
+You may view, learn from, and reuse parts of the code for personal or educational purposes,  
+but **commercial use or redistribution is prohibited**.
+
+For full details, see [LICENSE.md](./LICENSE.md).
+
+---
+
+### 🧠 Note
+
+> This backend is part of a bigger educational project.  
+> Goal: learn and apply clean architecture, modern tooling, and full project lifecycle — from setup to deployment.
+
+---
+
+## 🏷️ Badges
+
+![Node](https://img.shields.io/badge/Node-20.10.0-43853d?logo=node.js&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-v10-E0234E?logo=nestjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)
+![Yarn](https://img.shields.io/badge/Yarn-1.22.22-2188B6?logo=yarn)
+![ESLint](https://img.shields.io/badge/Code%20Style-ESLint%20+%20Prettier-purple)
+![Husky](https://img.shields.io/badge/Git%20Hooks-Husky-blue)
+![Volta](https://img.shields.io/badge/Runtime-Volta-ff6f00)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-4DB33D?logo=mongodb)
+![Jest](https://img.shields.io/badge/Tests-Jest-99424f?logo=jest)
+
+---
+
+© 2025 **Bohdan Strilets** — Licensed under  
+[Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
