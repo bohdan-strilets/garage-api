@@ -1,12 +1,37 @@
 {
   "name": "garage-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Garage API — NestJS backend for managing car history: auth, cars, refuels, repairs, documents (PL market).",
+  "author": "Bohdan Strilets",
   "private": true,
   "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bohdan-strilets/garage-api.git"
+  },
+  "homepage": "https://github.com/bohdan-strilets/garage-api#readme",
+  "bugs": {
+    "url": "https://github.com/bohdan-strilets/garage-api/issues"
+  },
+  "keywords": [
+    "nestjs",
+    "typescript",
+    "rest-api",
+    "jwt",
+    "garage",
+    "car",
+    "refuel",
+    "repair",
+    "documents",
+    "mongodb",
+    "poland"
+  ],
   "engines": {
     "node": ">=20.10.0"
+  },
+  "volta": {
+    "node": "20.10.0",
+    "yarn": "1.22.22"
   },
   "scripts": {
     "start": "node -r tsconfig-paths/register ./node_modules/@nestjs/cli/bin/nest.js start",
@@ -21,7 +46,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -86,9 +111,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "volta": {
-    "node": "20.10.0",
-    "yarn": "1.22.22"
   }
 }
