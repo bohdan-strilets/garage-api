@@ -1,0 +1,16 @@
+{
+  "eslint.useFlatConfig": true,
+  "eslint.validate": ["typescript", "typescriptreact", "javascript", "javascriptreact"],
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
+  },
+
+  "eslint.codeActionsOnSave.rules": ["unused-imports/*", "simple-import-sort/*"]
+}
