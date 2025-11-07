@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
 
+import unicorn from 'eslint-plugin-unicorn';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
 
@@ -30,6 +31,7 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tseslint.plugin,
+      unicorn,
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
     },
@@ -69,6 +71,8 @@ export default [
         },
       ],
       'simple-import-sort/exports': 'warn',
+
+      'unicorn/filename-case': ['error', { case: 'kebabCase' }],
     },
   },
 
