@@ -62,7 +62,8 @@
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3"
   },
   "jest": {
     "moduleFileExtensions": [

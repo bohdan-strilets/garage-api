@@ -12,17 +12,18 @@ export default [
   },
 
   js.configs.recommended,
+
   ...tseslint.configs.recommended,
 
   {
-    files: ['**/*.ts'],
+    files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
         project: './tsconfig.json',
         tsconfigRootDir: import.meta.dirname,
         ecmaVersion: 'latest',
-        sourceType: 'commonjs',
+        sourceType: 'module',
       },
       globals: {
         ...globals.node,
@@ -72,6 +73,27 @@ export default [
       ],
       'simple-import-sort/exports': 'warn',
 
+      'unicorn/filename-case': ['error', { case: 'kebabCase' }],
+    },
+  },
+
+  {
+    files: ['**/*.cjs', '**/*.js', 'scripts/**/*.js', 'commitlint.config.cjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'commonjs',
+      globals: { ...globals.node },
+    },
+    plugins: {
+      unicorn,
+      'simple-import-sort': simpleImportSort,
+      'unused-imports': unusedImports,
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+      'unused-imports/no-unused-imports': 'warn',
+      'simple-import-sort/imports': 'warn',
+      'simple-import-sort/exports': 'warn',
       'unicorn/filename-case': ['error', { case: 'kebabCase' }],
     },
   },

@@ -7,10 +7,10 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
 
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.fixAll.eslint": "explicit",
+    "source.fixAll": "always",
+    "source.fixAll.eslint": "always",
     "source.organizeImports": "never"
   },
 
-  "eslint.codeActionsOnSave.rules": ["unused-imports/*", "simple-import-sort/*"]
+  "eslint.codeActionsOnSave.rules": ["simple-import-sort/*", "unused-imports/*"]
 }
