@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-npx --no commitlint --edit "$1"
+MSG_FILE="${1:-$(git rev-parse --git-path COMMIT_EDITMSG)}"
+
+npx --no commitlint --edit "$MSG_FILE"
