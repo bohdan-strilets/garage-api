@@ -2,4 +2,4 @@
 
 MSG_FILE="${1:-$(git rev-parse --git-path COMMIT_EDITMSG)}"
 
-npx --no commitlint --edit "$MSG_FILE"
+npx --no -- commitlint --edit "$MSG_FILE"
