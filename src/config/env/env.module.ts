@@ -1,17 +1,20 @@
-import { ConfigModule, type ConfigModuleOptions } from '@nestjs/config';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 import { resolveEnvFiles } from './env-paths';
 import { appConfig, cookieConfig, databaseConfig, securityConfig } from './name-space';
 import { validationSchema } from './validation.schema';
 
-export const envConfig = (): ReturnType<typeof ConfigModule.forRoot> => {
-  const options: ConfigModuleOptions = {
-    isGlobal: true,
-    envFilePath: resolveEnvFiles(),
-    validationSchema,
-    load: [appConfig, securityConfig, cookieConfig, databaseConfig],
-    cache: true,
-  };
-
-  return ConfigModule.forRoot(options);
-};
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: resolveEnvFiles(),
+      validationSchema,
+      load: [appConfig, securityConfig, cookieConfig, databaseConfig],
+      cache: true,
+    }),
+  ],
+  exports: [ConfigModule],
+})
+export class EnvConfig {}

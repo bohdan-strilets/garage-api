@@ -16,4 +16,4 @@ import { DatabaseConfig, databaseConfig } from '../env/name-space';
   ],
   exports: [MongooseModule],
 })
-export class MongoModule {}
+export class MongoConfig {}
