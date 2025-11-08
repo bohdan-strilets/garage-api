@@ -33,4 +33,8 @@ export const validationSchema = joi.object({
 
   RATE_TTL: joi.number().integer().min(1).default(60),
   RATE_LIMIT: joi.number().integer().min(1).default(100),
+
+  MONGO_URI: joi.string().uri().required(),
+  MONGO_DB_NAME: joi.string().default('garage-db'),
+  MONGO_APP_NAME: joi.string().default('garage-api-dev'),
 });
