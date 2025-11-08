@@ -6,18 +6,31 @@ import * as express from 'express';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
+import {
+  type AppConfig,
+  appConfig,
+  type CookieConfig,
+  cookieConfig,
+  type SecurityConfig,
+  securityConfig,
+} from './config/env/name-space';
+
+const logger = new Logger('Bootstrap');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const logger = new Logger('Bootstrap');
 
-  const NODE_ENV = process.env.NODE_ENV;
-  const PORT = process.env.PORT;
-  const GLOBAL_PREFIX = process.env.GLOBAL_PREFIX;
-  const CORS_ORIGIN = process.env.CORS_ORIGIN;
-  const COOKIE_SECRET = process.env.COOKIE_SECRET;
-  const BODY_LIMIT_JSON = process.env.BODY_LIMIT_JSON;
-  const BODY_LIMIT_URLENCODED = process.env.BODY_LIMIT_URLENCODED;
+  const appCfg = app.get<AppConfig>(appConfig.KEY);
+  const securityCfg = app.get<SecurityConfig>(securityConfig.KEY);
+  const cookieCfg = app.get<CookieConfig>(cookieConfig.KEY);
+
+  const NODE_ENV = appCfg.env;
+  const PORT = appCfg.port;
+  const GLOBAL_PREFIX = appCfg.globalPrefix;
+  const CORS_ORIGIN = securityCfg.cors.origins;
+  const COOKIE_SECRET = cookieCfg.secret;
+  const BODY_LIMIT_JSON = securityCfg.bodyLimit.json;
+  const BODY_LIMIT_URLENCODED = securityCfg.bodyLimit.urlencoded;
 
   app.enableCors({
     origin: CORS_ORIGIN,
@@ -47,4 +60,10 @@ async function bootstrap() {
   await app.listen(PORT);
   logger.debug(`🚀 Server running on port ${PORT} in ${NODE_ENV} mode`);
 }
-bootstrap();
+
+bootstrap()
+  .then()
+  .catch((error) => {
+    logger.error(`❌ Error occurred during bootstrap: ${error.message}`);
+    process.exit(1);
+  });

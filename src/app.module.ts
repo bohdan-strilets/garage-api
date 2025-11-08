@@ -1,18 +1,11 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
+import { envConfig } from './config/env';
+import { throttlerConfig } from './config/throttling';
 @Module({
-  imports: [
-    ThrottlerModule.forRoot({
-      throttlers: [
-        {
-          ttl: 60_000,
-          limit: 100,
-        },
-      ],
-    }),
-  ],
+  imports: [envConfig(), throttlerConfig()],
   providers: [
     {
       provide: APP_GUARD,
