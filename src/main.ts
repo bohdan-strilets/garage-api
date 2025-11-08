@@ -6,6 +6,7 @@ import * as express from 'express';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/exception';
 import {
   type AppConfig,
   appConfig,
@@ -56,6 +57,8 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix(GLOBAL_PREFIX);
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(PORT);
   logger.debug(`🚀 Server running on port ${PORT} in ${NODE_ENV} mode`);
