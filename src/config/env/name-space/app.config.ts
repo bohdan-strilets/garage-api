@@ -3,7 +3,7 @@ import { ConfigType, registerAs } from '@nestjs/config';
 import { NodeEnv } from '@app/common/enums';
 
 export const appConfig = registerAs('app', () => {
-  const port = Number(process.env.APP_PORT ?? 3000);
+  const port = Number(process.env.PORT ?? 3000);
 
   return {
     env: process.env.NODE_ENV ?? NodeEnv.DEVELOPMENT,
