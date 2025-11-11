@@ -31,6 +31,7 @@
     "cookie-parser": "^1.4.7",
     "helmet": "^8.1.0",
     "joi": "^18.0.1",
+    "libphonenumber-js": "^1.12.26",
     "mongoose": "^8.19.3",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"

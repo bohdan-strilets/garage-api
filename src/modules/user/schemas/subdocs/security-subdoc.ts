@@ -14,7 +14,7 @@ export class Security {
   lastFailedAt?: Date | null;
 
   @Prop({ type: Date, default: null, select: false })
-  lockedUntil?: Date | null;
+  lockedUntilAt?: Date | null;
 }
 
 export const SecuritySchema = SchemaFactory.createForClass(Security);

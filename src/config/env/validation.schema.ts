@@ -37,4 +37,7 @@ export const validationSchema = joi.object({
   MONGO_URI: joi.string().uri().required(),
   MONGO_DB_NAME: joi.string().default('garage-db'),
   MONGO_APP_NAME: joi.string().default('garage-api-dev'),
+
+  MAX_FAILED_LOGIN_ATTEMPTS: joi.number().integer().min(1).default(5),
+  LOCK_UNTIL_MINUTES: joi.number().integer().min(1).default(15),
 });

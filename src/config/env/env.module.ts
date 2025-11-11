@@ -2,7 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { resolveEnvFiles } from './env-paths';
-import { appConfig, cookieConfig, databaseConfig, securityConfig } from './name-space';
+import {
+  appConfig,
+  authLockoutConfig,
+  cookieConfig,
+  databaseConfig,
+  securityConfig,
+} from './name-space';
 import { validationSchema } from './validation.schema';
 
 @Module({
@@ -11,7 +17,7 @@ import { validationSchema } from './validation.schema';
       isGlobal: true,
       envFilePath: resolveEnvFiles(),
       validationSchema,
-      load: [appConfig, securityConfig, cookieConfig, databaseConfig],
+      load: [appConfig, securityConfig, cookieConfig, databaseConfig, authLockoutConfig],
       cache: true,
     }),
   ],
