@@ -5,9 +5,10 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { MongoConfig } from './config/database';
 import { EnvConfig } from './config/env';
 import { ThrottlerConfig } from './config/throttling';
+import { SessionModule } from './modules/session';
 import { UserModule } from './modules/user';
 @Module({
-  imports: [EnvConfig, ThrottlerConfig, MongoConfig, UserModule],
+  imports: [EnvConfig, ThrottlerConfig, MongoConfig, UserModule, SessionModule],
   providers: [
     {
       provide: APP_GUARD,
