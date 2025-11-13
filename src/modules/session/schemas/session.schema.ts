@@ -17,9 +17,9 @@ export class Session {
   familyId: string;
 
   @Prop({ type: String, required: true })
-  tokenId: string;
+  jti: string;
 
-  @Prop({ type: String, required: true, select: false })
+  @Prop({ type: String, required: true })
   refreshTokenHash: string;
 
   @Prop({ type: String, maxlength: 128, default: null })
@@ -40,23 +40,17 @@ export class Session {
   @Prop({ type: Date, required: true })
   expiresAt: Date;
 
-  @Prop({ type: Boolean, default: false })
-  isPersistent: boolean;
-
-  @Prop({ type: Number, default: 0, min: 0 })
-  rotationCounter: number;
-
   @Prop({ type: Date, default: null })
   revokedAt?: Date | null;
 
-  @Prop({ enum: RevokedBy, required: true })
-  revokedBy: RevokedBy;
+  @Prop({ enum: RevokedBy, default: null })
+  revokedBy?: RevokedBy | null;
 
   @Prop({ type: String, maxlength: 256, default: null })
   revokeReason?: string | null;
 
   @Prop({ type: String, default: null })
-  replacedByTokenId?: string | null;
+  replacedByJti?: string | null;
 
   @Prop({ type: Date, default: null })
   reuseDetectedAt?: Date | null;
@@ -71,7 +65,7 @@ export const SessionSchema = SchemaFactory.createForClass(Session);
 
 SessionSchema.index({ userId: 1 });
 SessionSchema.index({ familyId: 1 });
-SessionSchema.index({ tokenId: 1 }, { unique: true });
+SessionSchema.index({ jti: 1 }, { unique: true });
 SessionSchema.index({ fingerprint: 1 });
 SessionSchema.index({ revokedAt: 1 });
 
@@ -79,4 +73,4 @@ SessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 SessionSchema.index({ userId: 1, lastUsedAt: -1 });
 SessionSchema.index({ userId: 1, fingerprint: 1, revokedAt: 1 });
-SessionSchema.index({ familyId: 1, tokenId: 1 });
+SessionSchema.index({ familyId: 1, jti: 1 });
