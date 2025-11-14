@@ -6,6 +6,7 @@ import {
   appConfig,
   authLockoutConfig,
   cookieConfig,
+  cryptoConfig,
   databaseConfig,
   securityConfig,
 } from './name-space';
@@ -17,7 +18,14 @@ import { validationSchema } from './validation.schema';
       isGlobal: true,
       envFilePath: resolveEnvFiles(),
       validationSchema,
-      load: [appConfig, securityConfig, cookieConfig, databaseConfig, authLockoutConfig],
+      load: [
+        appConfig,
+        securityConfig,
+        cookieConfig,
+        databaseConfig,
+        authLockoutConfig,
+        cryptoConfig,
+      ],
       cache: true,
     }),
   ],

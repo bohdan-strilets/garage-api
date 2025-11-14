@@ -40,4 +40,10 @@ export const validationSchema = joi.object({
 
   MAX_FAILED_LOGIN_ATTEMPTS: joi.number().integer().min(1).default(5),
   LOCK_UNTIL_MINUTES: joi.number().integer().min(1).default(15),
+
+  CRYPTO_PEPPER: joi.string().min(32).required(),
+  CRYPTO_HMAC_SECRET: joi.string().min(32).required(),
+  CRYPTO_ARGON2_MEMORY: joi.number().integer().min(1).default(15360),
+  CRYPTO_ARGON2_ITERATIONS: joi.number().integer().min(1).default(4),
+  CRYPTO_ARGON2_PARALLELISM: joi.number().integer().min(1).default(1),
 });
