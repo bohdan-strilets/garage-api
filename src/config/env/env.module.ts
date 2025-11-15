@@ -9,6 +9,7 @@ import {
   cryptoConfig,
   databaseConfig,
   securityConfig,
+  tokensConfig,
 } from './name-space';
 import { validationSchema } from './validation.schema';
 
@@ -25,6 +26,7 @@ import { validationSchema } from './validation.schema';
         databaseConfig,
         authLockoutConfig,
         cryptoConfig,
+        tokensConfig,
       ],
       cache: true,
     }),

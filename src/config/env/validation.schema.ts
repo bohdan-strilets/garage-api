@@ -21,6 +21,7 @@ export const validationSchema = joi.object({
 
   COOKIE_SECRET: joi.string().min(32).required(),
   COOKIE_SECURE: joi.boolean().truthy('true').falsy('false').default(false),
+  COOKIE_HTTP_ONLY: joi.boolean().truthy('true').falsy('false').default(true),
   COOKIE_SAME_SITE: joi
     .string()
     .valid(...sameSite)
@@ -46,4 +47,11 @@ export const validationSchema = joi.object({
   CRYPTO_ARGON2_MEMORY: joi.number().integer().min(1).default(15360),
   CRYPTO_ARGON2_ITERATIONS: joi.number().integer().min(1).default(4),
   CRYPTO_ARGON2_PARALLELISM: joi.number().integer().min(1).default(1),
+
+  JWT_ACCESS_SECRET: joi.string().min(32).required(),
+  JWT_ACCESS_TTL_SEC: joi.number().integer().min(1).default(900),
+  JWT_REFRESH_SECRET: joi.string().min(32).required(),
+  JWT_REFRESH_TTL_SEC: joi.number().integer().min(1).default(604800),
+  JWT_ISSUER: joi.string().default('garage-api'),
+  JWT_AUDIENCE: joi.string().default('garage-client'),
 });

@@ -7,9 +7,18 @@ import { EnvConfig } from './config/env';
 import { ThrottlerConfig } from './config/throttling';
 import { CryptoModule } from './modules/crypto';
 import { SessionModule } from './modules/session';
+import { TokensModule } from './modules/tokens';
 import { UserModule } from './modules/user';
 @Module({
-  imports: [EnvConfig, ThrottlerConfig, MongoConfig, UserModule, SessionModule, CryptoModule],
+  imports: [
+    EnvConfig,
+    ThrottlerConfig,
+    MongoConfig,
+    UserModule,
+    SessionModule,
+    CryptoModule,
+    TokensModule,
+  ],
   providers: [
     {
       provide: APP_GUARD,
