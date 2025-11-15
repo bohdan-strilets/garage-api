@@ -1,6 +1,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
+import { useContainer } from 'class-validator';
 import cookieParser from 'cookie-parser';
 import * as express from 'express';
 import helmet from 'helmet';
@@ -20,6 +21,7 @@ const logger = new Logger('Bootstrap');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   const appCfg = app.get<AppConfig>(appConfig.KEY);
   const securityCfg = app.get<SecurityConfig>(securityConfig.KEY);
@@ -61,6 +63,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(PORT);
+
   logger.debug(`🚀 Server running on port ${PORT} in ${NODE_ENV} mode`);
 }
 

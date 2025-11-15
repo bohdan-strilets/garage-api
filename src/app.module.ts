@@ -6,6 +6,7 @@ import { MongoConfig } from './config/database';
 import { EnvConfig } from './config/env';
 import { ThrottlerConfig } from './config/throttling';
 import { CryptoModule } from './modules/crypto';
+import { PasswordModule } from './modules/password';
 import { SessionModule } from './modules/session';
 import { TokensModule } from './modules/tokens';
 import { UserModule } from './modules/user';
@@ -18,6 +19,7 @@ import { UserModule } from './modules/user';
     SessionModule,
     CryptoModule,
     TokensModule,
+    PasswordModule,
   ],
   providers: [
     {
