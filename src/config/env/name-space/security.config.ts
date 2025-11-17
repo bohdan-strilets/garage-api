@@ -13,8 +13,8 @@ export const securityConfig = registerAs('security', () => {
       limit: Number(process.env.RATE_LIMIT ?? 100),
     },
     bodyLimit: {
-      json: Number(process.env.BODY_LIMIT_JSON ?? 1),
-      urlencoded: Number(process.env.BODY_LIMIT_URLENCODED ?? 1),
+      json: `${Number(process.env.BODY_LIMIT_JSON ?? 1)}mb`,
+      urlencoded: `${Number(process.env.BODY_LIMIT_URLENCODED ?? 1)}mb`,
     },
   };
 });

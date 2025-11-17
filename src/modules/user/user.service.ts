@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
-import { Types } from 'mongoose';
+import { objectIdToString } from '@app/common/utils';
 
 import { userPublicProjection, userSecurityProjection, userSelfProjection } from './projections';
 import { CreateUserInput, UserPublic, UserSecurity, UserSelf, UserSoftDelete } from './types';
@@ -12,12 +12,14 @@ export class UserService {
 
   constructor(private readonly userRepository: UserRepository) {}
 
-  async createUser(input: CreateUserInput) {
+  async createUser(input: CreateUserInput): Promise<UserSelf> {
     const user = await this.userRepository.create(input);
-    return user;
+    const id = objectIdToString(user._id);
+
+    return await this.findSelfUserById(id);
   }
 
-  async findSelfUserById(userId: Types.ObjectId): Promise<UserSelf> {
+  async findSelfUserById(userId: string): Promise<UserSelf> {
     const user: UserSelf = await this.userRepository.findById(userId, userSelfProjection);
 
     if (!user) {
@@ -28,7 +30,7 @@ export class UserService {
     return user;
   }
 
-  async findPublicUserById(userId: Types.ObjectId): Promise<UserPublic> {
+  async findPublicUserById(userId: string): Promise<UserPublic> {
     const user: UserPublic = await this.userRepository.findById(userId, userPublicProjection);
 
     if (!user) {
@@ -50,7 +52,18 @@ export class UserService {
     return user;
   }
 
-  async softDeleteUserById(userId: Types.ObjectId): Promise<boolean> {
+  async findSecurityUserById(userId: string): Promise<UserSecurity> {
+    const user: UserSecurity = await this.userRepository.findById(userId, userSecurityProjection);
+
+    if (!user) {
+      this.logger.debug(`User with ID ${userId} not found`);
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  async softDeleteUserById(userId: string): Promise<boolean> {
     const deleted: UserSoftDelete = await this.userRepository.softDeleteById(userId);
 
     if (!deleted) {
@@ -70,23 +83,23 @@ export class UserService {
     return await this.userRepository.existsActiveByPhone(phone);
   }
 
-  async incrementFailedLogin(userId: Types.ObjectId): Promise<boolean> {
+  async incrementFailedLogin(userId: string): Promise<boolean> {
     return await this.userRepository.incrementFailedLogin(userId);
   }
 
-  async lockAccount(userId: Types.ObjectId, minutes: number): Promise<boolean> {
+  async lockAccount(userId: string, minutes: number): Promise<boolean> {
     return await this.userRepository.lockAccount(userId, minutes);
   }
 
-  async resetFailures(userId: Types.ObjectId): Promise<boolean> {
+  async resetFailures(userId: string): Promise<boolean> {
     return await this.userRepository.resetFailures(userId);
   }
 
-  async isLockedById(userId: Types.ObjectId): Promise<boolean> {
+  async isLockedById(userId: string): Promise<boolean> {
     return await this.userRepository.isLockedById(userId);
   }
 
-  async bumpFailuresAndLockIfNeeded(userId: Types.ObjectId): Promise<boolean> {
+  async bumpFailuresAndLockIfNeeded(userId: string): Promise<boolean> {
     return await this.userRepository.bumpFailuresAndLockIfNeeded(userId);
   }
 }

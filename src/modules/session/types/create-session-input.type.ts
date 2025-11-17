@@ -1,9 +1,7 @@
-import { Types } from 'mongoose';
-
 import { Device } from './device.type';
 
 export type CreateSessionInput = {
-  userId: Types.ObjectId;
+  userId: string;
   familyId: string;
   jti: string;
   refreshTokenHash: string;

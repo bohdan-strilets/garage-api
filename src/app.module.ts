@@ -5,6 +5,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { MongoConfig } from './config/database';
 import { EnvConfig } from './config/env';
 import { ThrottlerConfig } from './config/throttling';
+import { AuthModule } from './modules/auth';
 import { CryptoModule } from './modules/crypto';
 import { PasswordModule } from './modules/password';
 import { SessionModule } from './modules/session';
@@ -20,6 +21,7 @@ import { UserModule } from './modules/user';
     CryptoModule,
     TokensModule,
     PasswordModule,
+    AuthModule,
   ],
   providers: [
     {

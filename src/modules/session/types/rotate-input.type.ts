@@ -1,5 +1,3 @@
-import { ClientSession } from 'mongoose';
-
 import { RevokedBy } from '../enums';
 
 import { CreateSessionInput } from './create-session-input.type';
@@ -9,5 +7,4 @@ export type RotateInput = {
   newSession: CreateSessionInput;
   reason?: string | null;
   by: RevokedBy;
-  session?: ClientSession | null;
 };

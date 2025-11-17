@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { FilterQuery, Model, ProjectionType, QueryOptions, Types, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, ProjectionType, QueryOptions, UpdateQuery } from 'mongoose';
 
 import {
   getNow,
@@ -50,7 +50,7 @@ export class UserRepository {
     return await this.userModel.create(payload);
   }
 
-  async findById(userId: Types.ObjectId, projection: ProjectionType<User>): Promise<User | null> {
+  async findById(userId: string, projection: ProjectionType<User>): Promise<User | null> {
     const id = objectIdToString(userId);
     const filter: FilterQuery<UserDocument> = this.activeById(id);
 
@@ -64,7 +64,7 @@ export class UserRepository {
     return await this.userModel.findOne(filter).select(projection).lean().exec();
   }
 
-  async updateById(userId: Types.ObjectId, update: UpdateQuery<User>): Promise<User | null> {
+  async updateById(userId: string, update: UpdateQuery<User>): Promise<User | null> {
     const id = objectIdToString(userId);
     const filter: FilterQuery<UserDocument> = this.activeById(id);
     const options: QueryOptions<UserDocument> = { new: true };
@@ -72,7 +72,7 @@ export class UserRepository {
     return await this.userModel.findOneAndUpdate(filter, update, options).lean().exec();
   }
 
-  async softDeleteById(userId: Types.ObjectId): Promise<UserSoftDelete | null> {
+  async softDeleteById(userId: string): Promise<UserSoftDelete | null> {
     const now = getNow();
     const id = objectIdToString(userId);
 
@@ -105,7 +105,7 @@ export class UserRepository {
     return !!user;
   }
 
-  async incrementFailedLogin(userId: Types.ObjectId): Promise<boolean> {
+  async incrementFailedLogin(userId: string): Promise<boolean> {
     const now = getNow();
     const id = objectIdToString(userId);
 
@@ -119,7 +119,7 @@ export class UserRepository {
     return result.modifiedCount > 0;
   }
 
-  async lockAccount(userId: Types.ObjectId, minutes: number): Promise<boolean> {
+  async lockAccount(userId: string, minutes: number): Promise<boolean> {
     const timestamp = getNowTimestamp();
     const lockedUntilAt = new Date(timestamp + minutesToMs(minutes));
     const id = objectIdToString(userId);
@@ -133,7 +133,7 @@ export class UserRepository {
     return result.modifiedCount > 0;
   }
 
-  async resetFailures(userId: Types.ObjectId): Promise<boolean> {
+  async resetFailures(userId: string): Promise<boolean> {
     const id = objectIdToString(userId);
     const filter: FilterQuery<UserDocument> = this.activeById(id);
     const update: UpdateQuery<User> = {
@@ -148,7 +148,7 @@ export class UserRepository {
     return result.modifiedCount > 0;
   }
 
-  async isLockedById(userId: Types.ObjectId): Promise<boolean> {
+  async isLockedById(userId: string): Promise<boolean> {
     const now = new Date();
     const id = objectIdToString(userId);
 
@@ -161,7 +161,7 @@ export class UserRepository {
     return !!exists;
   }
 
-  async bumpFailuresAndLockIfNeeded(userId: Types.ObjectId): Promise<boolean> {
+  async bumpFailuresAndLockIfNeeded(userId: string): Promise<boolean> {
     const now = getNow();
     const timestamp = getNowTimestamp();
     const id = objectIdToString(userId);

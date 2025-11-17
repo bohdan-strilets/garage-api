@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 
 import { TokensConfig, tokensConfig } from '@app/config/env/name-space';
 
+import { CryptoService } from '../crypto';
+
 import { TokenKind } from './enums';
 import { AccessInput, AccessPayload, RefreshInput, RefreshPayload, SignedToken } from './types';
 
@@ -11,7 +13,10 @@ export class TokensService {
   private readonly accessJwt: JwtService;
   private readonly refreshJwt: JwtService;
 
-  constructor(@Inject(tokensConfig.KEY) private readonly config: TokensConfig) {
+  constructor(
+    @Inject(tokensConfig.KEY) private readonly config: TokensConfig,
+    private readonly cryptoService: CryptoService,
+  ) {
     this.accessJwt = new JwtService({
       secret: this.config.access.secret,
       signOptions: {
@@ -29,6 +34,10 @@ export class TokensService {
     });
   }
 
+  generateJti(): string {
+    return this.cryptoService.jti();
+  }
+
   async signAccess(input: AccessInput): Promise<SignedToken> {
     const iat = Math.floor(Date.now() / 1000);
     const exp = iat + this.config.access.ttlSec;
@@ -36,16 +45,13 @@ export class TokensService {
     const payload: AccessPayload = {
       sub: input.userId,
       jti: input.jti,
-      iss: this.config.issuer,
-      aud: this.config.audience,
       iat,
       exp,
-      role: input.role,
+      roles: input.roles,
     };
 
     const token = await this.accessJwt.signAsync(payload, {
       secret: this.config.access.secret,
-      expiresIn: this.config.access.ttlSec,
     });
 
     return {
@@ -64,15 +70,12 @@ export class TokensService {
     const payload: RefreshPayload = {
       sub: input.userId,
       jti: input.jti,
-      iss: this.config.issuer,
-      aud: this.config.audience,
       iat,
       exp,
     };
 
     const token = await this.refreshJwt.signAsync(payload, {
       secret: this.config.refresh.secret,
-      expiresIn: this.config.refresh.ttlSec,
     });
 
     return {
@@ -82,6 +85,14 @@ export class TokensService {
       iat,
       exp,
     };
+  }
+
+  hashToken(plain: string): string {
+    return this.cryptoService.hmacSign(plain);
+  }
+
+  verifyToken(plain: string, hash: string): boolean {
+    return this.cryptoService.hmacVerify(plain, hash);
   }
 
   async verifyAccess(token: string): Promise<AccessPayload> {

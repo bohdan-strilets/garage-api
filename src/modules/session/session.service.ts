@@ -5,20 +5,25 @@ import { Types } from 'mongoose';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 import { getNow } from '@app/common/utils';
 
+import { CryptoService } from '../crypto';
+
 import { RevokedBy } from './enums';
 import { Session } from './schemas';
 import { SessionRepository } from './session.repository';
 import { CreateSessionInput, RotateInput, RotateResult } from './types';
 
-type StartSessionInput = Omit<CreateSessionInput, 'lastUsedAt'> & {
-  lastUsedAt?: Date;
-};
-
 @Injectable()
 export class SessionService {
-  constructor(private readonly repo: SessionRepository) {}
+  constructor(
+    private readonly repo: SessionRepository,
+    private readonly cryptoService: CryptoService,
+  ) {}
 
-  async start(input: StartSessionInput): Promise<Session> {
+  generateFamilyId(): string {
+    return this.cryptoService.jti();
+  }
+
+  async start(input: CreateSessionInput): Promise<Session> {
     const doc: CreateSessionInput = {
       userId: input.userId,
       familyId: input.familyId,
