@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common';
-
-import { Types } from 'mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 import { getNow } from '@app/common/utils';
@@ -44,10 +42,15 @@ export class SessionService {
     return this.repo.touchLastUsed(jti);
   }
 
-  async listActive(
-    userId: Types.ObjectId,
-    pagination: PaginationOptions,
-  ): Promise<PaginatedResult<Session>> {
+  async listActive(userId: string, page: string, limit: string): Promise<PaginatedResult<Session>> {
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+
+    const pagination: PaginationOptions = {
+      page: pageNum,
+      limit: limitNum,
+    };
+
     return this.repo.findActiveByUser(userId, pagination);
   }
 
@@ -56,10 +59,16 @@ export class SessionService {
   }
 
   async logoutByJti(jti: string, by: RevokedBy = RevokedBy.User): Promise<boolean> {
+    const session = await this.getByJti(jti);
+
+    if (!session) {
+      throw new NotFoundException('Session not found');
+    }
+
     return this.repo.revokeJti(jti, by);
   }
 
-  async logoutAll(userId: Types.ObjectId, by: RevokedBy = RevokedBy.User): Promise<number> {
+  async logoutAll(userId: string, by: RevokedBy = RevokedBy.User): Promise<number> {
     return this.repo.revokeAllOfUser(userId, by);
   }
 
@@ -71,15 +80,15 @@ export class SessionService {
     return this.repo.markReuseDetected(familyId, when);
   }
 
-  async getById(id: Types.ObjectId): Promise<Session | null> {
-    return this.repo.findById(id);
+  async getById(sessionId: string): Promise<Session | null> {
+    return this.repo.findById(sessionId);
   }
 
   async getByJti(jti: string): Promise<Session | null> {
     return this.repo.findByJti(jti);
   }
 
-  async removeById(id: Types.ObjectId): Promise<boolean> {
-    return this.repo.deleteById(id);
+  async removeById(sessionId: string): Promise<boolean> {
+    return this.repo.deleteById(sessionId);
   }
 }

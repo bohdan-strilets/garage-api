@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery } from 'mongoose';
 
 import {
   PaginatedResult,
@@ -9,7 +9,7 @@ import {
   PaginationOptions,
   sanitizeSort,
 } from '@app/common/pagination';
-import { getNow } from '@app/common/utils';
+import { getNow, objectIdToString } from '@app/common/utils';
 
 import { RevokedBy } from './enums';
 import { Session } from './schemas';
@@ -19,8 +19,9 @@ import { CreateSessionInput, RotateInput, RotateResult } from './types';
 export class SessionRepository {
   constructor(@InjectModel(Session.name) private readonly model: Model<Session>) {}
 
-  async findById(sessionId: Types.ObjectId): Promise<Session | null> {
-    return await this.model.findById(sessionId).lean().exec();
+  async findById(sessionId: string): Promise<Session | null> {
+    const parsedSessionId = objectIdToString(sessionId);
+    return await this.model.findById(parsedSessionId).lean().exec();
   }
 
   async findByJti(jti: string): Promise<Session | null> {
@@ -28,12 +29,17 @@ export class SessionRepository {
   }
 
   async findActiveByUser(
-    userId: Types.ObjectId,
+    userId: string,
     pagination: PaginationOptions,
   ): Promise<PaginatedResult<Session>> {
     const now = getNow();
+    const parsedUserId = objectIdToString(userId);
 
-    const filter: FilterQuery<Session> = { userId, expiresAt: { $gt: now }, revokedAt: null };
+    const filter: FilterQuery<Session> = {
+      userId: parsedUserId,
+      expiresAt: { $gt: now },
+      revokedAt: null,
+    };
 
     const { sort, page, limit } = pagination;
     const safeSort = sanitizeSort(sort);
@@ -155,10 +161,11 @@ export class SessionRepository {
     return res.modifiedCount;
   }
 
-  async revokeAllOfUser(userId: Types.ObjectId, by: RevokedBy): Promise<number> {
+  async revokeAllOfUser(userId: string, by: RevokedBy): Promise<number> {
     const now = getNow();
+    const parsedUserId = objectIdToString(userId);
 
-    const filter: FilterQuery<Session> = { userId, revokedAt: null };
+    const filter: FilterQuery<Session> = { userId: parsedUserId, revokedAt: null };
     const update: UpdateQuery<Session> = {
       $set: {
         revokedAt: now,
@@ -179,8 +186,9 @@ export class SessionRepository {
     return res.modifiedCount;
   }
 
-  async deleteById(sessionId: Types.ObjectId): Promise<boolean> {
-    const filter: FilterQuery<Session> = { _id: sessionId };
+  async deleteById(sessionId: string): Promise<boolean> {
+    const parsedSessionId = objectIdToString(sessionId);
+    const filter: FilterQuery<Session> = { _id: parsedSessionId };
 
     const res = await this.model.deleteOne(filter).exec();
     return res.deletedCount === 1;
