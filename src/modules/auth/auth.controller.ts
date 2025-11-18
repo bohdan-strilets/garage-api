@@ -2,11 +2,13 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res } from '@nestjs/
 
 import { Response } from 'express';
 
+import { Auth, CurrentUser, CurrentUserId } from '@app/common/decorators';
+
+import { Public } from '../../common/decorators/public.decorator';
 import { RefreshCookieService } from '../tokens';
 
 import { AuthService } from './auth.service';
-import { Auth, Client, CurrentUser, CurrentUserId, Refresh } from './decorators';
-import { Public } from './decorators/public.decorator';
+import { Client, Refresh } from './decorators';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthResponse, AuthUser, ClientMeta, RefreshResponse } from './types';
 

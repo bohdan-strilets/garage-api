@@ -1,8 +1,7 @@
 import { Controller, Delete, Get, HttpCode, HttpStatus, Param, Query } from '@nestjs/common';
 
+import { Auth, CurrentUserId } from '@app/common/decorators';
 import { PaginatedResult } from '@app/common/pagination';
-import { Auth } from '@app/modules/auth/decorators';
-import { CurrentUserId } from '@app/modules/auth/decorators';
 
 import { Session } from './schemas';
 import { SessionService } from './session.service';

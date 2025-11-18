@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Patch } from '@nestjs/common';
 
-import { Auth, CurrentUserId } from '../auth/decorators';
+import { Auth, CurrentUserId } from '@app/common/decorators';
 
 import {
   UpdateAddressDto,
