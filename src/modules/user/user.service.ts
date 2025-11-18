@@ -1,8 +1,18 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
+import { UpdateQuery } from 'mongoose';
+
 import { objectIdToString } from '@app/common/utils';
 
+import {
+  UpdateAddressDto,
+  UpdateDrivingLicenseDto,
+  UpdateProfileDto,
+  UpdateProfileSettingsDto,
+  UpdateUnitsDto,
+} from './dto';
 import { userPublicProjection, userSecurityProjection, userSelfProjection } from './projections';
+import { User } from './schemas';
 import { CreateUserInput, UserPublic, UserSecurity, UserSelf, UserSoftDelete } from './types';
 import { UserRepository } from './user.repository';
 
@@ -101,5 +111,182 @@ export class UserService {
 
   async bumpFailuresAndLockIfNeeded(userId: string): Promise<boolean> {
     return await this.userRepository.bumpFailuresAndLockIfNeeded(userId);
+  }
+
+  async updateProfile(userId: string, dto: UpdateProfileDto): Promise<UserSelf> {
+    const update: UpdateQuery<User> = { $set: {} };
+
+    if (dto.firstName !== undefined) {
+      update.$set['profile.firstName'] = dto.firstName;
+    }
+
+    if (dto.lastName !== undefined) {
+      update.$set['profile.lastName'] = dto.lastName;
+    }
+
+    if (dto.nickname !== undefined) {
+      update.$set['profile.nickname'] = dto.nickname;
+    }
+
+    if (dto.dateBirth !== undefined) {
+      update.$set['profile.dateBirth'] = dto.dateBirth;
+    }
+
+    if (dto.gender !== undefined) {
+      update.$set['profile.gender'] = dto.gender;
+    }
+
+    const updated = await this.userRepository.updateById(userId, update);
+
+    if (!updated) {
+      this.logger.debug(`User with ID ${userId} not found`);
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.findSelfUserById(userId);
+  }
+
+  async updateProfileSettings(userId: string, dto: UpdateProfileSettingsDto): Promise<UserSelf> {
+    const update: UpdateQuery<User> = { $set: {} };
+
+    if (dto.locale !== undefined) {
+      update.$set['settings.locale'] = dto.locale;
+    }
+
+    if (dto.timezone !== undefined) {
+      update.$set['settings.timezone'] = dto.timezone;
+    }
+
+    if (dto.theme !== undefined) {
+      update.$set['settings.theme'] = dto.theme;
+    }
+
+    if (dto.currency !== undefined) {
+      update.$set['settings.currency'] = dto.currency;
+    }
+
+    if (dto.notificationsEmail !== undefined) {
+      update.$set['settings.notifications.email'] = dto.notificationsEmail;
+    }
+
+    if (dto.notificationsInApp !== undefined) {
+      update.$set['settings.notifications.inApp'] = dto.notificationsInApp;
+    }
+
+    if (dto.notificationsPush !== undefined) {
+      update.$set['settings.notifications.push'] = dto.notificationsPush;
+    }
+
+    const updated = await this.userRepository.updateById(userId, update);
+
+    if (!updated) {
+      this.logger.debug(`User with ID ${userId} not found`);
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.findSelfUserById(userId);
+  }
+
+  async updateProfileAddress(userId: string, dto: UpdateAddressDto): Promise<UserSelf> {
+    const update: UpdateQuery<User> = { $set: {} };
+
+    if (dto.street !== undefined) {
+      update.$set['profile.address.street'] = dto.street;
+    }
+
+    if (dto.city !== undefined) {
+      update.$set['profile.address.city'] = dto.city;
+    }
+
+    if (dto.postalCode !== undefined) {
+      update.$set['profile.address.postalCode'] = dto.postalCode;
+    }
+
+    if (dto.country !== undefined) {
+      update.$set['profile.address.country'] = dto.country;
+    }
+
+    if (dto.numberStreet !== undefined) {
+      update.$set['profile.address.numberStreet'] = dto.numberStreet;
+    }
+
+    const updated = await this.userRepository.updateById(userId, update);
+
+    if (!updated) {
+      this.logger.debug(`User with ID ${userId} not found`);
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.findSelfUserById(userId);
+  }
+
+  async updateDrivingLicense(userId: string, dto: UpdateDrivingLicenseDto): Promise<UserSelf> {
+    const update: UpdateQuery<User> = { $set: {} };
+
+    if (dto.number !== undefined) {
+      update.$set['profile.drivingLicense.number'] = dto.number;
+    }
+
+    if (dto.categories !== undefined) {
+      update.$set['profile.drivingLicense.categories'] = dto.categories;
+    }
+
+    if (dto.issuedAt !== undefined) {
+      update.$set['profile.drivingLicense.issuedAt'] = dto.issuedAt;
+    }
+
+    if (dto.expiresAt !== undefined) {
+      update.$set['profile.drivingLicense.expiresAt'] = dto.expiresAt;
+    }
+
+    if (dto.documentUrl !== undefined) {
+      update.$set['profile.drivingLicense.documentUrl'] = dto.documentUrl;
+    }
+
+    const updated = await this.userRepository.updateById(userId, update);
+
+    if (!updated) {
+      this.logger.debug(`User with ID ${userId} not found`);
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.findSelfUserById(userId);
+  }
+
+  async updateUnits(userId: string, dto: UpdateUnitsDto): Promise<UserSelf> {
+    const update: UpdateQuery<User> = { $set: {} };
+
+    if (dto.distance !== undefined) {
+      update.$set['settings.units.distance'] = dto.distance;
+    }
+
+    if (dto.volume !== undefined) {
+      update.$set['settings.units.volume'] = dto.volume;
+    }
+
+    if (dto.speed !== undefined) {
+      update.$set['settings.units.speed'] = dto.speed;
+    }
+
+    if (dto.fuelEconomy !== undefined) {
+      update.$set['settings.units.fuelEconomy'] = dto.fuelEconomy;
+    }
+
+    if (dto.temperature !== undefined) {
+      update.$set['settings.units.temperature'] = dto.temperature;
+    }
+
+    if (dto.pressure !== undefined) {
+      update.$set['settings.units.pressure'] = dto.pressure;
+    }
+
+    const updated = await this.userRepository.updateById(userId, update);
+
+    if (!updated) {
+      this.logger.debug(`User with ID ${userId} not found`);
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.findSelfUserById(userId);
   }
 }

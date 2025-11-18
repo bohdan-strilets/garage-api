@@ -15,6 +15,9 @@ export class Address {
 
   @Prop({ type: String, trim: true, default: 'PL' })
   country?: string | null;
+
+  @Prop({ type: String, trim: true, default: null })
+  numberStreet?: string | null;
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);

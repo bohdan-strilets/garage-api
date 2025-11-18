@@ -140,7 +140,7 @@ export class UserRepository {
       $set: {
         'security.failedLoginAttempts': 0,
         'security.lastFailedAt': null,
-        'security.lockedUntil': null,
+        'security.lockedUntilAt': null,
       },
     };
 
@@ -154,7 +154,7 @@ export class UserRepository {
 
     const filter: FilterQuery<UserDocument> = {
       ...this.activeById(id),
-      'security.lockedUntil': { $gte: now },
+      'security.lockedUntilAt': { $gte: now },
     };
 
     const exists = await this.userModel.exists(filter);
