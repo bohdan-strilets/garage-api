@@ -13,6 +13,7 @@ export const cryptoConfig = registerAs('crypto', () => {
 
   const password = {
     pepper: process.env.CRYPTO_PEPPER,
+    tokenTtlMinutes: Number(process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES),
   };
 
   return {

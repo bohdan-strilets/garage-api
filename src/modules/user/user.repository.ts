@@ -11,7 +11,12 @@ import {
   normalizePhone,
   objectIdToString,
 } from '@app/common/utils';
-import { AuthLockoutConfig, authLockoutConfig } from '@app/config/env/name-space';
+import {
+  AuthLockoutConfig,
+  authLockoutConfig,
+  CryptoConfig,
+  cryptoConfig,
+} from '@app/config/env/name-space';
 
 import { userSoftDeleteProjection } from './projections';
 import { User, UserDocument } from './schemas';
@@ -26,6 +31,7 @@ export class UserRepository {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @Inject(authLockoutConfig.KEY) private readonly lockout: AuthLockoutConfig,
+    @Inject(cryptoConfig.KEY) private readonly crypto: CryptoConfig,
   ) {}
 
   async create(input: CreateUserInput): Promise<UserDocument> {
@@ -60,6 +66,21 @@ export class UserRepository {
   async findByEmail(email: string, projection: ProjectionType<User>): Promise<User | null> {
     const normalizedEmail = normalizeEmail(email);
     const filter: FilterQuery<UserDocument> = this.activeByEmail(normalizedEmail);
+
+    return await this.userModel.findOne(filter).select(projection).lean().exec();
+  }
+
+  async findByResetToken(
+    resetTokenHash: string,
+    projection: ProjectionType<User>,
+  ): Promise<User | null> {
+    const now = getNow();
+
+    const filter: FilterQuery<UserDocument> = {
+      'security.password.tokenHash': resetTokenHash,
+      'security.password.tokenExpiresAt': { $gt: now },
+      isDeleted: false,
+    };
 
     return await this.userModel.findOne(filter).select(projection).lean().exec();
   }
@@ -179,6 +200,59 @@ export class UserRepository {
     const update: UpdateQuery<User> = {
       $inc: { 'security.failedLoginAttempts': 1 },
       $set: { 'security.lastFailedAt': now, 'security.lockedUntilAt': lockedUntilAt },
+    };
+
+    const result = await this.userModel.updateOne(filter, update).exec();
+    return result.modifiedCount > 0;
+  }
+
+  async updatePassword(userId: string, passwordHash: string): Promise<boolean> {
+    const id = objectIdToString(userId);
+    const now = getNow();
+
+    const filter: FilterQuery<UserDocument> = this.activeById(id);
+    const update: UpdateQuery<User> = {
+      $set: {
+        'security.password.hash': passwordHash,
+        'security.password.changedAt': now,
+      },
+    };
+
+    const result = await this.userModel.updateOne(filter, update).exec();
+    return result.modifiedCount > 0;
+  }
+
+  async clearPasswordResetToken(userId: string): Promise<boolean> {
+    const id = objectIdToString(userId);
+
+    const filter: FilterQuery<UserDocument> = this.activeById(id);
+    const update: UpdateQuery<User> = {
+      $set: {
+        'security.password.tokenHash': null,
+        'security.password.tokenExpiresAt': null,
+        'security.password.tokenLastSentAt': null,
+      },
+    };
+
+    const result = await this.userModel.updateOne(filter, update).exec();
+    return result.modifiedCount > 0;
+  }
+
+  async setPasswordResetToken(userId: string, tokenHash: string): Promise<boolean> {
+    const id = objectIdToString(userId);
+    const now = getNow();
+    const nowMs = getNowTimestamp();
+
+    const tokenTtlMs = minutesToMs(this.crypto.password.tokenTtlMinutes);
+    const tokenExpiresAt = new Date(nowMs + tokenTtlMs);
+
+    const filter: FilterQuery<UserDocument> = this.activeById(id);
+    const update: UpdateQuery<User> = {
+      $set: {
+        'security.password.tokenHash': tokenHash,
+        'security.password.tokenExpiresAt': tokenExpiresAt,
+        'security.password.tokenLastSentAt': now,
+      },
     };
 
     const result = await this.userModel.updateOne(filter, update).exec();

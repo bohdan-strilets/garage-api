@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Res } from '@nestjs/common';
 
 import { Response } from 'express';
 
@@ -9,7 +9,7 @@ import { RefreshCookieService } from '../tokens';
 
 import { AuthService } from './auth.service';
 import { Client, Refresh } from './decorators';
-import { LoginDto, RegisterDto } from './dto';
+import { ChangePasswordDto, EmailDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto';
 import { AuthResponse, AuthUser, ClientMeta, RefreshResponse } from './types';
 
 @Controller('auth')
@@ -84,5 +84,32 @@ export class AuthController {
   @Get('me')
   async me(@CurrentUserId() userId: string) {
     return await this.authService.me(userId);
+  }
+
+  @Public()
+  @Post('password/forgot')
+  @HttpCode(HttpStatus.OK)
+  async requestResetPassword(@Body() dto: EmailDto): Promise<void> {
+    return await this.authService.requestResetPassword(dto);
+  }
+
+  @Public()
+  @Post('password/reset/:resetToken')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(
+    @Body() dto: ResetPasswordDto,
+    @Param('resetToken') resetToken: string,
+  ): Promise<void> {
+    return await this.authService.resetPassword(resetToken, dto);
+  }
+
+  @Auth()
+  @Post('password/change')
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @CurrentUserId() userId: string,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<void> {
+    return await this.authService.changePassword(userId, dto);
   }
 }

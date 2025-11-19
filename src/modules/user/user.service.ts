@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { UpdateQuery } from 'mongoose';
 
@@ -73,6 +73,20 @@ export class UserService {
     return user;
   }
 
+  async findSecurityUserByResetToken(resetTokenHash: string): Promise<UserSecurity> {
+    const user: UserSecurity = await this.userRepository.findByResetToken(
+      resetTokenHash,
+      userSecurityProjection,
+    );
+
+    if (!user) {
+      this.logger.debug('User by reset token not found');
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    return user;
+  }
+
   async softDeleteUserById(userId: string): Promise<boolean> {
     const deleted: UserSoftDelete = await this.userRepository.softDeleteById(userId);
 
@@ -111,6 +125,18 @@ export class UserService {
 
   async bumpFailuresAndLockIfNeeded(userId: string): Promise<boolean> {
     return await this.userRepository.bumpFailuresAndLockIfNeeded(userId);
+  }
+
+  async setPasswordResetToken(userId: string, tokenHash: string): Promise<boolean> {
+    return await this.userRepository.setPasswordResetToken(userId, tokenHash);
+  }
+
+  async updatePassword(userId: string, passwordHash: string): Promise<boolean> {
+    return await this.userRepository.updatePassword(userId, passwordHash);
+  }
+
+  async clearPasswordResetToken(userId: string): Promise<boolean> {
+    return await this.userRepository.clearPasswordResetToken(userId);
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto): Promise<UserSelf> {
