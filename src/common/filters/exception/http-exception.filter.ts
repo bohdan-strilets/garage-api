@@ -4,8 +4,7 @@ import { Request, Response } from 'express';
 
 import { getNowISOString } from '@app/common/utils';
 
-import { ExceptionResponse } from '../types';
-
+import { ExceptionResponse } from './types';
 import { mapNonHttpToStatus, normalizeExceptionMessage } from './utils';
 
 @Catch()
