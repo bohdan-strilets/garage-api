@@ -3,5 +3,6 @@ export { type AuthLockoutConfig, authLockoutConfig } from './auth-lockout.config
 export { type CookieConfig, cookieConfig } from './cookie.config';
 export { type CryptoConfig, cryptoConfig } from './crypto.config';
 export { type DatabaseConfig, databaseConfig } from './database.config';
+export { type EmailConfig, emailConfig } from './email.config';
 export { type SecurityConfig, securityConfig } from './security.config';
 export { type TokensConfig, tokensConfig } from './tokens.config';

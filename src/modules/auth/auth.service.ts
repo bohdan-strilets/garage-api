@@ -9,6 +9,7 @@ import {
 import { getNow, objectIdToString, secondsToMs } from '@app/common/utils';
 
 import { CryptoService } from '../crypto/crypto.service';
+import { EmailService } from '../email';
 import { PasswordService } from '../password/password.service';
 import { RevokedBy } from '../session/enums';
 import { SessionService } from '../session/session.service';
@@ -31,6 +32,7 @@ export class AuthService {
     private readonly sessionService: SessionService,
     private readonly tokensService: TokensService,
     private readonly cryptoService: CryptoService,
+    private readonly emailService: EmailService,
   ) {}
 
   private defaultFingerprint(): string {
@@ -90,6 +92,12 @@ export class AuthService {
     };
 
     await this.sessionService.start(sessionInput);
+
+    await this.emailService.sendVerificationEmail({
+      to: user.email,
+      token: '1234567890abcdef',
+      userName: `${user.profile.firstName} ${user.profile.lastName}`,
+    });
 
     return {
       user,

@@ -1,10 +1,11 @@
 import * as joi from 'joi';
 
-import { CookieSameSite, NodeEnv } from '@app/common/enums';
+import { CookieSameSite, EmailProviders, NodeEnv } from '@app/common/enums';
 import { apiPrefixRegex } from '@app/common/regex';
 
 const nodeEnv = Object.values(NodeEnv);
 const sameSite = Object.values(CookieSameSite);
+const emailProviders = Object.values(EmailProviders);
 
 export const validationSchema = joi.object({
   NODE_ENV: joi
@@ -55,4 +56,12 @@ export const validationSchema = joi.object({
   JWT_REFRESH_TTL_SEC: joi.number().integer().min(1).default(604800),
   JWT_ISSUER: joi.string().default('garage-api'),
   JWT_AUDIENCE: joi.string().default('garage-client'),
+
+  EMAIL_PROVIDER: joi
+    .string()
+    .valid(...emailProviders)
+    .default(EmailProviders.RESEND),
+  RESEND_API_KEY: joi.string().required(),
+  EMAIL_FROM: joi.string().required(),
+  EMAIL_FRONTEND_URL: joi.string().uri().required(),
 });

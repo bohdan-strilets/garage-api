@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 
 import { CryptoModule } from '../crypto';
+import { EmailModule } from '../email';
 import { PasswordModule } from '../password';
 import { SessionModule } from '../session';
 import { TokensModule } from '../tokens';
@@ -20,6 +21,7 @@ import { JwtAccessStrategy, JwtRefreshStrategy } from './strategies';
     TokensModule,
     CryptoModule,
     PasswordModule,
+    EmailModule,
   ],
   controllers: [AuthController],
   providers: [

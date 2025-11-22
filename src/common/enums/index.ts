@@ -1,6 +1,7 @@
 export * from './cookie-same-site.enum';
 export * from './currency.enum';
 export * from './distance-unit.enum';
+export * from './email-providers.enum';
 export * from './fuel-economy-unit.enum';
 export * from './locale.enum';
 export * from './node-env.enum';

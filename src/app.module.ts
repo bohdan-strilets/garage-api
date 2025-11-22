@@ -7,6 +7,7 @@ import { EnvConfig } from './config/env';
 import { ThrottlerConfig } from './config/throttling';
 import { AuthModule } from './modules/auth';
 import { CryptoModule } from './modules/crypto';
+import { EmailModule } from './modules/email';
 import { PasswordModule } from './modules/password';
 import { SessionModule } from './modules/session';
 import { TokensModule } from './modules/tokens';
@@ -22,6 +23,7 @@ import { UserModule } from './modules/user';
     TokensModule,
     PasswordModule,
     AuthModule,
+    EmailModule,
   ],
   providers: [
     {

@@ -8,6 +8,7 @@ import {
   cookieConfig,
   cryptoConfig,
   databaseConfig,
+  emailConfig,
   securityConfig,
   tokensConfig,
 } from './name-space';
@@ -27,6 +28,7 @@ import { validationSchema } from './validation.schema';
         authLockoutConfig,
         cryptoConfig,
         tokensConfig,
+        emailConfig,
       ],
       cache: true,
     }),
