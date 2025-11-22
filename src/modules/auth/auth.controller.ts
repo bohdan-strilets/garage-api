@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 
 import { Response } from 'express';
 
@@ -111,5 +121,11 @@ export class AuthController {
     @Body() dto: ChangePasswordDto,
   ): Promise<void> {
     return await this.authService.changePassword(userId, dto);
+  }
+
+  @Public()
+  @Get('verify-email')
+  async verifyEmail(@Query('token') token: string): Promise<void> {
+    return await this.authService.verifyEmail(token);
   }
 }

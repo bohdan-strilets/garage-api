@@ -54,11 +54,15 @@ export class AuthService {
     }
 
     const passwordHash = await this.passwordService.hashIfValid(password);
+    const emailVerifyToken = this.userService.generateEmailVerifyToken();
+
     const createInput: CreateUserInput = {
       firstName,
       lastName,
       email,
       passwordHash,
+      verifyEmailTokenHash: emailVerifyToken.hash,
+      verifyEmailTokenExpiresAt: emailVerifyToken.expiresAt,
     };
 
     const user = await this.userService.createUser(createInput);
@@ -95,7 +99,7 @@ export class AuthService {
 
     await this.emailService.sendVerificationEmail({
       to: user.email,
-      token: '1234567890abcdef',
+      token: emailVerifyToken.plain,
       userName: `${user.profile.firstName} ${user.profile.lastName}`,
     });
 
@@ -307,5 +311,10 @@ export class AuthService {
     await this.sessionService.logoutAll(userId, RevokedBy.System);
 
     this.logger.debug('Send email for success changed password for user');
+  }
+
+  async verifyEmail(plainToken: string): Promise<void> {
+    await this.userService.verifyEmail(plainToken);
+    this.logger.debug('Send email for success email verification for user');
   }
 }

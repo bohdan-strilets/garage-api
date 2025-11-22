@@ -1,8 +1,11 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { UpdateQuery } from 'mongoose';
 
-import { objectIdToString } from '@app/common/utils';
+import { getNowTimestamp, minutesToMs, objectIdToString } from '@app/common/utils';
+import { CryptoConfig, cryptoConfig } from '@app/config/env/name-space';
+
+import { CryptoService } from '../crypto';
 
 import {
   UpdateAddressDto,
@@ -13,14 +16,25 @@ import {
 } from './dto';
 import { userPublicProjection, userSecurityProjection, userSelfProjection } from './projections';
 import { User } from './schemas';
-import { CreateUserInput, UserPublic, UserSecurity, UserSelf, UserSoftDelete } from './types';
+import {
+  CreateUserInput,
+  GenerateEmailTokenInput,
+  UserPublic,
+  UserSecurity,
+  UserSelf,
+  UserSoftDelete,
+} from './types';
 import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
 
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @Inject(cryptoConfig.KEY) private readonly crypto: CryptoConfig,
+    private readonly userRepository: UserRepository,
+    private readonly cryptoService: CryptoService,
+  ) {}
 
   async createUser(input: CreateUserInput): Promise<UserSelf> {
     const user = await this.userRepository.create(input);
@@ -314,5 +328,24 @@ export class UserService {
     }
 
     return await this.findSelfUserById(userId);
+  }
+
+  generateEmailVerifyToken(): GenerateEmailTokenInput {
+    const token = this.cryptoService.randomToken();
+    const hash = this.cryptoService.hmacSign(token);
+    const nowMs = getNowTimestamp();
+
+    const tokenTtlMs = minutesToMs(this.crypto.email.verifyTokenTtlMinutes);
+    const expiresAt = new Date(nowMs + tokenTtlMs);
+
+    return {
+      plain: token,
+      hash,
+      expiresAt,
+    };
+  }
+
+  async verifyEmail(plainToken: string): Promise<boolean> {
+    return await this.userRepository.verifyEmail(plainToken);
   }
 }

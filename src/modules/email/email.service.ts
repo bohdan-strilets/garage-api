@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { Resend } from 'resend';
 
-import { EmailConfig, emailConfig } from '@app/config/env/name-space';
+import { AppConfig, appConfig, EmailConfig, emailConfig } from '@app/config/env/name-space';
 
 import { buildResetPasswordEmail } from './templates';
 import { buildVerificationEmail } from './templates/build-verification-email.template';
@@ -14,8 +14,11 @@ export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   private readonly resend: Resend;
 
-  constructor(@Inject(emailConfig.KEY) private readonly config: EmailConfig) {
-    const apiKey = this.config.apiKey;
+  constructor(
+    @Inject(emailConfig.KEY) private readonly emailCfg: EmailConfig,
+    @Inject(appConfig.KEY) private readonly appCfg: AppConfig,
+  ) {
+    const apiKey = this.emailCfg.apiKey;
     this.resend = new Resend(apiKey);
   }
 
@@ -27,7 +30,7 @@ export class EmailService {
   ): Promise<void> {
     try {
       await this.resend.emails.send({
-        from: this.config.from,
+        from: this.emailCfg.from,
         to,
         subject,
         text,
@@ -50,7 +53,7 @@ export class EmailService {
   async sendResetPasswordEmail(params: SendResetPasswordParams): Promise<void> {
     const { to, token, userName } = params;
 
-    const baseUrl = this.config.frontendBaseUrl;
+    const baseUrl = this.appCfg.clientUrl;
     const encodedToken = encodeURIComponent(token);
     const resetUrl = `${baseUrl}/reset-password?token=${encodedToken}`;
 
@@ -63,9 +66,9 @@ export class EmailService {
   async sendVerificationEmail(params: SendVerificationEmailParams): Promise<void> {
     const { to, token, userName } = params;
 
-    const baseUrl = this.config.frontendBaseUrl;
+    const baseUrl = this.appCfg.baseUrl;
     const encodedToken = encodeURIComponent(token);
-    const verifyUrl = `${baseUrl}/verify-email?token=${encodedToken}`;
+    const verifyUrl = `${baseUrl}/auth/verify-email?token=${encodedToken}`;
 
     const email = buildVerificationEmail({ userName, verifyUrl });
     const { html, subject, text } = email;

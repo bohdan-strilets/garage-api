@@ -16,10 +16,15 @@ export const cryptoConfig = registerAs('crypto', () => {
     tokenTtlMinutes: Number(process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES),
   };
 
+  const email = {
+    verifyTokenTtlMinutes: Number(process.env.EMAIL_RESET_TOKEN_TTL_MINUTES),
+  };
+
   return {
     hmac,
     argon2,
     password,
+    email,
   };
 });
 

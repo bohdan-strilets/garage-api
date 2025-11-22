@@ -18,6 +18,8 @@ import {
   cryptoConfig,
 } from '@app/config/env/name-space';
 
+import { CryptoService } from '../crypto';
+
 import { userSoftDeleteProjection } from './projections';
 import { User, UserDocument } from './schemas';
 import { CreateUserInput, UserSoftDelete } from './types';
@@ -32,15 +34,29 @@ export class UserRepository {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @Inject(authLockoutConfig.KEY) private readonly lockout: AuthLockoutConfig,
     @Inject(cryptoConfig.KEY) private readonly crypto: CryptoConfig,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   async create(input: CreateUserInput): Promise<UserDocument> {
-    const { email, passwordHash, firstName, lastName } = input;
+    const {
+      email,
+      passwordHash,
+      firstName,
+      lastName,
+      verifyEmailTokenHash,
+      verifyEmailTokenExpiresAt,
+    } = input;
+
     const normalizedEmail = normalizeEmail(email);
     const now = getNow();
 
     const payload = {
       email: normalizedEmail,
+      verification: {
+        isEmailVerified: false,
+        emailVerifyTokenHash: verifyEmailTokenHash,
+        emailVerifyExpiresAt: verifyEmailTokenExpiresAt,
+      },
       security: {
         password: {
           hash: passwordHash,
@@ -252,6 +268,28 @@ export class UserRepository {
         'security.password.tokenHash': tokenHash,
         'security.password.tokenExpiresAt': tokenExpiresAt,
         'security.password.tokenLastSentAt': now,
+      },
+    };
+
+    const result = await this.userModel.updateOne(filter, update).exec();
+    return result.modifiedCount > 0;
+  }
+
+  async verifyEmail(plainToken: string): Promise<boolean> {
+    const now = getNow();
+    const hashedToken = this.cryptoService.hmacSign(plainToken);
+
+    const filter: FilterQuery<UserDocument> = {
+      'verification.emailVerifyTokenHash': hashedToken,
+      'verification.emailVerifyExpiresAt': { $gt: now },
+      isDeleted: false,
+    };
+
+    const update: UpdateQuery<User> = {
+      $set: {
+        'verification.isEmailVerified': true,
+        'verification.emailVerifyTokenHash': null,
+        'verification.emailVerifyExpiresAt': null,
       },
     };
 
