@@ -67,6 +67,7 @@ export class AuthService {
 
     const user = await this.userService.createUser(createInput);
     const userId = objectIdToString(user._id);
+    const userName = `${user.profile.firstName} ${user.profile.lastName}`;
 
     const jti = this.tokensService.generateJti();
     const familyId = this.sessionService.generateFamilyId();
@@ -100,7 +101,7 @@ export class AuthService {
     await this.emailService.sendVerificationEmail({
       to: user.email,
       token: emailVerifyToken.plain,
-      userName: `${user.profile.firstName} ${user.profile.lastName}`,
+      userName,
     });
 
     return {
@@ -259,9 +260,15 @@ export class AuthService {
     const resetTokenHash = this.cryptoService.hmacSign(resetToken);
 
     const userId = objectIdToString(user._id);
+    const userName = `${user.profile.firstName} ${user.profile.lastName}`;
+
     await this.userService.setPasswordResetToken(userId, resetTokenHash);
 
-    this.logger.debug(`Password reset token for ${email}: ${resetToken}`);
+    await this.emailService.sendResetPasswordEmail({
+      to: user.email,
+      token: resetToken,
+      userName,
+    });
   }
 
   async resetPassword(resetToken: string, dto: ResetPasswordDto): Promise<void> {
@@ -281,13 +288,20 @@ export class AuthService {
     await this.userService.clearPasswordResetToken(userId);
     await this.sessionService.logoutAll(userId, RevokedBy.System);
 
-    this.logger.debug('Send email for success reset password for user');
+    const userName = `${user.profile.firstName} ${user.profile.lastName}`;
+
+    await this.emailService.sendResetPasswordSuccessEmail({
+      to: user.email,
+      userName,
+    });
   }
 
   async changePassword(userId: string, dto: ChangePasswordDto): Promise<void> {
     const { currentPassword, newPassword } = dto;
 
     const securityUser = await this.userService.findSecurityUserById(userId);
+    const userName = `${securityUser.profile.firstName} ${securityUser.profile.lastName}`;
+
     const passwordHash = securityUser.security.password.hash;
 
     const isCurrentValid = await this.passwordService.verify(currentPassword, passwordHash);
@@ -309,6 +323,11 @@ export class AuthService {
     }
 
     await this.sessionService.logoutAll(userId, RevokedBy.System);
+
+    await this.emailService.sendPasswordChangedEmail({
+      to: securityUser.email,
+      userName,
+    });
 
     this.logger.debug('Send email for success changed password for user');
   }

@@ -1,20 +1,23 @@
-import { renderEmailLayout } from '../layouts';
+import { buildPlainText } from '@app/common/utils';
+
 import { EmailTemplateResponse } from '../types';
 import { VerificationEmailParams } from '../types/templates';
+import { renderEmailLayout } from '../utils';
 
 export const buildVerificationEmail = (params: VerificationEmailParams): EmailTemplateResponse => {
   const { userName, verifyUrl } = params;
 
-  const subject = 'Confirm your email address';
+  const subject = 'Welcome to Garage App – confirm your email';
   const greeting = userName ? `Hi, ${userName}!` : 'Hi!';
 
   const mainTextLines = [
-    'Please confirm your email address for your Garage account.',
-    'After verification you will be able to use all features of the app.',
+    'Thanks for signing up for Garage App.',
+    'Please confirm your email address to activate your account and start tracking your cars, expenses and reminders.',
+    'This helps us keep your account secure and make sure we can reach you about important updates.',
   ];
 
   const footerText =
-    'If you did not create an account with this email, you can ignore this message.';
+    'If you did not create an account with this email, you can safely ignore this message.';
 
   const html = renderEmailLayout({
     title: subject,
@@ -30,12 +33,14 @@ export const buildVerificationEmail = (params: VerificationEmailParams): EmailTe
   const textLines = [
     greeting,
     '',
-    'Please confirm your email address for your Garage account.',
-    'Open the link below to verify your email:',
+    'Welcome to Garage App!',
+    'Please confirm your email address to activate your account:',
     verifyUrl,
+    '',
+    'If you did not create an account with this email, you can ignore this message.',
   ];
 
-  const text = textLines.join('\n');
+  const text = buildPlainText(textLines);
 
   return { subject, text, html };
 };

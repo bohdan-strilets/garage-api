@@ -1,6 +1,8 @@
-import { renderEmailLayout } from '../layouts';
+import { buildPlainText } from '@app/common/utils';
+
 import { EmailTemplateResponse } from '../types';
 import { ResetPasswordParams } from '../types/templates';
+import { renderEmailLayout } from '../utils';
 
 export const buildResetPasswordEmail = (params: ResetPasswordParams): EmailTemplateResponse => {
   const { userName, resetUrl } = params;
@@ -37,7 +39,7 @@ export const buildResetPasswordEmail = (params: ResetPasswordParams): EmailTempl
     'If you did not request this, you can ignore this email.',
   ];
 
-  const text = textLines.join('\n');
+  const text = buildPlainText(textLines);
 
   return { subject, text, html };
 };

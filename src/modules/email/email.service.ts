@@ -4,10 +4,19 @@ import { Resend } from 'resend';
 
 import { AppConfig, appConfig, EmailConfig, emailConfig } from '@app/config/env/name-space';
 
-import { buildResetPasswordEmail } from './templates';
+import {
+  buildPasswordChangedEmail,
+  buildResetPasswordEmail,
+  buildResetPasswordSuccess,
+} from './templates';
 import { buildVerificationEmail } from './templates/build-verification-email.template';
 import { SendEmailPayload } from './types';
-import { SendResetPasswordParams, SendVerificationEmailParams } from './types/templates';
+import {
+  SendPasswordChangedParams,
+  SendResetPasswordParams,
+  SendResetPasswordSuccessParams,
+  SendVerificationEmailParams,
+} from './types/templates';
 
 @Injectable()
 export class EmailService {
@@ -50,6 +59,19 @@ export class EmailService {
     await this.sendEmailInternal(to, subject, text, html);
   }
 
+  async sendVerificationEmail(params: SendVerificationEmailParams): Promise<void> {
+    const { to, token, userName } = params;
+
+    const baseUrl = this.appCfg.baseUrl;
+    const encodedToken = encodeURIComponent(token);
+    const verifyUrl = `${baseUrl}/auth/verify-email?token=${encodedToken}`;
+
+    const email = buildVerificationEmail({ userName, verifyUrl });
+    const { html, subject, text } = email;
+
+    await this.sendEmailInternal(to, subject, text, html);
+  }
+
   async sendResetPasswordEmail(params: SendResetPasswordParams): Promise<void> {
     const { to, token, userName } = params;
 
@@ -63,14 +85,19 @@ export class EmailService {
     await this.sendEmailInternal(to, subject, text, html);
   }
 
-  async sendVerificationEmail(params: SendVerificationEmailParams): Promise<void> {
-    const { to, token, userName } = params;
+  async sendResetPasswordSuccessEmail(params: SendResetPasswordSuccessParams): Promise<void> {
+    const { to, userName } = params;
 
-    const baseUrl = this.appCfg.baseUrl;
-    const encodedToken = encodeURIComponent(token);
-    const verifyUrl = `${baseUrl}/auth/verify-email?token=${encodedToken}`;
+    const email = buildResetPasswordSuccess({ userName });
+    const { html, subject, text } = email;
 
-    const email = buildVerificationEmail({ userName, verifyUrl });
+    await this.sendEmailInternal(to, subject, text, html);
+  }
+
+  async sendPasswordChangedEmail(params: SendPasswordChangedParams): Promise<void> {
+    const { to, userName } = params;
+
+    const email = buildPasswordChangedEmail({ userName });
     const { html, subject, text } = email;
 
     await this.sendEmailInternal(to, subject, text, html);

@@ -1,10 +1,6 @@
-import Handlebars from 'handlebars';
-
-import { LayoutContent } from '../types';
-
 import { style } from './style.layout';
 
-const baseHtmlTemplateSource = `
+export const baseHtmlTemplateSource = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,9 +55,3 @@ const baseHtmlTemplateSource = `
 </body>
 </html>
 `;
-
-const baseHtmlTemplate = Handlebars.compile<LayoutContent>(baseHtmlTemplateSource);
-
-export const renderEmailLayout = (content: LayoutContent): string => {
-  return baseHtmlTemplate(content);
-};
