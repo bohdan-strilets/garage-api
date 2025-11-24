@@ -5,6 +5,8 @@ import { Auth, CurrentUserId } from '@app/common/decorators';
 import {
   UpdateAddressDto,
   UpdateDrivingLicenseDto,
+  UpdateEmailDto,
+  UpdatePhoneDto,
   UpdateProfileDto,
   UpdateProfileSettingsDto,
   UpdateUnitsDto,
@@ -60,5 +62,21 @@ export class UserController {
     @Body() dto: UpdateUnitsDto,
   ): Promise<UserSelf> {
     return await this.userService.updateUnits(userId, dto);
+  }
+
+  @Patch('me/email')
+  async updateEmail(
+    @CurrentUserId() userId: string,
+    @Body() dto: UpdateEmailDto,
+  ): Promise<UserSelf> {
+    return await this.userService.updateEmail(userId, dto);
+  }
+
+  @Patch('me/phone')
+  async updatePhone(
+    @CurrentUserId() userId: string,
+    @Body() dto: UpdatePhoneDto,
+  ): Promise<UserSelf> {
+    return await this.userService.updatePhone(userId, dto);
   }
 }

@@ -126,9 +126,13 @@ export class UserRepository {
       .exec();
   }
 
-  async existsActiveByEmail(email: string): Promise<boolean> {
+  async existsActiveByEmail(email: string, excludeUserId?: string): Promise<boolean> {
     const normalizedEmail = normalizeEmail(email);
-    const filter: FilterQuery<UserDocument> = this.activeByEmail(normalizedEmail);
+    const filter: FilterQuery<UserDocument> = {
+      email: normalizedEmail,
+      isDeleted: false,
+      _id: { $ne: excludeUserId },
+    };
 
     const user = await this.userModel.exists(filter);
     return !!user;

@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { getNow, objectIdToString, secondsToMs } from '@app/common/utils';
+import { buildFullName, getNow, objectIdToString, secondsToMs } from '@app/common/utils';
 
 import { CryptoService } from '../crypto/crypto.service';
 import { EmailService } from '../email';
@@ -16,10 +16,11 @@ import { SessionService } from '../session/session.service';
 import { CreateSessionInput, Device, RotateInput } from '../session/types';
 import { TokensService } from '../tokens/tokens.service';
 import { AccessInput, RefreshInput } from '../tokens/types';
+import { UpdateEmailDto } from '../user/dto';
 import { CreateUserInput, UserSecurity } from '../user/types';
 import { UserService } from '../user/user.service';
 
-import { ChangePasswordDto, EmailDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto';
+import { ChangePasswordDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto';
 import { AuthInternalResult, RefreshInternalResult } from './types';
 
 @Injectable()
@@ -66,13 +67,15 @@ export class AuthService {
     };
 
     const user = await this.userService.createUser(createInput);
-    const userId = objectIdToString(user._id);
-    const userName = `${user.profile.firstName} ${user.profile.lastName}`;
+    const { _id, profile, roles } = user;
+
+    const userId = objectIdToString(_id);
+    const userName = buildFullName(profile.firstName, profile.lastName);
 
     const jti = this.tokensService.generateJti();
     const familyId = this.sessionService.generateFamilyId();
 
-    const accessInput: AccessInput = { userId, roles: user.roles, jti };
+    const accessInput: AccessInput = { userId, roles, jti };
     const refreshInput: RefreshInput = { userId, jti };
 
     const accessToken = await this.tokensService.signAccess(accessInput);
@@ -98,8 +101,8 @@ export class AuthService {
 
     await this.sessionService.start(sessionInput);
 
-    await this.emailService.sendVerificationEmail({
-      to: user.email,
+    await this.emailService.sendWelcomeVerificationEmail({
+      to: email,
       token: emailVerifyToken.plain,
       userName,
     });
@@ -245,9 +248,10 @@ export class AuthService {
     return this.userService.findSelfUserById(userId);
   }
 
-  async requestResetPassword(dto: EmailDto): Promise<void> {
+  async requestResetPassword(dto: UpdateEmailDto): Promise<void> {
     const { email } = dto;
     let user: UserSecurity;
+    const { profile, _id } = user;
 
     try {
       user = await this.userService.findSecurityUserByEmail(email);
@@ -259,13 +263,13 @@ export class AuthService {
     const resetToken = this.cryptoService.randomToken(32);
     const resetTokenHash = this.cryptoService.hmacSign(resetToken);
 
-    const userId = objectIdToString(user._id);
-    const userName = `${user.profile.firstName} ${user.profile.lastName}`;
+    const userId = objectIdToString(_id);
+    const userName = buildFullName(profile.firstName, profile.lastName);
 
     await this.userService.setPasswordResetToken(userId, resetTokenHash);
 
     await this.emailService.sendResetPasswordEmail({
-      to: user.email,
+      to: email,
       token: resetToken,
       userName,
     });
@@ -274,9 +278,10 @@ export class AuthService {
   async resetPassword(resetToken: string, dto: ResetPasswordDto): Promise<void> {
     const resetTokenHash = this.cryptoService.hmacSign(resetToken);
     const user = await this.userService.findSecurityUserByResetToken(resetTokenHash);
+    const { profile, _id, email } = user;
 
     const { newPassword } = dto;
-    const userId = objectIdToString(user._id);
+    const userId = objectIdToString(_id);
     const passwordHash = await this.passwordService.hashIfValid(newPassword);
 
     const updated = await this.userService.updatePassword(userId, passwordHash);
@@ -288,10 +293,10 @@ export class AuthService {
     await this.userService.clearPasswordResetToken(userId);
     await this.sessionService.logoutAll(userId, RevokedBy.System);
 
-    const userName = `${user.profile.firstName} ${user.profile.lastName}`;
+    const userName = buildFullName(profile.firstName, profile.lastName);
 
     await this.emailService.sendResetPasswordSuccessEmail({
-      to: user.email,
+      to: email,
       userName,
     });
   }
@@ -300,10 +305,11 @@ export class AuthService {
     const { currentPassword, newPassword } = dto;
 
     const securityUser = await this.userService.findSecurityUserById(userId);
-    const userName = `${securityUser.profile.firstName} ${securityUser.profile.lastName}`;
+    const { profile, email, security } = securityUser;
 
-    const passwordHash = securityUser.security.password.hash;
+    const userName = buildFullName(profile.firstName, profile.lastName);
 
+    const passwordHash = security.password.hash;
     const isCurrentValid = await this.passwordService.verify(currentPassword, passwordHash);
 
     if (!isCurrentValid) {
@@ -325,7 +331,7 @@ export class AuthService {
     await this.sessionService.logoutAll(userId, RevokedBy.System);
 
     await this.emailService.sendPasswordChangedEmail({
-      to: securityUser.email,
+      to: email,
       userName,
     });
 

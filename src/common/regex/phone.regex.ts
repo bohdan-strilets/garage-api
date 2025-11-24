@@ -1,1 +1,1 @@
-export const phoneRegex = /^\+?[1-9]\d{6,14}$/;
+export const phoneRegex = /^(?:\+48|48|0)?[5-8]\d{8}$/;

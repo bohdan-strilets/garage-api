@@ -7,37 +7,37 @@ import { renderEmailLayout } from '../utils';
 export const buildVerificationEmail = (params: VerificationEmailParams): EmailTemplateResponse => {
   const { userName, verifyUrl } = params;
 
-  const subject = 'Welcome to Garage App – confirm your email';
+  const subject = 'Confirm your email address';
   const greeting = userName ? `Hi, ${userName}!` : 'Hi!';
 
   const mainTextLines = [
-    'Thanks for signing up for Garage App.',
-    'Please confirm your email address to activate your account and start tracking your cars, expenses and reminders.',
-    'This helps us keep your account secure and make sure we can reach you about important updates.',
+    'We received a request to use this email address for your Garage account.',
+    'To confirm that this email belongs to you, please click the button below.',
+    'If you did not request this, you can safely ignore this email.',
   ];
 
   const footerText =
-    'If you did not create an account with this email, you can safely ignore this message.';
+    'For your security, this confirmation link may expire after a short period. If it stops working, start the email verification process again from your account settings.';
 
   const html = renderEmailLayout({
     title: subject,
     greeting,
     mainTextLines,
+    footerText,
     button: {
       label: 'Verify email',
       url: verifyUrl,
     },
-    footerText,
   });
 
   const textLines = [
     greeting,
     '',
-    'Welcome to Garage App!',
-    'Please confirm your email address to activate your account:',
+    'We received a request to use this email address for your Garage account.',
+    'To confirm that this email belongs to you, open the following link:',
     verifyUrl,
     '',
-    'If you did not create an account with this email, you can ignore this message.',
+    'If you did not request this, you can safely ignore this email.',
   ];
 
   const text = buildPlainText(textLines);

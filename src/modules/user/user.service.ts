@@ -1,15 +1,25 @@
-import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { UpdateQuery } from 'mongoose';
 
-import { getNowTimestamp, minutesToMs, objectIdToString } from '@app/common/utils';
+import { buildFullName, getNowTimestamp, minutesToMs, objectIdToString } from '@app/common/utils';
 import { CryptoConfig, cryptoConfig } from '@app/config/env/name-space';
 
 import { CryptoService } from '../crypto';
+import { EmailService } from '../email';
 
 import {
   UpdateAddressDto,
   UpdateDrivingLicenseDto,
+  UpdateEmailDto,
+  UpdatePhoneDto,
   UpdateProfileDto,
   UpdateProfileSettingsDto,
   UpdateUnitsDto,
@@ -34,6 +44,7 @@ export class UserService {
     @Inject(cryptoConfig.KEY) private readonly crypto: CryptoConfig,
     private readonly userRepository: UserRepository,
     private readonly cryptoService: CryptoService,
+    private readonly emailService: EmailService,
   ) {}
 
   async createUser(input: CreateUserInput): Promise<UserSelf> {
@@ -347,5 +358,65 @@ export class UserService {
 
   async verifyEmail(plainToken: string): Promise<boolean> {
     return await this.userRepository.verifyEmail(plainToken);
+  }
+
+  async updateEmail(userId: string, dto: UpdateEmailDto): Promise<UserSelf> {
+    const { email: newEmail } = dto;
+    const existing = await this.userRepository.existsActiveByEmail(newEmail, userId);
+
+    const securityUser = await this.findSecurityUserById(userId);
+    const { profile, email: oldEmail } = securityUser;
+    const userName = buildFullName(profile.firstName, profile.lastName);
+
+    if (existing) {
+      throw new ConflictException('Email already in use');
+    }
+
+    if (newEmail === oldEmail) {
+      return await this.findSelfUserById(userId);
+    }
+
+    const emailVerifyToken = this.generateEmailVerifyToken();
+
+    const update: UpdateQuery<User> = {
+      $set: {
+        email: newEmail,
+        'verification.isEmailVerified': false,
+        'verification.emailVerifyTokenHash': emailVerifyToken.hash,
+        'verification.emailVerifyExpiresAt': emailVerifyToken.expiresAt,
+      },
+    };
+
+    await this.userRepository.updateById(userId, update);
+
+    await this.emailService.sendChangedEmail({
+      to: oldEmail,
+      userName,
+      newEmail,
+      oldEmail: oldEmail,
+    });
+    await this.emailService.sendVerificationEmail({
+      to: newEmail,
+      token: emailVerifyToken.plain,
+      userName,
+    });
+
+    return await this.findSelfUserById(userId);
+  }
+
+  async updatePhone(userId: string, dto: UpdatePhoneDto): Promise<UserSelf> {
+    const { phone } = dto;
+    const existing = await this.userRepository.existsActiveByPhone(phone);
+
+    if (existing) {
+      throw new ConflictException('Phone number already in use');
+    }
+
+    const update: UpdateQuery<User> = { phone };
+    await this.userRepository.updateById(userId, update);
+
+    // Відправити SMS для підтвердження нового номера телефону можна тут
+
+    return await this.findSelfUserById(userId);
   }
 }

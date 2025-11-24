@@ -5,17 +5,21 @@ import { Resend } from 'resend';
 import { AppConfig, appConfig, EmailConfig, emailConfig } from '@app/config/env/name-space';
 
 import {
+  buildEmailChangedEmail,
   buildPasswordChangedEmail,
   buildResetPasswordEmail,
   buildResetPasswordSuccess,
 } from './templates';
 import { buildVerificationEmail } from './templates/build-verification-email.template';
+import { buildWelcomeVerifyEmail } from './templates/build-welcome-verification-email.template';
 import { SendEmailPayload } from './types';
 import {
+  SendEmailChangedParams,
   SendPasswordChangedParams,
   SendResetPasswordParams,
   SendResetPasswordSuccessParams,
   SendVerificationEmailParams,
+  SendWelcomeVerificationEmailParams,
 } from './types/templates';
 
 @Injectable()
@@ -59,14 +63,14 @@ export class EmailService {
     await this.sendEmailInternal(to, subject, text, html);
   }
 
-  async sendVerificationEmail(params: SendVerificationEmailParams): Promise<void> {
+  async sendWelcomeVerificationEmail(params: SendWelcomeVerificationEmailParams): Promise<void> {
     const { to, token, userName } = params;
 
     const baseUrl = this.appCfg.baseUrl;
     const encodedToken = encodeURIComponent(token);
     const verifyUrl = `${baseUrl}/auth/verify-email?token=${encodedToken}`;
 
-    const email = buildVerificationEmail({ userName, verifyUrl });
+    const email = buildWelcomeVerifyEmail({ userName, verifyUrl });
     const { html, subject, text } = email;
 
     await this.sendEmailInternal(to, subject, text, html);
@@ -98,6 +102,28 @@ export class EmailService {
     const { to, userName } = params;
 
     const email = buildPasswordChangedEmail({ userName });
+    const { html, subject, text } = email;
+
+    await this.sendEmailInternal(to, subject, text, html);
+  }
+
+  async sendChangedEmail(params: SendEmailChangedParams): Promise<void> {
+    const { to, userName, newEmail, oldEmail } = params;
+
+    const email = buildEmailChangedEmail({ userName, newEmail, oldEmail });
+    const { html, subject, text } = email;
+
+    await this.sendEmailInternal(to, subject, text, html);
+  }
+
+  async sendVerificationEmail(params: SendVerificationEmailParams): Promise<void> {
+    const { to, token, userName } = params;
+
+    const baseUrl = this.appCfg.baseUrl;
+    const encodedToken = encodeURIComponent(token);
+    const verifyUrl = `${baseUrl}/auth/verify-email?token=${encodedToken}`;
+
+    const email = buildVerificationEmail({ userName, verifyUrl });
     const { html, subject, text } = email;
 
     await this.sendEmailInternal(to, subject, text, html);

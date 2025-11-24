@@ -1,3 +1,4 @@
+export * from './build-full-name.util';
 export * from './build-plain-text.util';
 export * from './get-now.util';
 export * from './normalize-email.util';

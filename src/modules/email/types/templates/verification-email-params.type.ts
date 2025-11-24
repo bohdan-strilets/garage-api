@@ -1,5 +1,5 @@
 export type VerificationEmailParams = {
-  userName?: string;
+  userName: string;
   verifyUrl: string;
 };
 

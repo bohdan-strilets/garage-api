@@ -16,10 +16,11 @@ import { Auth, CurrentUser, CurrentUserId } from '@app/common/decorators';
 
 import { Public } from '../../common/decorators/public.decorator';
 import { RefreshCookieService } from '../tokens';
+import { UpdateEmailDto } from '../user/dto';
 
 import { AuthService } from './auth.service';
 import { Client, Refresh } from './decorators';
-import { ChangePasswordDto, EmailDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto';
+import { ChangePasswordDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto';
 import { AuthResponse, AuthUser, ClientMeta, RefreshResponse } from './types';
 
 @Controller('auth')
@@ -99,7 +100,7 @@ export class AuthController {
   @Public()
   @Post('password/forgot')
   @HttpCode(HttpStatus.OK)
-  async requestResetPassword(@Body() dto: EmailDto): Promise<void> {
+  async requestResetPassword(@Body() dto: UpdateEmailDto): Promise<void> {
     return await this.authService.requestResetPassword(dto);
   }
 
