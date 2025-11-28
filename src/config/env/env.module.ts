@@ -5,6 +5,7 @@ import { resolveEnvFiles } from './env-paths';
 import {
   appConfig,
   authLockoutConfig,
+  cloudinaryConfig,
   cookieConfig,
   cryptoConfig,
   databaseConfig,
@@ -29,6 +30,7 @@ import { validationSchema } from './validation.schema';
         cryptoConfig,
         tokensConfig,
         emailConfig,
+        cloudinaryConfig,
       ],
       cache: true,
     }),

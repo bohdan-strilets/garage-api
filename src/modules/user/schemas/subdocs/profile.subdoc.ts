@@ -22,12 +22,6 @@ export class Profile {
   @Prop({ enum: Gender, default: Gender.OTHER })
   gender?: Gender;
 
-  @Prop({ type: String, trim: true })
-  avatarId?: string;
-
-  @Prop({ type: String, trim: true })
-  coverId?: string;
-
   @Prop({ type: AddressSchema, default: {} })
   address?: Address;
 

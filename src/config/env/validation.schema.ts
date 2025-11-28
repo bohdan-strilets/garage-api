@@ -59,4 +59,9 @@ export const validationSchema = joi.object({
 
   RESEND_API_KEY: joi.string().required(),
   EMAIL_FROM: joi.string().required(),
+
+  CLOUDINARY_NAME: joi.string().required(),
+  CLOUDINARY_API_KEY: joi.string().required(),
+  CLOUDINARY_API_SECRET: joi.string().required(),
+  CLOUDINARY_ROOT_FOLDER: joi.string().default('garage-app'),
 });

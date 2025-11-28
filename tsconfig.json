@@ -4,7 +4,7 @@
     "moduleResolution": "node",
     "target": "ES2023",
     "lib": ["ES2023"],
-    "types": ["node"],
+    "types": ["node", "express", "multer"],
 
     "declaration": true,
     "removeComments": true,
