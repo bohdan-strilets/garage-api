@@ -15,6 +15,7 @@ import { SessionModule } from './modules/session';
 import { StatisticsModule } from './modules/statistics';
 import { TokensModule } from './modules/tokens';
 import { UserModule } from './modules/user';
+import { VehiclesModule } from './modules/vehicles';
 @Module({
   imports: [
     EnvConfig,
@@ -30,6 +31,7 @@ import { UserModule } from './modules/user';
     CloudinaryModule,
     MediaModule,
     StatisticsModule,
+    VehiclesModule,
   ],
   providers: [
     {
