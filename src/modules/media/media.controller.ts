@@ -69,7 +69,7 @@ export class MediaController {
   }
 
   @Delete(':imageId')
-  async deleteImage(@Param('imageId') imageId: string): Promise<boolean> {
-    return await this.mediaService.deleteImage(imageId);
+  async deleteImage(@Param('imageId') imageId: string): Promise<void> {
+    await this.mediaService.deleteImage(imageId);
   }
 }
