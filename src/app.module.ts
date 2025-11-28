@@ -12,6 +12,7 @@ import { EmailModule } from './modules/email';
 import { MediaModule } from './modules/media';
 import { PasswordModule } from './modules/password';
 import { SessionModule } from './modules/session';
+import { StatisticsModule } from './modules/statistics';
 import { TokensModule } from './modules/tokens';
 import { UserModule } from './modules/user';
 @Module({
@@ -28,6 +29,7 @@ import { UserModule } from './modules/user';
     EmailModule,
     CloudinaryModule,
     MediaModule,
+    StatisticsModule,
   ],
   providers: [
     {
