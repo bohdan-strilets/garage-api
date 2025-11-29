@@ -13,10 +13,12 @@ import {
 import { Response } from 'express';
 
 import { Auth, CurrentUser, CurrentUserId } from '@app/common/decorators';
+import { SuccessMessage } from '@app/common/http/decorators';
 
 import { Public } from '../../common/decorators/public.decorator';
 import { RefreshCookieService } from '../tokens';
 import { UpdateEmailDto } from '../user/dto';
+import { UserSelf } from '../user/types';
 
 import { AuthService } from './auth.service';
 import { Client, Refresh } from './decorators';
@@ -64,14 +66,13 @@ export class AuthController {
   @Auth()
   @Post('logout')
   @HttpCode(HttpStatus.OK)
+  @SuccessMessage('Logout successful')
   async logout(
     @CurrentUser() user: AuthUser,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ success: boolean }> {
-    const result = await this.authService.logout(user.jti);
+  ): Promise<void> {
+    await this.authService.logout(user.jti);
     this.cookieService.clearCookies(res);
-
-    return { success: result };
   }
 
   @Public()
@@ -93,13 +94,14 @@ export class AuthController {
 
   @Auth()
   @Get('me')
-  async me(@CurrentUserId() userId: string) {
+  async me(@CurrentUserId() userId: string): Promise<UserSelf> {
     return await this.authService.me(userId);
   }
 
   @Public()
   @Post('password/forgot')
   @HttpCode(HttpStatus.OK)
+  @SuccessMessage('Password reset request successful')
   async requestResetPassword(@Body() dto: UpdateEmailDto): Promise<void> {
     return await this.authService.requestResetPassword(dto);
   }
@@ -107,6 +109,7 @@ export class AuthController {
   @Public()
   @Post('password/reset/:resetToken')
   @HttpCode(HttpStatus.OK)
+  @SuccessMessage('Password reset successful')
   async resetPassword(
     @Body() dto: ResetPasswordDto,
     @Param('resetToken') resetToken: string,
@@ -117,6 +120,7 @@ export class AuthController {
   @Auth()
   @Post('password/change')
   @HttpCode(HttpStatus.OK)
+  @SuccessMessage('Password change successful')
   async changePassword(
     @CurrentUserId() userId: string,
     @Body() dto: ChangePasswordDto,
@@ -126,6 +130,7 @@ export class AuthController {
 
   @Public()
   @Get('verify-email')
+  @SuccessMessage('Email verification successful')
   async verifyEmail(@Query('token') token: string): Promise<void> {
     return await this.authService.verifyEmail(token);
   }
