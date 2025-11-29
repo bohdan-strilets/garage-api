@@ -1,12 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+import { VehicleExteriorColor, VehicleInteriorColor } from '../../enums';
+
 @Schema({ _id: false, versionKey: false, timestamps: false })
 export class VehicleAppearance {
-  @Prop({ type: String, trim: true, default: null })
-  bodyColor?: string | null;
+  @Prop({ enum: VehicleExteriorColor, default: VehicleExteriorColor.OTHER })
+  bodyColor?: VehicleExteriorColor;
 
-  @Prop({ type: String, trim: true, default: null })
-  interiorColor?: string | null;
+  @Prop({ enum: VehicleInteriorColor, default: VehicleInteriorColor.OTHER })
+  interiorColor?: VehicleInteriorColor;
 }
 
 export const VehicleAppearanceSchema = SchemaFactory.createForClass(VehicleAppearance);

@@ -4,3 +4,5 @@ export * from './euro-standard.enum';
 export * from './fuel-type.enum';
 export * from './odometer-unit.enum';
 export * from './transmission.enum';
+export * from './vehicle-exterior-color.enum';
+export * from './vehicle-interior-color.enum';
