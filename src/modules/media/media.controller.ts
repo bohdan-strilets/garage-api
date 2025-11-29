@@ -15,6 +15,7 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 import { Auth } from '@app/common/decorators';
+import { SuccessMessage } from '@app/common/http/decorators';
 
 import { SelectImageDto, UploadDto } from './dto';
 import { ImageKind, ImageOwner } from './enums';
@@ -64,11 +65,13 @@ export class MediaController {
   }
 
   @Patch('select')
+  @SuccessMessage('Image selected successfully')
   async selectImage(@Body() dto: SelectImageDto): Promise<void> {
     await this.mediaService.selectImage(dto);
   }
 
   @Delete(':imageId')
+  @SuccessMessage('Image deleted successfully')
   async deleteImage(@Param('imageId') imageId: string): Promise<void> {
     await this.mediaService.deleteImage(imageId);
   }
