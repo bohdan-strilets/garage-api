@@ -15,6 +15,7 @@ import { SessionModule } from './modules/session';
 import { StatisticsModule } from './modules/statistics';
 import { TokensModule } from './modules/tokens';
 import { UserModule } from './modules/user';
+import { VehicleEnergyModule } from './modules/vehicle-energy';
 import { VehiclesModule } from './modules/vehicles';
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { VehiclesModule } from './modules/vehicles';
     MediaModule,
     StatisticsModule,
     VehiclesModule,
+    VehicleEnergyModule,
   ],
   providers: [
     {
