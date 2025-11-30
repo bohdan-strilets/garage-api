@@ -6,6 +6,7 @@ import { MongoConfig } from './config/database';
 import { EnvConfig } from './config/env';
 import { ThrottlerConfig } from './config/throttling';
 import { AuthModule } from './modules/auth';
+import { CarCareModule } from './modules/car-care';
 import { CloudinaryModule } from './modules/cloudinary';
 import { CryptoModule } from './modules/crypto';
 import { EmailModule } from './modules/email';
@@ -36,6 +37,7 @@ import { VehiclesModule } from './modules/vehicles';
     VehiclesModule,
     VehicleEnergyModule,
     MaintenanceModule,
+    CarCareModule,
   ],
   providers: [
     {

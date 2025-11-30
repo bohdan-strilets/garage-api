@@ -1,0 +1,9 @@
+export enum CareProductKind {
+  AIR_FRESHENER = 'AIR_FRESHENER',
+  CLEANING_CHEMICAL = 'CLEANING_CHEMICAL',
+  CLOTH = 'CLOTH',
+  SPONGE = 'SPONGE',
+  BRUSH = 'BRUSH',
+  WAX = 'WAX',
+  OTHER = 'OTHER',
+}
