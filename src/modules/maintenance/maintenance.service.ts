@@ -93,8 +93,8 @@ export class MaintenanceService {
     status?: MaintenanceStatus,
     dateFrom?: string,
     dateTo?: string,
-    odometerMin?: number,
-    odometerMax?: number,
+    odometerMin?: string,
+    odometerMax?: string,
   ): Promise<PaginatedResult<Maintenance>> {
     await this.vehiclesService.getByIdForOwner(ownerId, vehicleId);
 

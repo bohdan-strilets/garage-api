@@ -5,6 +5,6 @@ export type MaintenanceFilters = {
   status?: MaintenanceStatus;
   dateFrom?: Date;
   dateTo?: Date;
-  odometerMin?: number;
-  odometerMax?: number;
+  odometerMin?: string;
+  odometerMax?: string;
 };

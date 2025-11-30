@@ -130,18 +130,15 @@ export class MaintenanceRepository {
       }
     }
 
-    const hasMin = typeof odometerMin === 'number' && !Number.isNaN(odometerMin);
-    const hasMax = typeof odometerMax === 'number' && !Number.isNaN(odometerMax);
-
-    if (hasMin || hasMax) {
+    if (odometerMin || odometerMax) {
       const odometerFilter: Record<string, number> = {};
 
-      if (hasMin) {
-        odometerFilter.$gte = odometerMin as number;
+      if (odometerMin !== undefined) {
+        odometerFilter.$gte = parseInt(odometerMin, 10);
       }
 
-      if (hasMax) {
-        odometerFilter.$lte = odometerMax as number;
+      if (odometerMax !== undefined) {
+        odometerFilter.$lte = parseInt(odometerMax, 10);
       }
 
       if (Object.keys(odometerFilter).length > 0) {

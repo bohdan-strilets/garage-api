@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseEnumPipe,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 
 import { Auth, CurrentUserId } from '@app/common/decorators';
 import { SuccessMessage } from '@app/common/http/decorators';
@@ -68,12 +57,12 @@ export class MaintenanceController {
     @CurrentUserId() ownerId: string,
     @Param('vehicleId') vehicleId: string,
     @Query() pagination: PaginationOptions,
-    @Query('kind', new ParseEnumPipe(MaintenanceKind)) kind?: MaintenanceKind,
-    @Query('status', new ParseEnumPipe(MaintenanceStatus)) status?: MaintenanceStatus,
+    @Query('kind') kind?: MaintenanceKind,
+    @Query('status') status?: MaintenanceStatus,
     @Query('dateFrom') dateFrom?: string,
     @Query('dateTo') dateTo?: string,
-    @Query('odometerMin', ParseIntPipe) odometerMin?: number,
-    @Query('odometerMax', ParseIntPipe) odometerMax?: number,
+    @Query('odometerMin') odometerMin?: string,
+    @Query('odometerMax') odometerMax?: string,
   ): Promise<PaginatedResult<Maintenance>> {
     return await this.service.getForVehicle(
       ownerId,
