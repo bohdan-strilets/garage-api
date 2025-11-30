@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth';
 import { CloudinaryModule } from './modules/cloudinary';
 import { CryptoModule } from './modules/crypto';
 import { EmailModule } from './modules/email';
+import { MaintenanceModule } from './modules/maintenance';
 import { MediaModule } from './modules/media';
 import { PasswordModule } from './modules/password';
 import { SessionModule } from './modules/session';
@@ -34,6 +35,7 @@ import { VehiclesModule } from './modules/vehicles';
     StatisticsModule,
     VehiclesModule,
     VehicleEnergyModule,
+    MaintenanceModule,
   ],
   providers: [
     {
