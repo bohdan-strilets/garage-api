@@ -23,6 +23,7 @@ import { CryptoService } from '../crypto';
 import { userSoftDeleteProjection } from './projections';
 import { User, UserDocument } from './schemas';
 import { CreateUserInput, UserSoftDelete } from './types';
+import { EmailVerificationInput } from './types/email-verification-input';
 
 @Injectable()
 export class UserRepository {
@@ -294,6 +295,24 @@ export class UserRepository {
         'verification.isEmailVerified': true,
         'verification.emailVerifyTokenHash': null,
         'verification.emailVerifyExpiresAt': null,
+      },
+    };
+
+    const result = await this.userModel.updateOne(filter, update).exec();
+    return result.modifiedCount > 0;
+  }
+
+  async updateEmailVerificationToken(
+    userId: string,
+    input: EmailVerificationInput,
+  ): Promise<boolean> {
+    const formattedUserId = objectIdToString(userId);
+
+    const filter: FilterQuery<UserDocument> = this.activeById(formattedUserId);
+    const update: UpdateQuery<User> = {
+      $set: {
+        'verification.emailVerifyTokenHash': input.tokenHash,
+        'verification.emailVerifyExpiresAt': input.expiresAt,
       },
     };
 

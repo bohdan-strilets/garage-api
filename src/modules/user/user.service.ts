@@ -24,16 +24,23 @@ import {
   UpdateProfileSettingsDto,
   UpdateUnitsDto,
 } from './dto';
-import { userPublicProjection, userSecurityProjection, userSelfProjection } from './projections';
+import {
+  userPublicProjection,
+  userRetryVerifyEmailProjection,
+  userSecurityProjection,
+  userSelfProjection,
+} from './projections';
 import { User } from './schemas';
 import {
   CreateUserInput,
   GenerateEmailTokenInput,
   UserPublic,
+  UserRetryVerifyEmail,
   UserSecurity,
   UserSelf,
   UserSoftDelete,
 } from './types';
+import { EmailVerificationInput } from './types/email-verification-input';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -107,6 +114,20 @@ export class UserService {
     if (!user) {
       this.logger.debug('User by reset token not found');
       throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    return user;
+  }
+
+  async getUserForRetry(userId: string): Promise<UserRetryVerifyEmail> {
+    const user: UserRetryVerifyEmail = await this.userRepository.findById(
+      userId,
+      userRetryVerifyEmailProjection,
+    );
+
+    if (!user) {
+      this.logger.debug(`User with ID ${userId} not found`);
+      throw new NotFoundException('User not found');
     }
 
     return user;
@@ -418,5 +439,12 @@ export class UserService {
     // Відправити SMS для підтвердження нового номера телефону можна тут
 
     return await this.findSelfUserById(userId);
+  }
+
+  async updateEmailVerificationToken(
+    userId: string,
+    input: EmailVerificationInput,
+  ): Promise<boolean> {
+    return await this.userRepository.updateEmailVerificationToken(userId, input);
   }
 }

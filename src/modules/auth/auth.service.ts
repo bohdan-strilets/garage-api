@@ -1,12 +1,20 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { buildFullName, getNow, objectIdToString, secondsToMs } from '@app/common/utils';
+import {
+  buildFullName,
+  getNow,
+  getNowTimestamp,
+  objectIdToString,
+  secondsToMs,
+} from '@app/common/utils';
+import { CryptoConfig, cryptoConfig } from '@app/config/env/name-space';
 
 import { CryptoService } from '../crypto/crypto.service';
 import { EmailService } from '../email';
@@ -18,6 +26,7 @@ import { TokensService } from '../tokens/tokens.service';
 import { AccessInput, RefreshInput } from '../tokens/types';
 import { UpdateEmailDto } from '../user/dto';
 import { CreateUserInput, UserSecurity } from '../user/types';
+import { EmailVerificationInput } from '../user/types/email-verification-input';
 import { UserService } from '../user/user.service';
 
 import { ChangePasswordDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto';
@@ -34,6 +43,7 @@ export class AuthService {
     private readonly tokensService: TokensService,
     private readonly cryptoService: CryptoService,
     private readonly emailService: EmailService,
+    @Inject(cryptoConfig.KEY) private readonly crypto: CryptoConfig,
   ) {}
 
   private defaultFingerprint(): string {
@@ -341,5 +351,41 @@ export class AuthService {
   async verifyEmail(plainToken: string): Promise<void> {
     await this.userService.verifyEmail(plainToken);
     this.logger.debug('Send email for success email verification for user');
+  }
+
+  async resendVerificationEmail(userId: string): Promise<void> {
+    const user = await this.userService.getUserForRetry(userId);
+
+    if (user.verification.isEmailVerified) {
+      throw new ConflictException('Email is already verified');
+    }
+
+    const lastSentAt = user.verification.emailVerifyExpiresAt;
+    const now = getNowTimestamp();
+    const VERIFICATION_COOLDOWN_MS = this.crypto.email.verificationCooldownMs;
+
+    if (lastSentAt && now - lastSentAt.getTime() < VERIFICATION_COOLDOWN_MS) {
+      throw new BadRequestException(
+        'Verification email was sent recently. Please wait before retrying.',
+      );
+    }
+
+    const emailVerifyToken = this.userService.generateEmailVerifyToken();
+
+    const emailVerificationInput: EmailVerificationInput = {
+      tokenHash: emailVerifyToken.hash,
+      expiresAt: emailVerifyToken.expiresAt,
+    };
+
+    await this.userService.updateEmailVerificationToken(userId, emailVerificationInput);
+
+    const { email, profile } = user;
+    const userName = buildFullName(profile.firstName, profile.lastName);
+
+    await this.emailService.sendWelcomeVerificationEmail({
+      to: email,
+      token: emailVerifyToken.plain,
+      userName,
+    });
   }
 }

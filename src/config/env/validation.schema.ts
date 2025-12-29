@@ -42,6 +42,7 @@ export const validationSchema = joi.object({
   MAX_FAILED_LOGIN_ATTEMPTS: joi.number().integer().min(1).default(5),
   LOCK_UNTIL_MINUTES: joi.number().integer().min(1).default(15),
 
+  VERIFICATION_COOLDOWN_MS: joi.number().integer().min(1000).default(60000),
   EMAIL_RESET_TOKEN_TTL_MINUTES: joi.number().integer().min(1).default(60),
   PASSWORD_RESET_TOKEN_TTL_MINUTES: joi.number().integer().min(1).default(60),
   CRYPTO_PEPPER: joi.string().min(32).required(),

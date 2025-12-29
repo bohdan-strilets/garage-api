@@ -134,4 +134,12 @@ export class AuthController {
   async verifyEmail(@Query('token') token: string): Promise<void> {
     return await this.authService.verifyEmail(token);
   }
+
+  @Auth()
+  @Post('verify-email/resend')
+  @HttpCode(HttpStatus.OK)
+  @SuccessMessage('Verification email resent successfully')
+  async resendVerificationEmail(@CurrentUserId() userId: string): Promise<void> {
+    return await this.authService.resendVerificationEmail(userId);
+  }
 }

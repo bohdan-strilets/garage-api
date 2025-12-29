@@ -18,6 +18,7 @@ export const cryptoConfig = registerAs('crypto', () => {
 
   const email = {
     verifyTokenTtlMinutes: Number(process.env.EMAIL_RESET_TOKEN_TTL_MINUTES),
+    verificationCooldownMs: Number(process.env.VERIFICATION_COOLDOWN_MS),
   };
 
   return {
