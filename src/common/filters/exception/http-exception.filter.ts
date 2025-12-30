@@ -3,7 +3,6 @@ import { ArgumentsHost, Catch, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 import { ErrorCodes } from '@app/common/errors';
-import { getNowISOString } from '@app/common/utils';
 
 import { ExceptionResponse } from './types';
 import { mapNonHttpToStatus, normalizeExceptionMessage } from './utils';
@@ -43,8 +42,6 @@ export class HttpExceptionFilter {
       statusCode: status,
       code,
       message,
-      timestamp: getNowISOString(),
-      path: request.url,
     };
 
     response.status(status).json(result);
