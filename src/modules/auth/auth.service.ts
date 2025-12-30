@@ -1,12 +1,17 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Inject,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
+import {
+  accountLocked,
+  emailAlreadyVerified,
+  emailVerificationResendTooSoon,
+  invalidCredentials,
+  invalidCurrentPassword,
+  passwordSameAsCurrent,
+  passwordUpdateFailed,
+  refreshTokenReuseDetected,
+  sessionInvalid,
+  userAlreadyExists,
+} from '@app/common/errors';
 import {
   buildFullName,
   getNow,
@@ -61,7 +66,7 @@ export class AuthService {
     const exists = await this.userService.existsActiveByEmail(email);
 
     if (exists) {
-      throw new ConflictException('User with this email already exists');
+      userAlreadyExists();
     }
 
     const passwordHash = await this.passwordService.hashIfValid(password);
@@ -139,7 +144,7 @@ export class AuthService {
     const isLocked = await this.userService.isLockedById(userId);
 
     if (isLocked) {
-      throw new UnauthorizedException('Account is locked');
+      accountLocked();
     }
 
     const passwordHash = securityUser.security.password.hash;
@@ -147,7 +152,7 @@ export class AuthService {
 
     if (!passwordOk) {
       await this.userService.bumpFailuresAndLockIfNeeded(userId);
-      throw new UnauthorizedException('Invalid credentials');
+      invalidCredentials();
     }
 
     await this.userService.resetFailures(userId);
@@ -203,11 +208,11 @@ export class AuthService {
     const oldSession = await this.sessionService.getByJti(oldJti);
 
     if (!oldSession || oldSession.revokedAt) {
-      throw new UnauthorizedException('Session not found or revoked');
+      sessionInvalid();
     }
 
     if (oldSession.reuseDetectedAt) {
-      throw new UnauthorizedException('Refresh token family was revoked');
+      refreshTokenReuseDetected();
     }
 
     const userId = objectIdToString(oldSession.userId);
@@ -297,7 +302,7 @@ export class AuthService {
     const updated = await this.userService.updatePassword(userId, passwordHash);
 
     if (!updated) {
-      throw new BadRequestException('Failed to update password');
+      passwordUpdateFailed();
     }
 
     await this.userService.clearPasswordResetToken(userId);
@@ -323,11 +328,11 @@ export class AuthService {
     const isCurrentValid = await this.passwordService.verify(currentPassword, passwordHash);
 
     if (!isCurrentValid) {
-      throw new UnauthorizedException('Current password is invalid');
+      invalidCurrentPassword();
     }
 
     if (currentPassword === newPassword) {
-      throw new BadRequestException('New password must be different from current password');
+      passwordSameAsCurrent();
     }
 
     const newPasswordHash = await this.passwordService.hashIfValid(newPassword);
@@ -335,7 +340,7 @@ export class AuthService {
     const updated = await this.userService.updatePassword(userId, newPasswordHash);
 
     if (!updated) {
-      throw new BadRequestException('Failed to update password');
+      passwordUpdateFailed();
     }
 
     await this.sessionService.logoutAll(userId, RevokedBy.System);
@@ -357,7 +362,7 @@ export class AuthService {
     const user = await this.userService.getUserForRetry(userId);
 
     if (user.verification.isEmailVerified) {
-      throw new ConflictException('Email is already verified');
+      emailAlreadyVerified();
     }
 
     const lastSentAt = user.verification.emailVerifyExpiresAt;
@@ -365,9 +370,7 @@ export class AuthService {
     const VERIFICATION_COOLDOWN_MS = this.crypto.email.verificationCooldownMs;
 
     if (lastSentAt && now - lastSentAt.getTime() < VERIFICATION_COOLDOWN_MS) {
-      throw new BadRequestException(
-        'Verification email was sent recently. Please wait before retrying.',
-      );
+      emailVerificationResendTooSoon();
     }
 
     const emailVerifyToken = this.userService.generateEmailVerifyToken();

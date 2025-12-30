@@ -1,5 +1,6 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
+import { maintenanceRecordNotFound } from '@app/common/errors';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 
 import { VehiclesService } from '../vehicles';
@@ -45,7 +46,7 @@ export class MaintenanceService {
 
     if (!updated) {
       this.logger.debug('Maintenance record not found for update');
-      throw new NotFoundException('Maintenance record not found');
+      maintenanceRecordNotFound();
     }
 
     return updated;
@@ -62,7 +63,7 @@ export class MaintenanceService {
 
     if (!existing) {
       this.logger.debug('Maintenance record not found for deletion');
-      throw new NotFoundException('Maintenance record not found');
+      maintenanceRecordNotFound();
     }
 
     return await this.repo.deleteForVehicle(ownerId, vehicleId, maintenanceId);
@@ -79,7 +80,7 @@ export class MaintenanceService {
 
     if (!existing) {
       this.logger.debug('Maintenance record not found');
-      throw new NotFoundException('Maintenance record not found');
+      maintenanceRecordNotFound();
     }
 
     return existing;

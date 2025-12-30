@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { Currency } from '@app/common/enums';
+import { energySessionNotFound, odometerValueTooLow } from '@app/common/errors';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 import { objectIdToString } from '@app/common/utils';
 
@@ -37,9 +38,7 @@ export class VehicleEnergyService {
     if (last && dto.odometerKm < last.odometerKm) {
       this.logger.debug('Creating energy session, but odometer is less than last recorded');
 
-      throw new BadRequestException(
-        `Odometer value (${dto.odometerKm} km) cannot be less than last recorded (${last.odometerKm} km)`,
-      );
+      odometerValueTooLow();
     }
 
     const currency = dto.currency ?? Currency.PLN;
@@ -79,13 +78,13 @@ export class VehicleEnergyService {
 
     if (!existing) {
       this.logger.debug('Energy session to update not found for owner');
-      throw new NotFoundException('Energy session not found');
+      energySessionNotFound();
     }
 
     if (objectIdToString(existing.vehicleId) !== formattedVehicleId) {
       this.logger.debug('Energy session does not belong to the specified vehicle');
 
-      throw new NotFoundException('Energy session not found for this vehicle');
+      energySessionNotFound();
     }
 
     const last = await this.repo.findLastForVehicle(formattedVehicleId);
@@ -93,7 +92,7 @@ export class VehicleEnergyService {
     if (last && last._id !== existing._id && dto.odometerKm < last.odometerKm) {
       this.logger.debug('Updating energy session, but odometer is less than last recorded');
 
-      throw new BadRequestException('Odometer value cannot be less than last recorded');
+      odometerValueTooLow();
     }
 
     const currency = dto.currency ?? Currency.PLN;
@@ -117,7 +116,7 @@ export class VehicleEnergyService {
 
     if (!updated) {
       this.logger.debug('Energy session to update not found after update attempt');
-      throw new NotFoundException('Energy session not found');
+      energySessionNotFound();
     }
 
     return updated;
@@ -159,12 +158,12 @@ export class VehicleEnergyService {
 
     if (!session) {
       this.logger.debug('Energy session not found by id for owner');
-      throw new NotFoundException('Energy session not found');
+      energySessionNotFound();
     }
 
     if (objectIdToString(session.vehicleId) !== vehicleId) {
       this.logger.debug('Energy session does not belong to the specified vehicle');
-      throw new NotFoundException('Energy session not found for this vehicle');
+      energySessionNotFound();
     }
 
     return session;
@@ -180,7 +179,7 @@ export class VehicleEnergyService {
 
     if (!deleted) {
       this.logger.debug('Energy session to delete not found for owner');
-      throw new NotFoundException('Energy session not found');
+      energySessionNotFound();
     }
   }
 

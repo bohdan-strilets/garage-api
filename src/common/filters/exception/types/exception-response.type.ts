@@ -1,7 +1,9 @@
+import { ErrorCodes } from '@app/common/errors/error-codes';
+
 export type ExceptionResponse = {
-  success: boolean;
   statusCode: number;
-  message: string[];
+  code: ErrorCodes;
+  message?: string[];
   timestamp: string;
   path: string;
 };

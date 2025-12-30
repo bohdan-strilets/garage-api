@@ -1,11 +1,10 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
+import {
+  odometerValueTooLow,
+  vehicleNotFound,
+  vehiclePlateAlreadyExists,
+} from '@app/common/errors';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 import { objectIdToString } from '@app/common/utils';
 
@@ -31,12 +30,12 @@ export class VehiclesService {
 
     if (plateExists) {
       this.logger.debug('Conflict: vehicle plate number already exists');
-      throw new ConflictException('Vehicle with this plate number already exists for this owner');
+      vehiclePlateAlreadyExists();
     }
 
     if (dto.odometer.current < dto.odometer.initial) {
       this.logger.debug('BadRequest: current odometer value is less than initial value');
-      throw new BadRequestException('Current odometer value cannot be less than initial value');
+      odometerValueTooLow();
     }
 
     const createVehicleInput: CreateVehicleInput = {
@@ -55,7 +54,7 @@ export class VehiclesService {
 
     if (!vehicleSelf) {
       this.logger.debug('NotFound: vehicle not found after creation');
-      throw new NotFoundException('Vehicle not found after creation');
+      vehicleNotFound();
     }
 
     return vehicleSelf;
@@ -70,7 +69,7 @@ export class VehiclesService {
 
     if (!vehicle) {
       this.logger.debug('NotFound: vehicle not found');
-      throw new NotFoundException('Vehicle not found');
+      vehicleNotFound();
     }
 
     return vehicle;
@@ -101,7 +100,7 @@ export class VehiclesService {
 
     if (!current) {
       this.logger.debug('NotFound: vehicle not found for update');
-      throw new NotFoundException('Vehicle not found');
+      vehicleNotFound();
     }
 
     if (dto.identifiers?.plateNumber) {
@@ -116,9 +115,7 @@ export class VehiclesService {
 
         if (plateExists) {
           this.logger.debug('Conflict: vehicle plate number already exists on update');
-          throw new ConflictException(
-            'Vehicle with this plate number already exists for this owner',
-          );
+          vehiclePlateAlreadyExists();
         }
       }
     }
@@ -132,7 +129,7 @@ export class VehiclesService {
 
       if (newCurrent < newInitial) {
         this.logger.debug('BadRequest: current odometer < initial on update');
-        throw new BadRequestException('Current odometer value cannot be less than initial value');
+        odometerValueTooLow();
       }
     }
 
@@ -142,11 +139,6 @@ export class VehiclesService {
       dto,
       vehicleSelfProjection,
     );
-
-    if (!updated) {
-      this.logger.debug('NotFound: vehicle not found after update');
-      throw new NotFoundException('Vehicle not found after update');
-    }
 
     return updated;
   }

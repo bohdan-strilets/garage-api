@@ -1,6 +1,7 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
+import { sessionInvalid } from '@app/common/errors';
 import { TokensConfig, tokensConfig } from '@app/config/env/name-space';
 
 import { CryptoService } from '../crypto';
@@ -103,7 +104,7 @@ export class TokensService {
         audience: this.config.audience,
       });
     } catch {
-      throw new UnauthorizedException('Invalid access token');
+      sessionInvalid();
     }
   }
 
@@ -115,7 +116,7 @@ export class TokensService {
         audience: this.config.audience,
       });
     } catch {
-      throw new UnauthorizedException('Invalid refresh token');
+      sessionInvalid();
     }
   }
 }

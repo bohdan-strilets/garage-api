@@ -1,5 +1,6 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
+import { carCareSessionNotFound } from '@app/common/errors';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 import { VehiclesService } from '@app/modules/vehicles';
 
@@ -44,7 +45,7 @@ export class CareSessionsService {
 
     if (!session) {
       this.logger.debug('Car care session not found');
-      throw new NotFoundException('Car care session not found');
+      carCareSessionNotFound();
     }
 
     return session;
@@ -69,7 +70,7 @@ export class CareSessionsService {
 
     if (!session) {
       this.logger.debug('Car care session not found for update');
-      throw new NotFoundException('Car care session not found');
+      carCareSessionNotFound();
     }
 
     return session;

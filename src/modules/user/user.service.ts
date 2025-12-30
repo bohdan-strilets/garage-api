@@ -1,14 +1,13 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { UpdateQuery } from 'mongoose';
 
+import {
+  emailAlreadyInUse,
+  passwordResetTokenInvalid,
+  phoneAlreadyInUse,
+  userNotFound,
+} from '@app/common/errors';
 import { buildFullName, getNowTimestamp, minutesToMs, objectIdToString } from '@app/common/utils';
 import { CryptoConfig, cryptoConfig } from '@app/config/env/name-space';
 
@@ -66,7 +65,7 @@ export class UserService {
 
     if (!user) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return user;
@@ -77,7 +76,7 @@ export class UserService {
 
     if (!user) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return user;
@@ -88,7 +87,7 @@ export class UserService {
 
     if (!user) {
       this.logger.debug(`User with email ${email} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return user;
@@ -99,7 +98,7 @@ export class UserService {
 
     if (!user) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return user;
@@ -113,7 +112,7 @@ export class UserService {
 
     if (!user) {
       this.logger.debug('User by reset token not found');
-      throw new BadRequestException('Invalid or expired reset token');
+      passwordResetTokenInvalid();
     }
 
     return user;
@@ -127,7 +126,7 @@ export class UserService {
 
     if (!user) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return user;
@@ -138,7 +137,7 @@ export class UserService {
 
     if (!deleted) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     this.logger.log(`User with ID ${userId} has been soft deleted`);
@@ -212,7 +211,7 @@ export class UserService {
 
     if (!updated) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return await this.findSelfUserById(userId);
@@ -253,7 +252,7 @@ export class UserService {
 
     if (!updated) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return await this.findSelfUserById(userId);
@@ -286,7 +285,7 @@ export class UserService {
 
     if (!updated) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return await this.findSelfUserById(userId);
@@ -319,7 +318,7 @@ export class UserService {
 
     if (!updated) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return await this.findSelfUserById(userId);
@@ -356,7 +355,7 @@ export class UserService {
 
     if (!updated) {
       this.logger.debug(`User with ID ${userId} not found`);
-      throw new NotFoundException('User not found');
+      userNotFound();
     }
 
     return await this.findSelfUserById(userId);
@@ -390,7 +389,7 @@ export class UserService {
     const userName = buildFullName(profile.firstName, profile.lastName);
 
     if (existing) {
-      throw new ConflictException('Email already in use');
+      emailAlreadyInUse();
     }
 
     if (newEmail === oldEmail) {
@@ -430,7 +429,7 @@ export class UserService {
     const existing = await this.userRepository.existsActiveByPhone(phone);
 
     if (existing) {
-      throw new ConflictException('Phone number already in use');
+      phoneAlreadyInUse();
     }
 
     const update: UpdateQuery<User> = { phone };

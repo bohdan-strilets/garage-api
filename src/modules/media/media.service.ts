@@ -1,5 +1,6 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
+import { imageNotFound, ownerImageOfKindNotFound, ownerImagesNotFound } from '@app/common/errors';
 import { objectIdToString } from '@app/common/utils';
 
 import { CloudinaryService } from '../cloudinary';
@@ -58,7 +59,7 @@ export class MediaService {
 
     if (!image) {
       this.logger.debug(`Image with ID ${imageId} not found`);
-      throw new NotFoundException('Image not found');
+      imageNotFound();
     }
 
     return image;
@@ -73,7 +74,7 @@ export class MediaService {
 
     if (!image) {
       this.logger.debug(`Image with ownerId ${ownerId} not found`);
-      throw new NotFoundException('Image not found');
+      imageNotFound();
     }
 
     return image;
@@ -146,14 +147,14 @@ export class MediaService {
     const images = await this.repository.findManyByOwner(ownerId, ownerType, kind);
 
     if (!images.length) {
-      throw new NotFoundException('No images found for this owner');
+      ownerImagesNotFound();
     }
 
     const targetId = objectIdToString(imageId);
     const targetImage = images.find((img) => objectIdToString(img._id) === targetId);
 
     if (!targetImage) {
-      throw new NotFoundException('Image not found for this owner and kind');
+      ownerImageOfKindNotFound();
     }
 
     await this.repository.updateManyByIds(

@@ -1,5 +1,6 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
+import { carCareProductNotFound } from '@app/common/errors';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 import { VehiclesService } from '@app/modules/vehicles';
 
@@ -44,7 +45,7 @@ export class CareProductsService {
 
     if (!product) {
       this.logger.debug('Care care product not found');
-      throw new NotFoundException('Car care product not found');
+      carCareProductNotFound();
     }
 
     return product;
@@ -69,7 +70,7 @@ export class CareProductsService {
     const product = await this.repo.updateByIdForOwner(ownerId, productId, update);
 
     if (!product) {
-      throw new NotFoundException('Car care product not found');
+      carCareProductNotFound();
     }
 
     return product;

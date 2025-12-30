@@ -2,6 +2,7 @@ import { ArgumentsHost, Catch, HttpException, Logger } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 
+import { ErrorCodes } from '@app/common/errors';
 import { getNowISOString } from '@app/common/utils';
 
 import { ExceptionResponse } from './types';
@@ -20,12 +21,27 @@ export class HttpExceptionFilter {
 
     const message = normalizeExceptionMessage(exception);
     const status = isHttp ? exception.getStatus() : mapNonHttpToStatus(exception);
+    let code = ErrorCodes.INTERNAL_SERVER_ERROR;
 
-    this.logger.warn(`${request.method} ${request.url} -> ${status} :: ${message.join(' | ')}`);
+    if (isHttp) {
+      const exceptionResponse = exception.getResponse();
+
+      if (
+        typeof exceptionResponse === 'object' &&
+        exceptionResponse !== null &&
+        'code' in exceptionResponse
+      ) {
+        code = exceptionResponse.code as ErrorCodes;
+      }
+    }
+
+    this.logger.warn(
+      `${request.method} ${request.url} -> ${status} [${code}] :: ${message.join(' | ')}`,
+    );
 
     const result: ExceptionResponse = {
-      success: false,
       statusCode: status,
+      code,
       message,
       timestamp: getNowISOString(),
       path: request.url,

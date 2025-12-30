@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
+import { sessionNotFound } from '@app/common/errors';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 import { getNow } from '@app/common/utils';
 
@@ -62,7 +63,7 @@ export class SessionService {
     const session = await this.getByJti(jti);
 
     if (!session) {
-      throw new NotFoundException('Session not found');
+      sessionNotFound();
     }
 
     return this.repo.revokeJti(jti, by);
