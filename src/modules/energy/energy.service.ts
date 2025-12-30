@@ -8,18 +8,18 @@ import { objectIdToString } from '@app/common/utils';
 import { VehiclesService } from '../vehicles';
 
 import { CreateEnergySessionDto, UpdateEnergySessionDto } from './dto';
+import { EnergyRepository } from './energy.repository';
 import { EnergyKind } from './enums';
 import { EnergySession } from './schemas';
 import { EnergyCharge, EnergyFuel } from './schemas/subdocs';
 import { EnergySessionInput, FuelAndCharge } from './types';
-import { VehicleEnergyRepository } from './vehicle-energy.repository';
 
 @Injectable()
-export class VehicleEnergyService {
-  private readonly logger = new Logger(VehicleEnergyService.name);
+export class EnergyService {
+  private readonly logger = new Logger(EnergyService.name);
 
   constructor(
-    private readonly repo: VehicleEnergyRepository,
+    private readonly repo: EnergyRepository,
     private readonly vehiclesService: VehiclesService,
   ) {}
 

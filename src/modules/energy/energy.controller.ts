@@ -5,14 +5,14 @@ import { SuccessMessage } from '@app/common/http/decorators';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 
 import { CreateEnergySessionDto, UpdateEnergySessionDto } from './dto';
+import { EnergyService } from './energy.service';
 import { EnergyKind } from './enums';
 import { EnergySession } from './schemas';
-import { VehicleEnergyService } from './vehicle-energy.service';
 
 @Auth()
 @Controller('vehicle-energy')
-export class VehicleEnergyController {
-  constructor(private readonly service: VehicleEnergyService) {}
+export class EnergyController {
+  constructor(private readonly service: EnergyService) {}
 
   @Post(':vehicleId')
   async createForVehicle(

@@ -16,7 +16,7 @@ import { EnergySession } from './schemas';
 import { EnergySessionInput } from './types';
 
 @Injectable()
-export class VehicleEnergyRepository {
+export class EnergyRepository {
   constructor(
     @InjectModel(EnergySession.name)
     private readonly model: Model<EnergySession>,

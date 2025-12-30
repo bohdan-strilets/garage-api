@@ -10,6 +10,7 @@ import { CarCareModule } from './modules/car-care';
 import { CloudinaryModule } from './modules/cloudinary';
 import { CryptoModule } from './modules/crypto';
 import { EmailModule } from './modules/email';
+import { EnergyModule } from './modules/energy';
 import { MaintenanceModule } from './modules/maintenance';
 import { MediaModule } from './modules/media';
 import { PasswordModule } from './modules/password';
@@ -17,7 +18,6 @@ import { SessionModule } from './modules/session';
 import { StatisticsModule } from './modules/statistics';
 import { TokensModule } from './modules/tokens';
 import { UserModule } from './modules/user';
-import { VehicleEnergyModule } from './modules/vehicle-energy';
 import { VehiclesModule } from './modules/vehicles';
 @Module({
   imports: [
@@ -35,7 +35,7 @@ import { VehiclesModule } from './modules/vehicles';
     MediaModule,
     StatisticsModule,
     VehiclesModule,
-    VehicleEnergyModule,
+    EnergyModule,
     MaintenanceModule,
     CarCareModule,
   ],
