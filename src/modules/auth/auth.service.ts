@@ -10,6 +10,7 @@ import {
   passwordUpdateFailed,
   refreshTokenReuseDetected,
   sessionInvalid,
+  sessionNotFound,
   userAlreadyExists,
 } from '@app/common/errors';
 import {
@@ -35,7 +36,7 @@ import { EmailVerificationInput } from '../user/types/email-verification-input';
 import { UserService } from '../user/user.service';
 
 import { ChangePasswordDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto';
-import { AuthInternalResult, RefreshInternalResult } from './types';
+import { AuthInternalResult, AuthResponse, RefreshInternalResult } from './types';
 
 @Injectable()
 export class AuthService {
@@ -259,8 +260,37 @@ export class AuthService {
     };
   }
 
-  async me(userId: string) {
-    return this.userService.findSelfUserById(userId);
+  async me(refreshToken: string): Promise<AuthResponse> {
+    if (!refreshToken) {
+      sessionNotFound();
+    }
+
+    const payload = await this.tokensService.verifyRefresh(refreshToken);
+
+    if (!payload) {
+      sessionInvalid();
+    }
+
+    const session = await this.sessionService.getByJti(payload.jti);
+
+    if (!session || session.revokedAt) {
+      sessionInvalid();
+    }
+
+    const userId = objectIdToString(session.userId);
+    const user = await this.userService.findSelfUserById(userId);
+
+    const accessInput: AccessInput = {
+      userId,
+      roles: user.roles,
+      jti: payload.jti,
+    };
+    const accessToken = await this.tokensService.signAccess(accessInput);
+
+    return {
+      user,
+      accessToken: accessToken.token,
+    };
   }
 
   async requestResetPassword(dto: UpdateEmailDto): Promise<void> {

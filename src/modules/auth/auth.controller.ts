@@ -7,9 +7,11 @@ import {
   Param,
   Post,
   Query,
+  Req,
   Res,
 } from '@nestjs/common';
 
+import { Request } from 'express';
 import { Response } from 'express';
 
 import { Auth, CurrentUser, CurrentUserId } from '@app/common/decorators';
@@ -18,7 +20,6 @@ import { SuccessMessage } from '@app/common/http/decorators';
 import { Public } from '../../common/decorators/public.decorator';
 import { RefreshCookieService } from '../tokens';
 import { UpdateEmailDto } from '../user/dto';
-import { UserSelf } from '../user/types';
 
 import { AuthService } from './auth.service';
 import { Client, Refresh } from './decorators';
@@ -92,10 +93,11 @@ export class AuthController {
     return { accessToken: result.accessToken };
   }
 
-  @Auth()
+  @Public()
   @Get('me')
-  async me(@CurrentUserId() userId: string): Promise<UserSelf> {
-    return await this.authService.me(userId);
+  async me(@Req() req: Request): Promise<AuthResponse> {
+    const refreshToken = this.cookieService.extractFromRequest(req);
+    return await this.authService.me(refreshToken);
   }
 
   @Public()
