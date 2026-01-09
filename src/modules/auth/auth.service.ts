@@ -296,7 +296,6 @@ export class AuthService {
   async requestResetPassword(dto: UpdateEmailDto): Promise<void> {
     const { email } = dto;
     let user: UserSecurity;
-    const { profile, _id } = user;
 
     try {
       user = await this.userService.findSecurityUserByEmail(email);
@@ -304,6 +303,8 @@ export class AuthService {
       this.logger.debug(`No user found with email: ${email}`);
       return;
     }
+
+    const { profile, _id } = user;
 
     const resetToken = this.cryptoService.randomToken(32);
     const resetTokenHash = this.cryptoService.hmacSign(resetToken);
