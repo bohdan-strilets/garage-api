@@ -7,7 +7,10 @@ export type UserSelf = {
   roles: User['roles'];
   profile: User['profile'];
   settings: User['settings'];
-  verification: Pick<User['verification'], 'isEmailVerified' | 'isPhoneVerified'>;
+  verification: {
+    email: User['verification']['email'];
+    phone: User['verification']['phone'];
+  };
   vehicles: User['vehicles'];
   createdAt: User['createdAt'];
   updatedAt: User['updatedAt'];

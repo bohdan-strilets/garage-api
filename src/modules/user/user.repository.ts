@@ -54,9 +54,12 @@ export class UserRepository {
     const payload = {
       email: normalizedEmail,
       verification: {
-        isEmailVerified: false,
-        emailVerifyTokenHash: verifyEmailTokenHash,
-        emailVerifyExpiresAt: verifyEmailTokenExpiresAt,
+        email: {
+          isVerified: false,
+          tokenHash: verifyEmailTokenHash,
+          expiresAt: verifyEmailTokenExpiresAt,
+          sentAt: now,
+        },
       },
       security: {
         password: {
@@ -285,16 +288,18 @@ export class UserRepository {
     const hashedToken = this.cryptoService.hmacSign(plainToken);
 
     const filter: FilterQuery<UserDocument> = {
-      'verification.emailVerifyTokenHash': hashedToken,
-      'verification.emailVerifyExpiresAt': { $gt: now },
+      'verification.email.tokenHash': hashedToken,
+      'verification.email.expiresAt': { $gt: now },
+      'verification.email.isVerified': false,
       isDeleted: false,
     };
 
     const update: UpdateQuery<User> = {
       $set: {
-        'verification.isEmailVerified': true,
-        'verification.emailVerifyTokenHash': null,
-        'verification.emailVerifyExpiresAt': null,
+        'verification.email.isVerified': true,
+        'verification.email.tokenHash': null,
+        'verification.email.expiresAt': null,
+        'verification.email.sentAt': null,
       },
     };
 
@@ -311,8 +316,9 @@ export class UserRepository {
     const filter: FilterQuery<UserDocument> = this.activeById(formattedUserId);
     const update: UpdateQuery<User> = {
       $set: {
-        'verification.emailVerifyTokenHash': input.tokenHash,
-        'verification.emailVerifyExpiresAt': input.expiresAt,
+        'verification.email.tokenHash': input.tokenHash,
+        'verification.email.expiresAt': input.expiresAt,
+        'verification.email.sentAt': input.sentAt,
       },
     };
 

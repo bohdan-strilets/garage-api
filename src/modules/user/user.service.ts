@@ -368,11 +368,13 @@ export class UserService {
 
     const tokenTtlMs = minutesToMs(this.crypto.email.verifyTokenTtlMinutes);
     const expiresAt = new Date(nowMs + tokenTtlMs);
+    const sentAt = new Date(nowMs);
 
     return {
       plain: token,
       hash,
       expiresAt,
+      sentAt,
     };
   }
 
@@ -401,9 +403,10 @@ export class UserService {
     const update: UpdateQuery<User> = {
       $set: {
         email: newEmail,
-        'verification.isEmailVerified': false,
-        'verification.emailVerifyTokenHash': emailVerifyToken.hash,
-        'verification.emailVerifyExpiresAt': emailVerifyToken.expiresAt,
+        'verification.email.isVerified': false,
+        'verification.email.tokenHash': emailVerifyToken.hash,
+        'verification.email.expiresAt': emailVerifyToken.expiresAt,
+        'verification.email.sentAt': emailVerifyToken.sentAt,
       },
     };
 

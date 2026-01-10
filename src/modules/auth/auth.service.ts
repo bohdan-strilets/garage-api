@@ -392,11 +392,11 @@ export class AuthService {
   async resendVerificationEmail(userId: string): Promise<void> {
     const user = await this.userService.getUserForRetry(userId);
 
-    if (user.verification.isEmailVerified) {
+    if (user.verification.email.isVerified) {
       emailAlreadyVerified();
     }
 
-    const lastSentAt = user.verification.emailVerifyExpiresAt;
+    const lastSentAt = user.verification.email.sentAt;
     const now = getNowTimestamp();
     const VERIFICATION_COOLDOWN_MS = this.crypto.email.verificationCooldownMs;
 
@@ -409,6 +409,7 @@ export class AuthService {
     const emailVerificationInput: EmailVerificationInput = {
       tokenHash: emailVerifyToken.hash,
       expiresAt: emailVerifyToken.expiresAt,
+      sentAt: emailVerifyToken.sentAt,
     };
 
     await this.userService.updateEmailVerificationToken(userId, emailVerificationInput);
