@@ -8,8 +8,8 @@ export type UserSelf = {
   profile: User['profile'];
   settings: User['settings'];
   verification: {
-    email: User['verification']['email'];
-    phone: User['verification']['phone'];
+    email: { isVerified: User['verification']['email']['isVerified'] };
+    phone: { isVerified: User['verification']['phone']['isVerified'] };
   };
   vehicles: User['vehicles'];
   createdAt: User['createdAt'];
