@@ -66,9 +66,9 @@ export class EmailService {
   async sendWelcomeVerificationEmail(params: SendWelcomeVerificationEmailParams): Promise<void> {
     const { to, token, userName } = params;
 
-    const baseUrl = this.appCfg.baseUrl;
+    const clientUrl = this.appCfg.clientUrl;
     const encodedToken = encodeURIComponent(token);
-    const verifyUrl = `${baseUrl}/auth/verify-email?token=${encodedToken}`;
+    const verifyUrl = `${clientUrl}/auth/verify-email?token=${encodedToken}`;
 
     const email = buildWelcomeVerifyEmail({ userName, verifyUrl });
     const { html, subject, text } = email;
@@ -119,9 +119,9 @@ export class EmailService {
   async sendVerificationEmail(params: SendVerificationEmailParams): Promise<void> {
     const { to, token, userName } = params;
 
-    const baseUrl = this.appCfg.baseUrl;
+    const clientUrl = this.appCfg.clientUrl;
     const encodedToken = encodeURIComponent(token);
-    const verifyUrl = `${baseUrl}/auth/verify-email?token=${encodedToken}`;
+    const verifyUrl = `${clientUrl}/auth/verify-email?token=${encodedToken}`;
 
     const email = buildVerificationEmail({ userName, verifyUrl });
     const { html, subject, text } = email;
