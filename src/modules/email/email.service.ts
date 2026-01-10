@@ -68,7 +68,7 @@ export class EmailService {
 
     const clientUrl = this.appCfg.clientUrl;
     const encodedToken = encodeURIComponent(token);
-    const verifyUrl = `${clientUrl}/auth/verify-email?token=${encodedToken}`;
+    const verifyUrl = `${clientUrl}/verify-email?token=${encodedToken}`;
 
     const email = buildWelcomeVerifyEmail({ userName, verifyUrl });
     const { html, subject, text } = email;
@@ -121,7 +121,7 @@ export class EmailService {
 
     const clientUrl = this.appCfg.clientUrl;
     const encodedToken = encodeURIComponent(token);
-    const verifyUrl = `${clientUrl}/auth/verify-email?token=${encodedToken}`;
+    const verifyUrl = `${clientUrl}/verify-email?token=${encodedToken}`;
 
     const email = buildVerificationEmail({ userName, verifyUrl });
     const { html, subject, text } = email;
