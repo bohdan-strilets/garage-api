@@ -1,13 +1,15 @@
-import { IsNumber, IsOptional, Min } from 'class-validator';
+import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 export class VehiclePerformanceDto {
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  topSpeedKph?: number | null;
+  @IsNumber({ maxDecimalPlaces: 0 })
+  @Min(60)
+  @Max(450)
+  topSpeedKph?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  acceleration0100Sec?: number | null;
+  @IsNumber({ maxDecimalPlaces: 1 })
+  @Min(1.5)
+  @Max(60)
+  acceleration0100Sec?: number;
 }

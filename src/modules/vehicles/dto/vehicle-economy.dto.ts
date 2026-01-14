@@ -1,29 +1,33 @@
-import { IsEnum, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 import { EuroStandard } from '../enums';
 
 export class VehicleEconomyDto {
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  cityLPer100Km?: number | null;
+  @IsNumber({ maxDecimalPlaces: 1 })
+  @Min(2)
+  @Max(30)
+  cityLPer100Km?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  highwayLPer100Km?: number | null;
+  @IsNumber({ maxDecimalPlaces: 1 })
+  @Min(2)
+  @Max(20)
+  highwayLPer100Km?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  mixedLPer100Km?: number | null;
+  @IsNumber({ maxDecimalPlaces: 1 })
+  @Min(2)
+  @Max(25)
+  mixedLPer100Km?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  fuelTankCapacityL?: number | null;
+  @IsNumber({ maxDecimalPlaces: 0 })
+  @Min(20)
+  @Max(120)
+  fuelTankCapacityL?: number;
 
   @IsOptional()
   @IsEnum(EuroStandard)
-  euroStandard?: EuroStandard | null;
+  euroStandard?: EuroStandard;
 }

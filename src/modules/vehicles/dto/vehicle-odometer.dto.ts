@@ -1,40 +1,50 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsDate, IsDefined, IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 
 import { OdometerUnit } from '../enums';
 
 export class VehicleOdometerDto {
-  @IsNumber()
+  @IsDefined()
+  @IsInt()
   @Min(0)
+  @Max(2_000_000)
   initial: number;
 
+  @IsDefined()
   @Type(() => Date)
   @IsDate()
   initialRecordedAt: Date;
 
-  @IsNumber()
+  @IsDefined()
+  @IsInt()
   @Min(0)
+  @Max(2_000_000)
   current: number;
 
+  @IsDefined()
   @Type(() => Date)
   @IsDate()
   currentRecordedAt: Date;
 
+  @IsDefined()
   @IsEnum(OdometerUnit)
   unit: OdometerUnit;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(0)
-  targetAnnualMileage?: number | null;
+  @Max(200_000)
+  targetAnnualMileage?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  serviceInterval?: number | null;
+  @IsInt()
+  @Min(5_000)
+  @Max(50_000)
+  serviceInterval?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(0)
-  nextServiceMileage?: number | null;
+  @Max(2_000_000)
+  nextServiceMileage?: number;
 }

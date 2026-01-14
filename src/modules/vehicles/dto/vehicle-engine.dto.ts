@@ -1,28 +1,33 @@
-import { IsInt, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsInt, IsOptional, Max, Min } from 'class-validator';
 
 export class VehicleEngineDto {
   @IsOptional()
-  @IsNumber()
-  @Min(1)
-  displacementCc?: number | null;
+  @IsInt()
+  @Min(600)
+  @Max(8000)
+  displacementCc?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(1)
-  powerHp?: number | null;
+  @IsInt()
+  @Min(40)
+  @Max(1200)
+  powerHp?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(1)
-  powerKw?: number | null;
+  @IsInt()
+  @Min(30)
+  @Max(900)
+  powerKw?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(1)
-  torqueNm?: number | null;
+  @IsInt()
+  @Min(50)
+  @Max(1500)
+  torqueNm?: number;
 
   @IsOptional()
   @IsInt()
   @Min(1)
-  cylinders?: number | null;
+  @Max(12)
+  cylinders?: number;
 }

@@ -1,5 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, Max, Min, ValidateNested } from 'class-validator';
+import {
+  IsDefined,
+  IsEnum,
+  IsInt,
+  IsNotEmptyObject,
+  IsOptional,
+  Max,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 import { BodyType, Drivetrain, FuelType, Transmission } from '../enums';
 
@@ -11,52 +20,66 @@ import { VehicleEngineDto } from './vehicle-engine.dto';
 import { VehiclePerformanceDto } from './vehicle-performance.dto';
 
 export class VehicleTechnicalDto {
+  @IsDefined()
   @IsEnum(FuelType)
   fuelType: FuelType;
 
+  @IsDefined()
   @IsEnum(Transmission)
   transmission: Transmission;
 
   @IsOptional()
   @IsEnum(Drivetrain)
-  drivetrain?: Drivetrain | null;
+  drivetrain?: Drivetrain;
 
   @IsOptional()
   @IsEnum(BodyType)
-  bodyType?: BodyType | null;
+  bodyType?: BodyType;
 
   @IsOptional()
   @IsInt()
   @Min(1)
-  @Max(10)
+  @Max(6)
   doors?: number;
 
   @IsOptional()
   @IsInt()
   @Min(1)
-  @Max(10)
+  @Max(9)
   seats?: number;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleEngineDto)
   engine: VehicleEngineDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleEconomyDto)
   economy: VehicleEconomyDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleDimensionsDto)
   dimensions: VehicleDimensionsDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleCapacityDto)
   capacity: VehicleCapacityDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehiclePerformanceDto)
   performance: VehiclePerformanceDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleAppearanceDto)
   appearance: VehicleAppearanceDto;

@@ -1,5 +1,15 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsOptional, IsString, Max, Min, ValidateNested } from 'class-validator';
+import {
+  IsDefined,
+  IsInt,
+  IsNotEmpty,
+  IsNotEmptyObject,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 import { VehicleIdentifiersDto } from './vehicle-identifiers.dto';
 import { VehicleOdometerDto } from './vehicle-odometer.dto';
@@ -22,34 +32,45 @@ export class CreateVehicleDto {
 
   @IsOptional()
   @IsString()
-  generation?: string | null;
+  generation?: string;
 
   @IsInt()
   @Min(1900)
   @Max(new Date().getFullYear() + 1)
   year: number;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleIdentifiersDto)
   identifiers: VehicleIdentifiersDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleOdometerDto)
   odometer: VehicleOdometerDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehiclePurchaseDto)
   purchase: VehiclePurchaseDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleSaleDto)
   sale: VehicleSaleDto;
 
+  @IsDefined()
+  @IsNotEmptyObject()
   @ValidateNested()
   @Type(() => VehicleTechnicalDto)
   technical: VehicleTechnicalDto;
 
+  @IsDefined()
   @IsOptional()
   @IsString()
-  notes?: string | null;
+  notes?: string;
 }

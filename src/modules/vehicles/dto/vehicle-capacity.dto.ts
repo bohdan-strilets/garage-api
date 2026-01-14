@@ -1,28 +1,33 @@
-import { IsNumber, IsOptional, Min } from 'class-validator';
+import { IsInt, IsOptional, Max, Min } from 'class-validator';
 
 export class VehicleCapacityDto {
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(0)
-  trunkVolumeMinL?: number | null;
+  @Max(1000)
+  trunkVolumeMinL?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(0)
-  trunkVolumeMaxL?: number | null;
+  @Max(4000)
+  trunkVolumeMaxL?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  curbWeightKg?: number | null;
+  @IsInt()
+  @Min(500)
+  @Max(3500)
+  curbWeightKg?: number;
 
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  grossWeightKg?: number | null;
+  @IsInt()
+  @Min(500)
+  @Max(4500)
+  grossWeightKg?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(0)
-  maxPayloadKg?: number | null;
+  @Max(2000)
+  maxPayloadKg?: number;
 }
