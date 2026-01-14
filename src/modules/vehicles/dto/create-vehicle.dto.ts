@@ -7,7 +7,9 @@ import {
   IsOptional,
   IsString,
   Max,
+  MaxLength,
   Min,
+  MinLength,
   ValidateNested,
 } from 'class-validator';
 
@@ -20,20 +22,29 @@ import { VehicleTechnicalDto } from './vehicle-technical.dto';
 export class CreateVehicleDto {
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(150)
   name: string;
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(150)
   brand: string;
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(150)
   model: string;
 
   @IsOptional()
   @IsString()
+  @MinLength(1)
+  @MaxLength(150)
   generation?: string;
 
+  @IsDefined()
   @IsInt()
   @Min(1900)
   @Max(new Date().getFullYear() + 1)
@@ -69,8 +80,9 @@ export class CreateVehicleDto {
   @Type(() => VehicleTechnicalDto)
   technical: VehicleTechnicalDto;
 
-  @IsDefined()
   @IsOptional()
   @IsString()
+  @MinLength(1)
+  @MaxLength(1000)
   notes?: string;
 }
