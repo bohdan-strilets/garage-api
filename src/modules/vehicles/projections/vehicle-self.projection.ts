@@ -16,6 +16,7 @@ export const vehicleSelfProjection: ProjectionType<Vehicle> = {
   sale: 1,
   technical: 1,
   notes: 1,
+  status: 1,
   createdAt: 1,
   updatedAt: 1,
 };

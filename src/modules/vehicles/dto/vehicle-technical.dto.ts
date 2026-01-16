@@ -28,13 +28,13 @@ export class VehicleTechnicalDto {
   @IsEnum(Transmission)
   transmission: Transmission;
 
-  @IsOptional()
+  @IsDefined()
   @IsEnum(Drivetrain)
-  drivetrain?: Drivetrain;
+  drivetrain: Drivetrain;
 
-  @IsOptional()
+  @IsDefined()
   @IsEnum(BodyType)
-  bodyType?: BodyType;
+  bodyType: BodyType;
 
   @IsOptional()
   @IsInt()

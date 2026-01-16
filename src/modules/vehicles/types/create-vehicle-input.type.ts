@@ -8,7 +8,7 @@ import type {
 
 export type CreateVehicleInput = {
   ownerId: string;
-  name: string;
+  name?: string | null;
   brand: string;
   model: string;
   generation?: string | null;

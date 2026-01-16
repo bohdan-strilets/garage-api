@@ -17,34 +17,34 @@ export class VehicleTechnical {
   @Prop({ enum: Transmission, required: true })
   transmission: Transmission;
 
-  @Prop({ enum: Drivetrain, default: null })
-  drivetrain?: Drivetrain | null;
+  @Prop({ enum: Drivetrain, required: true })
+  drivetrain: Drivetrain;
 
-  @Prop({ enum: BodyType, default: null })
-  bodyType?: BodyType | null;
+  @Prop({ enum: BodyType, required: true })
+  bodyType: BodyType;
 
-  @Prop({ type: Number, min: 1, default: 4 })
-  doors?: number;
+  @Prop({ type: Number, min: 1, default: null })
+  doors?: number | null;
 
-  @Prop({ type: Number, min: 1, default: 5 })
-  seats?: number;
+  @Prop({ type: Number, min: 1, default: null })
+  seats?: number | null;
 
-  @Prop({ type: VehicleEngineSchema, default: {} })
+  @Prop({ type: VehicleEngineSchema, required: true })
   engine: VehicleEngine;
 
-  @Prop({ type: VehicleEconomySchema, default: {} })
+  @Prop({ type: VehicleEconomySchema, required: true })
   economy: VehicleEconomy;
 
-  @Prop({ type: VehicleDimensionsSchema, default: {} })
+  @Prop({ type: VehicleDimensionsSchema, required: true })
   dimensions: VehicleDimensions;
 
-  @Prop({ type: VehicleCapacitySchema, default: {} })
+  @Prop({ type: VehicleCapacitySchema, required: true })
   capacity: VehicleCapacity;
 
-  @Prop({ type: VehiclePerformanceSchema, default: {} })
+  @Prop({ type: VehiclePerformanceSchema, required: true })
   performance: VehiclePerformance;
 
-  @Prop({ type: VehicleAppearanceSchema, default: {} })
+  @Prop({ type: VehicleAppearanceSchema, required: true })
   appearance: VehicleAppearance;
 }
 

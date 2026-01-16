@@ -1,7 +1,9 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsDefined, IsEnum, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { IsDate, IsDefined, IsEnum, IsNumber, Max, Min } from 'class-validator';
 
 import { Currency } from '@app/common/enums';
+
+import { vehicleRules } from '../config';
 
 export class VehiclePurchaseDto {
   @IsDefined()
@@ -9,11 +11,11 @@ export class VehiclePurchaseDto {
   @IsDate()
   date: Date;
 
-  @IsOptional()
+  @IsDefined()
   @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(1)
-  @Max(10_000_000)
-  price?: number;
+  @Min(vehicleRules.base.price.min)
+  @Max(vehicleRules.base.price.max)
+  price: number;
 
   @IsDefined()
   @IsEnum(Currency)

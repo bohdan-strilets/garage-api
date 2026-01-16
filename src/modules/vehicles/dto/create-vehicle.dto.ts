@@ -13,6 +13,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { vehicleRules } from '../config';
+
 import { VehicleIdentifiersDto } from './vehicle-identifiers.dto';
 import { VehicleOdometerDto } from './vehicle-odometer.dto';
 import { VehiclePurchaseDto } from './vehicle-purchase.dto';
@@ -20,12 +22,6 @@ import { VehicleSaleDto } from './vehicle-sale.dto';
 import { VehicleTechnicalDto } from './vehicle-technical.dto';
 
 export class CreateVehicleDto {
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(150)
-  name: string;
-
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
@@ -38,17 +34,23 @@ export class CreateVehicleDto {
   @MaxLength(150)
   model: string;
 
+  @IsDefined()
+  @IsInt()
+  @Min(vehicleRules.base.year.min)
+  @Max(vehicleRules.base.year.max)
+  year: number;
+
   @IsOptional()
   @IsString()
   @MinLength(1)
   @MaxLength(150)
   generation?: string;
 
-  @IsDefined()
-  @IsInt()
-  @Min(1900)
-  @Max(new Date().getFullYear() + 1)
-  year: number;
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(150)
+  name?: string;
 
   @IsDefined()
   @IsNotEmptyObject()

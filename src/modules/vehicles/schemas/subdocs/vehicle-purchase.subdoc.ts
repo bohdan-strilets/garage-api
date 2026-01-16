@@ -7,10 +7,10 @@ export class VehiclePurchase {
   @Prop({ type: Date, required: true })
   date: Date;
 
-  @Prop({ type: Number, min: 0, default: null })
-  price?: number | null;
+  @Prop({ type: Number, min: 0, required: true })
+  price: number;
 
-  @Prop({ enum: Currency, default: Currency.PLN })
+  @Prop({ enum: Currency, required: true })
   currency: Currency;
 }
 

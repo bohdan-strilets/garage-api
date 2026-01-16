@@ -10,7 +10,7 @@ import { objectIdToString } from '@app/common/utils';
 
 import { CreateVehicleDto, UpdateVehicleDto } from './dto';
 import { vehicleSelfProjection } from './projections';
-import { CreateVehicleInput, VehicleListItem, VehicleSelf } from './types';
+import { CreateVehicleInput, VehicleSelf } from './types';
 import { VehiclesRepository } from './vehicles.repository';
 
 @Injectable()
@@ -78,10 +78,10 @@ export class VehiclesService {
   async getListForOwner(
     ownerId: string,
     pagination: PaginationOptions,
-  ): Promise<PaginatedResult<VehicleListItem>> {
+  ): Promise<PaginatedResult<VehicleSelf>> {
     const result = await this.vehiclesRepository.findManyByOwner(ownerId, pagination);
 
-    return { items: result.items as VehicleListItem[], meta: result.meta };
+    return { items: result.items, meta: result.meta };
   }
 
   async updateForOwner(

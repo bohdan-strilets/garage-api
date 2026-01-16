@@ -5,7 +5,7 @@ import { SuccessMessage } from '@app/common/http/decorators';
 import { PaginatedResult, PaginationOptions } from '@app/common/pagination';
 
 import { CreateVehicleDto, UpdateVehicleDto } from './dto';
-import { VehicleListItem, VehicleSelf } from './types';
+import { VehicleSelf } from './types';
 import { VehiclesService } from './vehicles.service';
 
 @Auth()
@@ -33,7 +33,7 @@ export class VehiclesController {
   async getList(
     @CurrentUserId() ownerId: string,
     @Query() pagination: PaginationOptions,
-  ): Promise<PaginatedResult<VehicleListItem>> {
+  ): Promise<PaginatedResult<VehicleSelf>> {
     return await this.vehiclesService.getListForOwner(ownerId, pagination);
   }
 

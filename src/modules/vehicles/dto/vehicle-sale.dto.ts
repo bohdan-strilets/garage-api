@@ -1,21 +1,14 @@
 import { Type } from 'class-transformer';
-import {
-  IsBoolean,
-  IsDate,
-  IsDefined,
-  IsEnum,
-  IsNumber,
-  IsOptional,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsBoolean, IsDate, IsEnum, IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 import { Currency } from '@app/common/enums';
 
+import { vehicleRules } from '../config';
+
 export class VehicleSaleDto {
-  @IsDefined()
+  @IsOptional()
   @IsBoolean()
-  isSold: boolean;
+  isSold?: boolean;
 
   @IsOptional()
   @Type(() => Date)
@@ -24,11 +17,11 @@ export class VehicleSaleDto {
 
   @IsOptional()
   @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(1)
-  @Max(10_000_000)
+  @Min(vehicleRules.base.price.min)
+  @Max(vehicleRules.base.price.max)
   price?: number;
 
-  @IsDefined()
+  @IsOptional()
   @IsEnum(Currency)
-  currency: Currency;
+  currency?: Currency;
 }

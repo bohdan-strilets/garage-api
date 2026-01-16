@@ -4,6 +4,9 @@ import { HydratedDocument, Types } from 'mongoose';
 
 import { User } from '@app/modules/user/schemas';
 
+import { vehicleRules } from '../config';
+import { VehicleStatus } from '../enums';
+
 import {
   VehicleIdentifiers,
   VehicleIdentifiersSchema,
@@ -24,8 +27,8 @@ export class Vehicle {
   @Prop({ type: Types.ObjectId, ref: User.name, required: true, index: true })
   ownerId: Types.ObjectId;
 
-  @Prop({ type: String, trim: true, required: true })
-  name: string;
+  @Prop({ type: String, trim: true, default: null })
+  name?: string | null;
 
   @Prop({ type: String, trim: true, required: true, index: true })
   brand: string;
@@ -36,7 +39,12 @@ export class Vehicle {
   @Prop({ type: String, trim: true, default: null })
   generation?: string | null;
 
-  @Prop({ type: Number, min: 1950, max: 2100, required: true })
+  @Prop({
+    type: Number,
+    min: vehicleRules.base.year.min,
+    max: vehicleRules.base.year.max,
+    required: true,
+  })
   year: number;
 
   @Prop({ type: VehicleIdentifiersSchema, required: true })
@@ -48,14 +56,17 @@ export class Vehicle {
   @Prop({ type: VehiclePurchaseSchema, required: true })
   purchase: VehiclePurchase;
 
-  @Prop({ type: VehicleSaleSchema, default: {} })
+  @Prop({ type: VehicleSaleSchema, required: true })
   sale: VehicleSale;
 
   @Prop({ type: VehicleTechnicalSchema, required: true })
   technical: VehicleTechnical;
 
-  @Prop({ type: String, trim: true, required: false })
+  @Prop({ type: String, trim: true, default: null })
   notes?: string | null;
+
+  @Prop({ enum: VehicleStatus, default: VehicleStatus.ACTIVE, index: true })
+  status: VehicleStatus;
 
   @Prop({ type: Boolean, default: false, index: true })
   isDeleted: boolean;

@@ -6,3 +6,4 @@ export * from './odometer-unit.enum';
 export * from './transmission.enum';
 export * from './vehicle-exterior-color.enum';
 export * from './vehicle-interior-color.enum';
+export * from './vehicle-status.enum';

@@ -15,6 +15,7 @@ export type VehicleSelf = Pick<
   | 'sale'
   | 'technical'
   | 'notes'
+  | 'status'
   | 'createdAt'
   | 'updatedAt'
 >;

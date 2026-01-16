@@ -16,7 +16,7 @@ export class VehicleOdometer {
   @Prop({ type: Date, required: true })
   currentRecordedAt: Date;
 
-  @Prop({ enum: OdometerUnit, default: OdometerUnit.KILOMETERS })
+  @Prop({ enum: OdometerUnit, required: true })
   unit: OdometerUnit;
 
   @Prop({ type: Number, min: 0, default: null })
