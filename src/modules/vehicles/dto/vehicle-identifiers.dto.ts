@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Length, MaxLength } from 'class-validator';
 
 export class VehicleIdentifiersDto {
   @IsString()
@@ -8,6 +8,6 @@ export class VehicleIdentifiersDto {
 
   @IsOptional()
   @IsString()
-  @Length(17, 17)
+  @MaxLength(17)
   vin?: string;
 }

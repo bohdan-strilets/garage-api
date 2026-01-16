@@ -42,13 +42,11 @@ export class CreateVehicleDto {
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
   @MaxLength(150)
   generation?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
   @MaxLength(150)
   name?: string;
 
@@ -84,7 +82,6 @@ export class CreateVehicleDto {
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
   @MaxLength(1000)
   notes?: string;
 }
